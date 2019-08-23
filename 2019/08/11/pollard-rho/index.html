@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Pollard’s rho算法摘要Pollar’s Rho算法是一种用于分解质因数的算法，对于一个被分解的数N，假设N的最小质因数为p（$p \neq N$），那么Pollar’s Rho算法能够在$O(\sqrt N * α(N))$的期望时间复杂度内将N分解为两个不是1的数的乘积，其中α(N)是求解两个数的gcd时间复杂度，并且该算法对于空间要求很低。 首先要明确的是，Pollar’s Rho">
+<meta name="keywords" content="算法模板,数论,数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Pollard_rho算法">
+<meta property="og:url" content="http://valenshi.top/2019/08/11/pollard-rho/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="Pollard’s rho算法摘要Pollar’s Rho算法是一种用于分解质因数的算法，对于一个被分解的数N，假设N的最小质因数为p（$p \neq N$），那么Pollar’s Rho算法能够在$O(\sqrt N * α(N))$的期望时间复杂度内将N分解为两个不是1的数的乘积，其中α(N)是求解两个数的gcd时间复杂度，并且该算法对于空间要求很低。 首先要明确的是，Pollar’s Rho">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-20T12:47:24.626Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pollard_rho算法">
+<meta name="twitter:description" content="Pollard’s rho算法摘要Pollar’s Rho算法是一种用于分解质因数的算法，对于一个被分解的数N，假设N的最小质因数为p（$p \neq N$），那么Pollar’s Rho算法能够在$O(\sqrt N * α(N))$的期望时间复杂度内将N分解为两个不是1的数的乘积，其中α(N)是求解两个数的gcd时间复杂度，并且该算法对于空间要求很低。 首先要明确的是，Pollar’s Rho">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/11/pollard-rho/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Pollard_rho算法 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/11/pollard-rho/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Pollard_rho算法
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-11 16:45:07" itemprop="dateCreated datePublished" datetime="2019-08-11T16:45:07+08:00">2019-08-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:47:24" itemprop="dateModified" datetime="2019-08-20T20:47:24+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="Pollard’s-rho算法"><a href="#Pollard’s-rho算法" class="headerlink" title="Pollard’s rho算法"></a>Pollard’s rho算法</h3><h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>Pollar’s Rho算法是一种用于分解质因数的算法，对于一个被分解的数N，假设N的最小质因数为p（$p \neq N$），那么Pollar’s Rho算法能够在$O(\sqrt N * α(N))$的期望时间复杂度内将N分解为两个不是1的数的乘积，其中α(N)是求解两个数的gcd时间复杂度，并且该算法对于空间要求很低。</p>
+<p>首先要明确的是，Pollar’s Rho 算法是随机算法，其基于Miller-Rabin算法，一般在求大整数的唯一分解时会用到，因为 <em>试除法</em> $^{[1]}$的$O(\sqrt N)$复杂度太高。</p>
+<p>本文将首先从算法的适用模型讲起，详细介绍算法流程，最后会给出一道例题以及详细注释了的代码模板，当然还有模板的使用说明。</p>
+<p><em>[1]试除法：一种将整数唯一分解成质因数乘积的方法，时间复杂度为$O(\sqrt N)$</em></p>
+<h4 id="算法简介"><a href="#算法简介" class="headerlink" title="算法简介"></a>算法简介</h4><p>该算法最早于1975年由John M. Pollard提出，而Richard Brent于1980年提出了改进版本。虽然不是目前最快的算法，但它要比试除法快上多个量级。实现它的思想同样可以用于其他地方。</p>
+<p><strong>问题模型：</strong> 给定一个整数n，试着将n分解为若干素数相乘的形式。n小于$2^{60}$。</p>
+<p><strong>分析：</strong> 如果用试除法，显然时间复杂度过高，现在我们希望得到一个快速的方法；类比大素数判断的Miller-Rabin算法，Miller-Rabin算法依靠着费马小定理以及二次检测定理实现了快速判断一个大整数是否为素数的算法，实际上对于大整数的唯一分解也同样有着类似的巧妙的算法，就是本文介绍的Pollard’s rho算法。</p>
+<h4 id="算法思想"><a href="#算法思想" class="headerlink" title="算法思想"></a>算法思想</h4><p><strong>基本思路：</strong><br>对于给定的一个整数n，显然如果n为素数（Miller-Rabin算法判断），那么算法结束，返回唯一素因子n。</p>
+<p>否则，pollard’s rho算法会试着找到当然数n的一个因子a（a并不一定是素数），然后递归 Pollard_rho( a ) 和 Pollard_rho( n/a ) ，即将n分为了两个部分，将原问题变成了规模更小的两个子问题。</p>
+<p><strong>如何求因子a？</strong><br>一般情况下可能会本能的想到枚举，但这样过于耗时。寻找因子是该算法中最重要的一步，该算法中采用随机化算法来查找因子a。假设此时n仅有2个因子 p 和 q，那么如果我们用随机数来找n的因子，成功率为1/n。接下来我们思路是如何提升成功率。</p>
+<p>寻找一个因子a，等价于寻找是否存在k个数，使得其中有$x_i - x_j = a$，由于<strong>生日悖论</strong> 我们可以得知当k = $\sqrt N$时，该概率是50%，所以我们将可能性从$\frac{1}{n}$提升到了$\sqrt{\frac{1}{n}}$。</p>
+<p>但不幸的是对于10位的整数，k = 1e5时，仍要做$k^2 = 10^{10}$次比较，幸运的是，还有更好的方法。</p>
+<p>我们仍然选取k个数：$x_1,x_2,…,x_k$，但我们不再询问是否存在$x_i - x_j$可以整除n，转而询问是否存在 $gcd( x_i - x_j , n) &gt; 1$ 的情况。换句话说，我们问$x_i - x_j$和n是否存在一个平凡的最大公约数。</p>
+<p>如果我们询问有多少个整数能整除n，那么答案显然只有两个：p和q。<br>但是如果我们问有多少个数使得gcd($x_i-x_j$) &gt; 1，答案便很多了，如：p, 2p, 3p, 4p, … , (q-1)p , q , 2q ,…,(p-1)q。准确的说，有p+q-2个。</p>
+<p><strong>所以，一个简单的策略如下：</strong></p>
+<ul>
+<li>在区间[2 , n-2]中随机选 k 个数，$x_1,x_2,x_3,…,x_k$。</li>
+<li>判断是否存在gcd($x_i - x_y$,n) &gt; 1，若存在，gcd($x_i - x_y$,n) 是n的一个因子（p或q）。</li>
+</ul>
+<p>但是这样还有一个问题，就是我们大约要选取$n^{1/4}$个数，数量还是太大，以至于不能存放在内存中。</p>
+<p><strong>Pollard’s rho算法的解决策略：</strong><br>为了解决无法储存太多数的问题，Pollard’s rho Algorithm只将两个数存放在内存中。具体思路是：我们并不随机生成k个数并两两比较，而是一个一个地生成并检查连续的两个数。反复执行这个步骤并希望能够得到我们想要的数。</p>
+<p>我们使用一个函数来生成伪随机数。<br>换句话说，我们不断使用一个函数f来生成（可以这样形容）随机数。当然并不是所有的函数都能这样做，但是有一个函数可以：<br>&emsp;&emsp;&emsp;&emsp;$f(x) = (x^2 + a) mod N$<br>（其中的 a 可以用随机数生成，当然这不是讨论的重点。）<br>我们从$x_1 = 2$开始，让$x_2 = f(x_1) , x_3 = f(x_2),…….$，通项为：$x_{n+1} = f(x_n)$<br>于是顺着这个策略，依据上述分析，不断判断gcd($x_n - x_{n-1}$, n)是否大于1即可。</p>
+<p><strong>存在的问题：</strong><br>大多情况下，这种算法是可以正常运行的，但是对于某些数据，会出现无线的死循环，原因在于函数f存在自环。<br>于是问题变成了“如何判断环的出现”。一种方法是记录所有出现过的数，当然这会耗费大量内存，故舍弃；另一种方法是Floyd发明的算法，这里可以举一个有趣的例子说明“假设A和B在一个很长的圆形轨道上走，那么我们如何判断B是否走完一圈呢？我们可以让B的速度是A的二倍，他们同时出发，当B第一次追上A，就知道B至少已经走了一圈”，同样的道理运用到该算法中，框架如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">a = 2;</span><br><span class="line">b = 2;</span><br><span class="line">while(b != a)&#123;</span><br><span class="line">	a = f(a);	//一倍速 </span><br><span class="line">	b = f(f(b));//二倍速</span><br><span class="line">	p = GCD(|b-a| , n);</span><br><span class="line">	if(p &gt; 1) return &quot;Found factor: p&quot;; </span><br><span class="line">&#125;</span><br><span class="line">return &quot;Failed&quot;;</span><br></pre></td></tr></table></figure></p>
+<h4 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h4><p>简单梳理一下，给出主要框架而不涉及理论证明。<br>假设 n 为待分解的数，我们将分解出来的所有因子存放在factors[110]数组中，当然存放的是无序的素因子。<br><strong>findFac( long long n) 函数：</strong><br>负责将 n 分解成素因子相乘的形式，并将结果存放在factors数组中。</p>
+<ul>
+<li>如果n本身就是素数，那么将n存放在factor便可结束并返回。</li>
+<li>如果n不是素数，那么通过 pollard_rho()函数 找到n的一个因子p(不一定是素因子)，递归findFac(p)和findFac(n/p)</li>
+</ul>
+<p><strong>pollard_rho(long long x, long long a)函数：</strong><br>返回x的一个因子（不一定是素数），若失败则返回x。<br>利用Floyd发明的类似“二倍速的算法”，具体参考上述伪代码。</p>
+<p><strong>注：</strong> 当然还有一些辅助函数，例如快速幂、Miller-Rabin算法、欧几里得算法等。</p>
+<h4 id="算法模板"><a href="#算法模板" class="headerlink" title="算法模板"></a>算法模板</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*---------------------------------------------</span></span><br><span class="line"><span class="comment"> POJ 1811 </span></span><br><span class="line"><span class="comment"> 最后更新：2019/8/11</span></span><br><span class="line"><span class="comment"> 说明：该代码包含了取随机值函数rand()以及求最小值函数min()</span></span><br><span class="line"><span class="comment"> 注：适用范围是2^61,至少要保证中间结果不会溢出long long</span></span><br><span class="line"><span class="comment"> (中间结果最多是2*n)</span></span><br><span class="line"><span class="comment"> ----------------------------------------------*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt; </span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="comment">/*---------------------------------------------</span></span><br><span class="line"><span class="comment"> 利用 Miller-Rabin进行素性测试</span></span><br><span class="line"><span class="comment"> ----------------------------------------------*/</span></span><br><span class="line"><span class="keyword">int</span> testnum[] = &#123;<span class="number">2</span>,<span class="number">7</span>,<span class="number">61</span>,<span class="number">3</span>,<span class="number">5</span>,<span class="number">11</span>,<span class="number">13</span>,<span class="number">19</span>&#125;;</span><br><span class="line"><span class="function">ll <span class="title">fmul</span><span class="params">(ll a,ll b,ll p)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*返回a * b % p*/</span></span><br><span class="line">    a %= p,b %= p;          <span class="comment">//防止超出精度</span></span><br><span class="line">    ll res = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(b)&#123;</span><br><span class="line">        <span class="keyword">if</span>(b&amp;<span class="number">1</span>) res += a, res %= p;</span><br><span class="line">        a &lt;&lt;= <span class="number">1</span>;            <span class="comment">//a = a*2</span></span><br><span class="line">        <span class="keyword">if</span>(a &gt;= p) a %= p;  </span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;            <span class="comment">//b = b/2</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(ll a,ll b,ll p)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*返回a^b % p*/</span></span><br><span class="line">    ll res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(b)&#123;</span><br><span class="line">        <span class="keyword">if</span>(b&amp;<span class="number">1</span>) res = fmul(res,a,p);</span><br><span class="line">        a = fmul(a,a,p);</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">isPrime</span><span class="params">(ll n)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*Miller-Rabin判定x是否为素数*/</span></span><br><span class="line">    <span class="keyword">if</span>(n == <span class="number">2</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span>(n &lt; <span class="number">2</span> || n%<span class="number">2</span> == <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    ll d = n<span class="number">-1</span>, a, x, y;<span class="keyword">int</span> t = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>((d&amp;<span class="number">1</span>) == <span class="number">0</span>) d &gt;&gt;= <span class="number">1</span>,t++;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">7</span>;i++)&#123;</span><br><span class="line">        a = testnum[i];</span><br><span class="line">        <span class="keyword">if</span>(n == a) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        x = qpow(a,d,n);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; t;j++)&#123;</span><br><span class="line">            y = fmul(x,x,n);</span><br><span class="line">            <span class="keyword">if</span>(y == <span class="number">1</span> &amp;&amp; x != <span class="number">1</span> &amp;&amp; x != n<span class="number">-1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            x = y;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(x != <span class="number">1</span>) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*---------------------------------------------</span></span><br><span class="line"><span class="comment"> 利用 pollard rho 算法进行质因数分解 </span></span><br><span class="line"><span class="comment"> ----------------------------------------------*/</span></span><br><span class="line"></span><br><span class="line">ll factors[<span class="number">110</span>];    <span class="comment">//用来存放被分解的因数(无序)</span></span><br><span class="line"><span class="keyword">int</span> tot = <span class="number">0</span>;        <span class="comment">//因子个数</span></span><br><span class="line"><span class="function">ll <span class="title">gcd</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">    <span class="comment">/* 返回a和b的最大公约数 */</span></span><br><span class="line">    <span class="keyword">if</span>(a == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(a &lt; <span class="number">0</span>) <span class="keyword">return</span> gcd(-a,b);</span><br><span class="line">    <span class="keyword">while</span>(b)&#123;</span><br><span class="line">        ll t = a%b;</span><br><span class="line">        a = b; b = t;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> a;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ll <span class="title">pollard_rho</span><span class="params">(ll x,ll c)</span></span>&#123;</span><br><span class="line">    <span class="comment">/* 返回 x 的一个因子或 x 本身 */</span></span><br><span class="line">    ll i = <span class="number">1</span>,k = <span class="number">2</span>;</span><br><span class="line">    ll tx = rand()%x;</span><br><span class="line">    ll y = tx;</span><br><span class="line">    <span class="keyword">while</span>(<span class="literal">true</span>)&#123;</span><br><span class="line">        i++;</span><br><span class="line">        tx = (fmul(tx,tx,x)+c)%x;</span><br><span class="line">        ll d = gcd(y-tx,x);</span><br><span class="line">        <span class="keyword">if</span>(d != <span class="number">1</span> &amp;&amp; d != x) <span class="keyword">return</span> d;</span><br><span class="line">        <span class="keyword">if</span>(y == tx) <span class="keyword">return</span> x;       <span class="comment">//寻找失败</span></span><br><span class="line">        <span class="keyword">if</span>(i == k) y = tx, k += k;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">findFac</span><span class="params">(ll n)</span></span>&#123;</span><br><span class="line">    <span class="comment">/* 对 n 进行质因数分解 */</span></span><br><span class="line">    <span class="keyword">if</span>(isPrime(n))&#123;</span><br><span class="line">        factors[++tot] = n;</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    ll p = n;</span><br><span class="line">    <span class="comment">/* 通过pollard_rho算法找到 n 的一个因子 p */</span></span><br><span class="line">    <span class="keyword">while</span>(p &gt;= n) p = pollard_rho(p,rand()%(n<span class="number">-1</span>)+<span class="number">1</span>);</span><br><span class="line">    findFac(p);     <span class="comment">//递归分解</span></span><br><span class="line">    findFac(n/p);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> t;ll n,ans;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t);</span><br><span class="line">    <span class="keyword">while</span>(t--)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%lld"</span>,&amp;n);</span><br><span class="line">        <span class="keyword">if</span>(isPrime(n)) <span class="built_in">puts</span>(<span class="string">"Prime"</span>);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            tot = <span class="number">0</span>; ans = <span class="number">1e18</span>; findFac(n);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= tot;i++) ans = <span class="built_in">std</span>::min(ans,factors[i]);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+              <a href="/tags/数论/" rel="tag"># 数论</a>
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/11/hfs/" rel="next" title="划分树模板">
+                  <i class="fa fa-chevron-left"></i> 划分树模板
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/12/chafen/" rel="prev" title="差分约束系统">
+                  差分约束系统 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Pollard’s-rho算法"><span class="nav-number">1.</span> <span class="nav-text">Pollard’s rho算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法简介"><span class="nav-number">1.2.</span> <span class="nav-text">算法简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法思想"><span class="nav-number">1.3.</span> <span class="nav-text">算法思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法流程"><span class="nav-number">1.4.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法模板"><span class="nav-number">1.5.</span> <span class="nav-text">算法模板</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

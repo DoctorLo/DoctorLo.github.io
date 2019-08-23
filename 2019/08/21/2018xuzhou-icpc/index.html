@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="A. Hard to prepare测试地址抱怨一下，这题目真的是长，题意理解起来有点费劲，当然费劲的只是因为题面长而不是表述不清。题意简述：从$[1,2^k-1]$中选出n个数，将n个数围成一圈，要求相邻的两个数NXOR大于0，即异或后按位取反的值大于0。问共有多少种不同的方案。 解题思路：通过简单证明，我们会发现只有1按位取反的值才是0，所以两个数 异或 != 1 就可以相邻；而与x异或 =">
+<meta name="keywords" content="博弈论,动态规划">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018徐州icpc网络赛A、B题解">
+<meta property="og:url" content="http://valenshi.top/2019/08/21/2018xuzhou-icpc/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="A. Hard to prepare测试地址抱怨一下，这题目真的是长，题意理解起来有点费劲，当然费劲的只是因为题面长而不是表述不清。题意简述：从$[1,2^k-1]$中选出n个数，将n个数围成一圈，要求相邻的两个数NXOR大于0，即异或后按位取反的值大于0。问共有多少种不同的方案。 解题思路：通过简单证明，我们会发现只有1按位取反的值才是0，所以两个数 异或 != 1 就可以相邻；而与x异或 =">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-21T03:48:15.352Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2018徐州icpc网络赛A、B题解">
+<meta name="twitter:description" content="A. Hard to prepare测试地址抱怨一下，这题目真的是长，题意理解起来有点费劲，当然费劲的只是因为题面长而不是表述不清。题意简述：从$[1,2^k-1]$中选出n个数，将n个数围成一圈，要求相邻的两个数NXOR大于0，即异或后按位取反的值大于0。问共有多少种不同的方案。 解题思路：通过简单证明，我们会发现只有1按位取反的值才是0，所以两个数 异或 != 1 就可以相邻；而与x异或 =">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/21/2018xuzhou-icpc/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>2018徐州icpc网络赛A、B题解 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/21/2018xuzhou-icpc/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">2018徐州icpc网络赛A、B题解
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-21 11:26:15 / 修改时间：11:48:15" itemprop="dateCreated datePublished" datetime="2019-08-21T11:26:15+08:00">2019-08-21</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="A-Hard-to-prepare"><a href="#A-Hard-to-prepare" class="headerlink" title="A. Hard to prepare"></a>A. Hard to prepare</h4><p><a href="https://nanti.jisuanke.com/t/A2000" target="_blank" rel="noopener">测试地址</a><br>抱怨一下，这题目真的是长，题意理解起来有点费劲，当然费劲的只是因为题面长而不是表述不清。<br><strong>题意简述：</strong><br>从$[1,2^k-1]$中选出n个数，将n个数围成一圈，要求相邻的两个数NXOR大于0，即异或后按位取反的值大于0。问共有多少种不同的方案。</p>
+<p><strong>解题思路：</strong><br>通过简单证明，我们会发现只有1按位取反的值才是0，所以两个数 异或 != 1 就可以相邻；而与x异或 = 1 的数，有且仅有一个。</p>
+<p>首先如果不是环形，而是一条直线，那么一共 $2 ^ k  *  (2 ^ k - 1) ^ {n-1}$​ 种不同的方案，这里设A = ​2^k​。环形和直线不同之处在于，直线首尾的值异或可能 = 1，即我们之前的答案多算了首尾异或=1的情况。那么我们接下来就需要设法减去这些值。</p>
+<p>我们通过动态规划思想来计算这些多加上的值。假设当前位置为 i ，直线首元素是a，尾元素是b，且a^b = 1；设x是位置 i 元素 = a时的方案数，y是位置 i 元素 = b时的方案数，z是位置 i 不等于a和b时的方案数。</p>
+<p>那么我们初始状态（第2个位置时）x = 1 , y = 0 , z = A - 2；目标是求第n-1 位时的 y + z（首位是a，末位是b时，中间2~n-1位的不同排列情况数）。<br>那么易得：<br>x = x + z;<br>y = y + z;<br>z = z<em>(A-3)+(x+y) </em> (A-2).<br>于是我们从第3位递推到第n-1位即可。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> ll P = <span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line"><span class="keyword">int</span> t,n,k;</span><br><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">    ll res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(b)&#123;</span><br><span class="line">        <span class="keyword">if</span>(b&amp;<span class="number">1</span>) res = res*a%P;</span><br><span class="line">        a = a*a%P;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res%P;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">    ll A = qpow(<span class="number">2</span>,k);</span><br><span class="line">    ll ans = A*qpow(A<span class="number">-1</span>,n<span class="number">-1</span>)%P;</span><br><span class="line">    ll x = <span class="number">1</span>,y = <span class="number">0</span>,z = A<span class="number">-2</span>;</span><br><span class="line">    <span class="comment">/*	x:当前位置数和A相同方案数,</span></span><br><span class="line"><span class="comment">		y:当前位置数和B相同方案数,</span></span><br><span class="line"><span class="comment">		z:当前位置的数和AB都不同的方案数。 </span></span><br><span class="line"><span class="comment">    */</span> </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">3</span>;i &lt; n;i++)&#123;</span><br><span class="line">        ll t1 = x+z,t2 = y+z;</span><br><span class="line">        z = z*(A<span class="number">-3</span>)%P+(x+y)*(A<span class="number">-2</span>)%P;</span><br><span class="line">        z = z%P;</span><br><span class="line">        x = t1%P, y = t2%P;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="comment">//  printf("%lld %lld %lld\n",ans,y,z);</span></span><br><span class="line">    <span class="keyword">if</span>(n &gt; <span class="number">2</span>) ans = (ans - A*(y+z)%P+P)%P;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t);</span><br><span class="line">    <span class="keyword">while</span>(t--)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;k);</span><br><span class="line">        solve();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="B-BE-GE-or-NE"><a href="#B-BE-GE-or-NE" class="headerlink" title="B. BE,GE or NE"></a>B. BE,GE or NE</h4><p><a href="https://nanti.jisuanke.com/t/A2001" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述：</strong><br>这是一个博弈论题。有两个人，小K和小S在玩游戏，该游戏一共有n次操作，俩人轮流进行。初始给定一个数值m，每次操作有三种选择：加上a；减去b；若c为1，则m = -1。每次三选一，其中小K想使得最终值&gt;= k，而小S想使得最终值&lt;= l，否则两人平局。给定这n次操作的a,b,c值，请问两人都采取最优策略，最终结果是谁胜出或是平局？</p>
+<p><strong>解题思路：</strong><br>首先每个决策的选举会影响之后的决策，即不满足无后效，因此我们不能单纯的从后向前推（从动态规划角度）。而从博弈论来看，如果当前局面可以转移到必胜态，则当前选手必胜，换到这题，就是使得当前选手得分最大或最小。由于得分只有200种可能，于是可能的状态只有1000 * 200 = 200,000种，记忆化搜索即可。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1100</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">int</span> f[N][<span class="number">250</span>];</span><br><span class="line"><span class="keyword">int</span> a[N],b[N],c[N];</span><br><span class="line"><span class="keyword">int</span> n,m,k,l;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> pos,<span class="keyword">int</span> sum)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(pos &gt; n) <span class="keyword">return</span> sum;</span><br><span class="line">    <span class="keyword">if</span>(f[pos][sum+<span class="number">100</span>] != INF) <span class="keyword">return</span> f[pos][sum+<span class="number">100</span>];</span><br><span class="line">    <span class="keyword">if</span>(pos&amp;<span class="number">1</span>)&#123;</span><br><span class="line">        <span class="keyword">int</span> x = -INF;</span><br><span class="line">        <span class="keyword">if</span>(a[pos]) x = max(x,dfs(pos+<span class="number">1</span>,min(<span class="number">100</span>,sum+a[pos])));</span><br><span class="line">        <span class="keyword">if</span>(b[pos]) x = max(x,dfs(pos+<span class="number">1</span>,max(<span class="number">-100</span>,sum-b[pos])));</span><br><span class="line">        <span class="keyword">if</span>(c[pos]) x = max(x,dfs(pos+<span class="number">1</span>,-sum));</span><br><span class="line">        f[pos][sum+<span class="number">100</span>] = x;</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">int</span> x = INF;</span><br><span class="line">        <span class="keyword">if</span>(a[pos]) x = min(x,dfs(pos+<span class="number">1</span>,min(sum+a[pos],<span class="number">100</span>)));</span><br><span class="line">        <span class="keyword">if</span>(b[pos]) x = min(x,dfs(pos+<span class="number">1</span>,max(<span class="number">-100</span>,sum-b[pos])));</span><br><span class="line">        <span class="keyword">if</span>(c[pos]) x = min(x,dfs(pos+<span class="number">1</span>,-sum));</span><br><span class="line">        f[pos][sum+<span class="number">100</span>] = x;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f[pos][sum+<span class="number">100</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(f,<span class="number">0x3f</span>,<span class="keyword">sizeof</span> f);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d%d%d"</span>,&amp;n,&amp;m,&amp;k,&amp;l);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,a+i,b+i,c+i);</span><br><span class="line">    <span class="keyword">int</span> ans = dfs(<span class="number">1</span>,m);</span><br><span class="line">    <span class="keyword">if</span>(ans &gt;= k) <span class="built_in">puts</span>(<span class="string">"Good Ending"</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(ans &lt;= l) <span class="built_in">puts</span>(<span class="string">"Bad Ending"</span>);</span><br><span class="line">    <span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">"Normal Ending"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/博弈论/" rel="tag"># 博弈论</a>
+            
+              <a href="/tags/动态规划/" rel="tag"># 动态规划</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/20/chapter1/" rel="next" title="第一章 基础数据结构模板">
+                  <i class="fa fa-chevron-left"></i> 第一章 基础数据结构模板
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/22/hdu6685/" rel="prev" title="Rikka with Coin 解题报告">
+                  Rikka with Coin 解题报告 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-Hard-to-prepare"><span class="nav-number">1.</span> <span class="nav-text">A. Hard to prepare</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-BE-GE-or-NE"><span class="nav-number">2.</span> <span class="nav-text">B. BE,GE or NE</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

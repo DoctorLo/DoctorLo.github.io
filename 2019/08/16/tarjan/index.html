@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要强连通分量常用于缩点，是图论中一个重要的知识点。本文首先介绍了强连通分量的相关定义以及其应用范围，然后将着重介绍两种求强连通分量的算法：Kosaraju算法以及Tarjan算法，它们的时间复杂度都是O(n+m)（n：顶点数，m：边数）。其中Kosaraju算法思想简单，操作方便，易于理解与代码实现，但是性能以及拓展性上比Tarjan略逊一筹；本文将会逐一介绍这两种算法的思想以及实现步骤，最后会">
+<meta name="keywords" content="算法模板,数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="强连通分量">
+<meta property="og:url" content="http://valenshi.top/2019/08/16/tarjan/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要强连通分量常用于缩点，是图论中一个重要的知识点。本文首先介绍了强连通分量的相关定义以及其应用范围，然后将着重介绍两种求强连通分量的算法：Kosaraju算法以及Tarjan算法，它们的时间复杂度都是O(n+m)（n：顶点数，m：边数）。其中Kosaraju算法思想简单，操作方便，易于理解与代码实现，但是性能以及拓展性上比Tarjan略逊一筹；本文将会逐一介绍这两种算法的思想以及实现步骤，最后会">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://valenshi.top/2019/08/16/tarjan/1.png">
+<meta property="og:updated_time" content="2019-08-20T12:42:42.224Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="强连通分量">
+<meta name="twitter:description" content="摘要强连通分量常用于缩点，是图论中一个重要的知识点。本文首先介绍了强连通分量的相关定义以及其应用范围，然后将着重介绍两种求强连通分量的算法：Kosaraju算法以及Tarjan算法，它们的时间复杂度都是O(n+m)（n：顶点数，m：边数）。其中Kosaraju算法思想简单，操作方便，易于理解与代码实现，但是性能以及拓展性上比Tarjan略逊一筹；本文将会逐一介绍这两种算法的思想以及实现步骤，最后会">
+<meta name="twitter:image" content="http://valenshi.top/2019/08/16/tarjan/1.png">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/16/tarjan/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>强连通分量 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/16/tarjan/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">强连通分量
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-16 11:56:44" itemprop="dateCreated datePublished" datetime="2019-08-16T11:56:44+08:00">2019-08-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:42:42" itemprop="dateModified" datetime="2019-08-20T20:42:42+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>强连通分量常用于<strong>缩点</strong>，是图论中一个重要的知识点。本文首先介绍了强连通分量的相关定义以及其应用范围，然后将着重介绍两种求强连通分量的算法：Kosaraju算法以及Tarjan算法，它们的时间复杂度都是O(n+m)（n：顶点数，m：边数）。<br>其中Kosaraju算法思想简单，操作方便，易于理解与代码实现，但是性能以及拓展性上比Tarjan略逊一筹；本文将会逐一介绍这两种算法的思想以及实现步骤，最后会以例题的形式给出代码模板。</p>
+<h4 id="相关定义"><a href="#相关定义" class="headerlink" title="相关定义"></a>相关定义</h4><p>在有向图G中，如果两个顶点u，v间存在一条 u 到 v 的路径且也存在一条 v 到 u 的路径，则称这两个顶点u，v 是强连通的（strongly connected）。如果有向图G的任意两个顶点都强连通，则称G是一个强连通图。有向非强连通图的极大强连通子图，称为强连通分量（strongly connected components）。</p>
+<p><strong>极大强连通子图：</strong> G是一个极大强连通子图，当且仅当G是一个强连通子图且不存在另一个强连通子图G’，使得 G 是 G’ 的真子集。</p>
+<h4 id="强连通分量的应用"><a href="#强连通分量的应用" class="headerlink" title="强连通分量的应用"></a>强连通分量的应用</h4><p>若将有向图中的强连通分量都缩为一个点，则原图会形成一个DAG（有向无环图），如图1所示:<br><img src="/2019/08/16/tarjan/1.png" alt="图1"><br><em>图1：虚线部分构成一个强连通分量（图片来自<a href="https://blog.csdn.net/sinat_40872274/article/details/99344104#commentBox" target="_blank" rel="noopener">ccf的博客</a>）</em></p>
+<p>强连通分量的<strong>常见用途</strong>有两个：</p>
+<ul>
+<li>有向图的缩点。</li>
+<li>解决2-SAT问题。</li>
+</ul>
+<h4 id="Kosaraju-算法"><a href="#Kosaraju-算法" class="headerlink" title="Kosaraju 算法"></a>Kosaraju 算法</h4><p>Kosaraju算法的时间复杂度是O(n+m)，基于两次DFS的有向图强连通子图算法。<br>该算法共分为三步：</p>
+<blockquote>
+<p>第一步，对原有向图G进行DFS，记录节点访问完的顺序d[i] , d[i] 表示第 i 个访问完的节点是d[i]；<br>第二步，选择具有最晚访问完的顶点，对反向图GT 进行DFS，删除能够遍历到的顶点，这些顶点构成的一个强连通分量。<br>第三步，如果还有顶点没有删除，继续第二部，否则算法结束。</p>
+</blockquote>
+<h5 id="代码实现："><a href="#代码实现：" class="headerlink" title="代码实现："></a>代码实现：</h5><p>见附录部分 code-1：Kosaraju算法模板（POJ2186）</p>
+<h4 id="Tarjan算法"><a href="#Tarjan算法" class="headerlink" title="Tarjan算法"></a>Tarjan算法</h4><p>Tarjan算法是 Robert Tarjan 发明的一个算法，其时间复杂度也是O(n+m)，但我们之所以在掌握了Kosaraju算法后仍要学习Tarjan算法的主要原因有以下三点：</p>
+<ul>
+<li>Tarjan算法效率比Kosaraju算法高大概30%，所以Kosaraju可能会被卡常。</li>
+<li>Kosaraju算法利用递归实现，可能会爆栈；而Tarjan则不会（因为根本没递归）。</li>
+<li>Tarjan算法还可以通过拓展解决求割点、割桥以及2-SAT等问题。</li>
+</ul>
+<p>实际上如果出题人有这个想法，那么就不是可能会超时，是一定会超时；不是可能会爆栈，是一定会爆栈，所以还是要掌握该算法的。</p>
+<h5 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h5><p>Tarjan算法是基于对图深度优先搜索（DFS）的算法，每个强连通分量为搜索树中的一棵子树。搜索时，把当前搜索树中未处理的节点加入一个栈，回溯时可以判断栈顶到栈中的节点是否构成一个强连通分量。<br>我们定义DFS过程中遇到的<strong>四种边</strong>：</p>
+<ul>
+<li>树枝边：DFS时经过的边，即DFS搜索树上的边。</li>
+<li>前向边：与DFS方向一致，从某个节点指向其某个子孙的边。</li>
+<li>后向边：与DFS方向相反，从某个节点指向其某个祖先的边。</li>
+<li>横向边：从某个节点指向搜索树中另一子树中的某节点的边。</li>
+</ul>
+<p><strong>定义DFN(u)</strong> 为节点 u 的搜索次序编号（时间戳），Low(u) 为u 或者u 的子树能够回溯到的最早的栈中节点的DFN值。</p>
+<p>根据定义我们可以得出：</p>
+<ul>
+<li>如果(u , v)为树枝边，u 为 v 的父节点，则 Low(u) = min{ Low(u) , Low(v) }。</li>
+<li>如果(u , v)为后向边或指向栈中节点的横叉边，则Low(u) = min{ Low(u) , DFN(v) }。</li>
+</ul>
+<p>当节点u的搜索过程结束后，若DFN(u) = Low(u)，则以u为根的搜索子树上所有还在栈中的节点（即u和栈中在u之后的所有节点）是一个强连通分量，可退栈。通俗的说，若u为强连通分量的根，那么它的子孙中的最高最先应该就是它本身。</p>
+<h5 id="算法的主要过程"><a href="#算法的主要过程" class="headerlink" title="算法的主要过程"></a>算法的主要过程</h5><p><strong>数组的初始化：</strong> 当首次搜索到点 u 时，DFN(u)为节点u的搜索次序编号（时间戳）。<br><strong>堆栈：</strong> 将u压入堆栈。<br><strong>更新Low(u)：</strong> </p>
+<ol>
+<li>如果（u，v）为树枝边（v不在栈中），u为v的父节点，则Low(u) = min{Low(u) , Low(v)}。</li>
+<li>如果（u，v）为后向边或者指向栈中节点的横叉边（v在栈中），则Low(u) = min{ Low(u) DFN(v)}。</li>
+<li>如果u的子树已经全部遍历后Low(u) = DFS(u)，则将u和<strong>栈中在u之后的所有节点</strong> 弹出栈。这些出栈的元素组成一个强连通分量。</li>
+<li>继续搜索（或许会更换搜索的起点，因为整个有向图可能分为多个不连通的部分），直到所有点被遍历。</li>
+</ol>
+<h5 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h5><p>见附录部分code-2：POJ2182（Tarjan算法）</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li>董永建，信息学竞赛一本通提高版，福州：福建教育出版社，2018.6，155-178</li>
+<li>秋叶拓哉，挑战程序设计竞赛第2版，北京：人民邮电出版社，2013.6，320-324</li>
+</ul>
+<h4 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h4><p><strong>code-1：Kosaraju算法模板（POJ2182）</strong><br>求所有“红牛”总数。（红牛即所有牛的偶像）<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*******************************************************************</span></span><br><span class="line"><span class="comment">    最后修改：2019/8/15 Valenshi</span></span><br><span class="line"><span class="comment">    使用说明：</span></span><br><span class="line"><span class="comment">        用数组表示邻接表,分别建立了正图和反图;</span></span><br><span class="line"><span class="comment">        只适用于节点从1~n的题型,切记若干节点编号是0~n-1会死循环!</span></span><br><span class="line"><span class="comment">        主函数：scc(),用于求所有强连通分量,O(N+M),答案存放在kos数组。</span></span><br><span class="line"><span class="comment"> *******************************************************************/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">5e4</span>+<span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot;  <span class="comment">//邻接表存放有向图</span></span><br><span class="line"><span class="keyword">int</span> rhead[N],rver[M],rnex[M],rtot;<span class="comment">//存放反图</span></span><br><span class="line"><span class="keyword">int</span> vis[N],kos[N];<span class="comment">//访问标记;节点所属联通分量标号</span></span><br><span class="line"><span class="keyword">int</span> ts[N],tc;  <span class="comment">//时间戳, dfs访问时的顺序;tc为当前"时间"</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="comment">/* 建立一条从x-&gt;y的有向边 , 同时在反图添加一条从y-&gt;x的有向边*/</span></span><br><span class="line">    ver[++tot] = y,nex[tot] = head[x], head[x] = tot;</span><br><span class="line">    rver[++rtot] = x,rnex[rtot] = rhead[y],rhead[y] = rtot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*给节点x以及它的子孙打上时间戳*/</span></span><br><span class="line">    vis[x] = <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = head[x] ;i ;i = nex[i])&#123;</span><br><span class="line">        <span class="keyword">int</span> y = ver[i];</span><br><span class="line">        <span class="keyword">if</span>(!vis[y]) dfs(y);</span><br><span class="line">    &#125;</span><br><span class="line">    ts[++tc] = x;     <span class="comment">//第tc个回溯的是点x</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rdfs</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">    <span class="comment">/* 找出属于第k个强连通分量的所有点 */</span></span><br><span class="line">    vis[x] = <span class="literal">true</span>;kos[x] = k;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = rhead[x];i ;i = rnex[i])&#123;</span><br><span class="line">        <span class="keyword">int</span> y = rver[i];</span><br><span class="line">        <span class="keyword">if</span>(!vis[y]) rdfs(y,k);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;      <span class="comment">//点的个数,编号为1~n;</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">scc</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">/* 将原图分为若干强连通分量,并返回个数 */</span></span><br><span class="line">    <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);tc = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">        <span class="keyword">if</span>(!vis[i]) dfs(i);</span><br><span class="line">    <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);</span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = tc;i &gt; <span class="number">0</span>;i--) <span class="keyword">if</span>(!vis[ts[i]]) rdfs(ts[i],++k);</span><br><span class="line">    <span class="keyword">return</span> k;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/***********************************</span></span><br><span class="line"><span class="comment">	以下为POJ2186解题代码 </span></span><br><span class="line"><span class="comment"> ***********************************/</span></span><br><span class="line"><span class="keyword">int</span> A[N],B[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> k = scc();		<span class="comment">//备选答案总数 </span></span><br><span class="line">	<span class="keyword">int</span> y = <span class="number">0</span>,sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(kos[i] == k)&#123;</span><br><span class="line">			y = i;sum++;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//检查是否从所有点可达</span></span><br><span class="line">	<span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);</span><br><span class="line">	rdfs(y,<span class="number">0</span>);	<span class="comment">//代码重用</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!vis[i])&#123;</span><br><span class="line">			sum = <span class="number">0</span>;<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>code-2：POJ2182（Tarjan算法模板）</strong><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/***************************************************************</span></span><br><span class="line"><span class="comment">	最后更新：2019/8/16 ValenShi</span></span><br><span class="line"><span class="comment">	使用说明：</span></span><br><span class="line"><span class="comment">		1.记得初始化辅助数组dfn[],co[],head[],</span></span><br><span class="line"><span class="comment">		以及"数组指针" ,top,tot,num,col ;</span></span><br><span class="line"><span class="comment">		2.每个辅助数组具体作用见注释;</span></span><br><span class="line"><span class="comment">		3.节点范围是1~n,若是0~n-1会死循环,可更改head[]初始值解决。 </span></span><br><span class="line"><span class="comment">***************************************************************/</span> </span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="comment">/* 邻接表存有向图 */</span></span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y,nex[tot] = head[x],head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/***************************************** </span></span><br><span class="line"><span class="comment">Tarjan算法及其辅助数组：</span></span><br><span class="line"><span class="comment">	Stack[]为栈,top为栈顶指针;</span></span><br><span class="line"><span class="comment">	dfn[]为节点的时间戳,num为对应的"时间";</span></span><br><span class="line"><span class="comment">	co[]为节点所在的强连通分量的编号,col对应编号; </span></span><br><span class="line"><span class="comment">******************************************/</span> </span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> Stack[N],top;</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],num,co[N],col;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> u)</span></span>&#123;</span><br><span class="line">	dfn[u] = low[u] = ++num;</span><br><span class="line">	Stack[++top] = u;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[u];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> v = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[v])&#123;</span><br><span class="line">			Tarjan(v);</span><br><span class="line">			low[u] = min(low[u],low[v]);</span><br><span class="line">		&#125;<span class="keyword">else</span> <span class="keyword">if</span>(!co[v]) low[u] = min(low[u],dfn[v]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(low[u] == dfn[u])&#123;</span><br><span class="line">		co[u] = ++col;</span><br><span class="line">		<span class="keyword">while</span>(Stack[top] != u)&#123;</span><br><span class="line">			co[Stack[top]] = col;</span><br><span class="line">			top--;</span><br><span class="line">		&#125;</span><br><span class="line">		top--;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> chudu[N];<span class="comment">/*用来记录每个强连通分量的出度 */</span> </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	num = col = top = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//	memset(dfn,0,sizeof dfn);</span></span><br><span class="line"><span class="comment">//	memset(co,0,sizeof co);</span></span><br><span class="line"><span class="comment">//	memset(chudu,0,sizeof chudu); </span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i);</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0</span>,tcnt = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">/*ans存放答案,tcnt表示出度为0的强连通分量的个数*/</span> </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = head[i];j ;j = nex[j])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[j];</span><br><span class="line">			<span class="keyword">if</span>(co[i] != co[y]) chudu[co[i]]++;</span><br><span class="line">			<span class="comment">/*i所在的强连通分量的出度+1 */</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> tcol = <span class="number">1</span>;<span class="comment">/*tcol为出度为0的强连通分量的编号*/</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= col;i++) <span class="keyword">if</span>(!chudu[i]) tcnt++,tcol = i;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="keyword">if</span>(co[i] == tcol) ans++;</span><br><span class="line">	<span class="keyword">if</span>(tcnt &gt; <span class="number">1</span>) <span class="built_in">puts</span>(<span class="string">"0"</span>);</span><br><span class="line">	<span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,u,v;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;u,&amp;v);</span><br><span class="line">		addEdge(u,v);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/12/chafen/" rel="next" title="差分约束系统">
+                  <i class="fa fa-chevron-left"></i> 差分约束系统
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/16/bigpow/" rel="prev" title="求a的大幂对P取模">
+                  求a的大幂对P取模 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相关定义"><span class="nav-number">2.</span> <span class="nav-text">相关定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#强连通分量的应用"><span class="nav-number">3.</span> <span class="nav-text">强连通分量的应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Kosaraju-算法"><span class="nav-number">4.</span> <span class="nav-text">Kosaraju 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#代码实现："><span class="nav-number">4.1.</span> <span class="nav-text">代码实现：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Tarjan算法"><span class="nav-number">5.</span> <span class="nav-text">Tarjan算法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本概念"><span class="nav-number">5.1.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#算法的主要过程"><span class="nav-number">5.2.</span> <span class="nav-text">算法的主要过程</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代码实现"><span class="nav-number">5.3.</span> <span class="nav-text">代码实现</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#附录"><span class="nav-number">7.</span> <span class="nav-text">附录</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

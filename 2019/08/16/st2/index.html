@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要我们知道一维的st表在经过预处理后可以在O(1)时间内查询任意区间的极值，虽然其是离线算法，但胜在代码短小易写。而在二维RMQ（区间最值查询）问题中，我们依然可以采用st算法解决问题，只不过我们需要从一维拓展到二维，当然适用范围依然是离线。二维st表仍然是用倍增思想，如果理解了一维的st表，那么对于二维的也不难理解。 问题描述给定一个n* n的矩阵以及一个整数b和k，共有k次询问，每次询问给出">
+<meta name="keywords" content="算法模板,数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二维st表">
+<meta property="og:url" content="http://valenshi.top/2019/08/16/st2/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要我们知道一维的st表在经过预处理后可以在O(1)时间内查询任意区间的极值，虽然其是离线算法，但胜在代码短小易写。而在二维RMQ（区间最值查询）问题中，我们依然可以采用st算法解决问题，只不过我们需要从一维拓展到二维，当然适用范围依然是离线。二维st表仍然是用倍增思想，如果理解了一维的st表，那么对于二维的也不难理解。 问题描述给定一个n* n的矩阵以及一个整数b和k，共有k次询问，每次询问给出">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://valenshi.top/2019/08/16/st2/1.png">
+<meta property="og:image" content="http://valenshi.top/2019/08/16/st2/2.png">
+<meta property="og:updated_time" content="2019-08-20T12:43:05.972Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="二维st表">
+<meta name="twitter:description" content="摘要我们知道一维的st表在经过预处理后可以在O(1)时间内查询任意区间的极值，虽然其是离线算法，但胜在代码短小易写。而在二维RMQ（区间最值查询）问题中，我们依然可以采用st算法解决问题，只不过我们需要从一维拓展到二维，当然适用范围依然是离线。二维st表仍然是用倍增思想，如果理解了一维的st表，那么对于二维的也不难理解。 问题描述给定一个n* n的矩阵以及一个整数b和k，共有k次询问，每次询问给出">
+<meta name="twitter:image" content="http://valenshi.top/2019/08/16/st2/1.png">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/16/st2/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>二维st表 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/16/st2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">二维st表
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-16 21:30:10" itemprop="dateCreated datePublished" datetime="2019-08-16T21:30:10+08:00">2019-08-16</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:43:05" itemprop="dateModified" datetime="2019-08-20T20:43:05+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>我们知道一维的st表在经过预处理后可以在O(1)时间内查询任意区间的极值，虽然其是离线算法，但胜在代码短小易写。而在二维RMQ（区间最值查询）问题中，我们依然可以采用st算法解决问题，只不过我们需要从一维拓展到二维，当然适用范围依然是离线。二维st表仍然是用倍增思想，如果理解了一维的st表，那么对于二维的也不难理解。</p>
+<h4 id="问题描述"><a href="#问题描述" class="headerlink" title="问题描述"></a>问题描述</h4><p>给定一个n* n的矩阵以及一个整数b和k，共有k次询问，每次询问给出边长为b的子矩阵的左上角的行和列(r,c)，请回答该子矩阵内的最大值和最小值的差是多少。</p>
+<h4 id="算法思路"><a href="#算法思路" class="headerlink" title="算法思路"></a>算法思路</h4><p><strong>变量定义：</strong><br><code>st[r][c][k]</code> 存放以(r , c)为左上角的边长为$2^k$个元素的矩阵的最大值。<br><code>a[n][n]</code> 用来存放矩阵中的元素。</p>
+<p><strong>查询操作：</strong><br>假设我们的st表已经更新完毕，此时<code>st[r][c][k]</code> 中存放的是以(r , c)为左上角的边长为$2^k$ 的矩阵内的最大值，那么对于一个查询(a , b , c) 即查询以(a , b)为左上角，边长为 c 的矩阵内的最大值该如何处理呢？<br>显然和一维一样，由于我们的st表中存放的区间长度是2的次方项，因此如果边长并不恰好是2的次方项，那么就无法通过一次访问st表求得，需要通过几个重叠区间得出结果。在二维RMQ中，就体现为将一个大矩阵查询分为4个小矩阵查询。<br>下面我们具体来讲一下如何划分查询区间。假设我们要查询的是以（a，b）为左上角，边长为 c 的矩阵内的最大值，那么假设 $k = log_2^c$ 向下取整，那么显然<code>st[a][b][k]</code>是一个如下图(a)中显示的一个小矩阵。</p>
+<p><img src="/2019/08/16/st2/1.png" alt="1"></p>
+<p>那么显而易见，<code>st[a][b+c-(1&lt;&lt;k)+1][k]</code>正如（b）中的蓝色矩形一样覆盖了以右上角为顶点的矩阵。同理，我们共需要四个矩形来覆盖整个大矩形，如（c）所示。因此对于任意边长的正方形，我们都可以计算出其覆盖面积的最大值。因为求极值操作是允许区间重叠的( [1 , 10] 的最大值可以由[1 , 6] 的最大值和[2 , 10]的最大值得出 )，因此上述划分方法虽有区间重叠，但对最终答案没有影响（求和则不行）。<br>总结起来，若设最终要求的答案为ans，则：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">令t1 = st[a][b][c];</span><br><span class="line">令t2 = st[a][b+c-(1&lt;&lt;k)+1][c];</span><br><span class="line">令t3 = st[a+c-(1&lt;&lt;k)+1][b][c];</span><br><span class="line">令t4 = st[a+c-(1&lt;&lt;k)+1][b+c-(1&lt;&lt;k)+1][c];</span><br><span class="line">ans = max&#123;t1 , t2 , t3 , t4&#125;；</span><br></pre></td></tr></table></figure></p>
+<p>因此我们得证了，利用上述定义的st表，确实可以在常数时间内求出目标矩阵的最大值。</p>
+<p><strong>更新st表（预处理）</strong><br>我们在一开始就提到过，st表是离线算法， 即不支持修改操作，因此以此预处理之后便只能进行查询。预处理时间复杂度为$O(N^2log_2N)$。预处理用到了动态规划的思想。<br>更新也是同样的道理，更新一个大矩形，需要用到4个小矩形。状态转移方程如下：</p>
+<p><code>st[i][j][k] = Max( st[i][j][k-1] , st[i+(1&lt;&lt;k-1)][j][k-1] , st[i][j+(1&lt;&lt;k-1)][k-1] , st[i+(1&lt;&lt;k-1)][j+(1&lt;&lt;k-1)][k-1]);</code></p>
+<p>为什么这个式子成立呢？如果从式子上看，$2^{k-1} + 2^{k-1} = 2^k$，因此俩个小区间可以更新一个大区间，拓展到二维上呢，就是4个小矩阵更新一个大矩阵。如果用图来描述，就如（d）所示，四个小矩形构成一个大矩形，而大矩形的边长是小矩形的2倍。于是我们就可以通过四个小矩阵的值来更新大矩阵的值。<br><img src="/2019/08/16/st2/2.png" alt="2"></p>
+<h4 id="例题-HAOI2007理想的正方形"><a href="#例题-HAOI2007理想的正方形" class="headerlink" title="例题 HAOI2007理想的正方形"></a>例题 <a href="https://www.luogu.org/problem/P2216" target="_blank" rel="noopener">HAOI2007理想的正方形</a></h4><p><strong>解题思路：</strong><br>本题就是一个二维RMQ问题的裸题，和上述模型不同的是，其是一个长a宽b的矩形，而非正方形。不管是矩形还是正方形，我们的更新和查询都是划分为4个子矩阵来更新或查询，因此只需对代码稍作改变即可，基本没太大变化，预处理都是$O(N^2logN)$，查询也都是O(1)。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1010</span>;</span><br><span class="line"><span class="keyword">int</span> a[N][N],n,m,len,Log[N];</span><br><span class="line"><span class="keyword">int</span> st[<span class="number">3</span>][N][N][<span class="number">15</span>];<span class="comment">//0最小，1最大值 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">max</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c,<span class="keyword">int</span> d)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> mx = a;<span class="keyword">if</span>(mx &lt; b) mx = b;<span class="keyword">if</span>(mx &lt; c) mx = c;<span class="keyword">if</span>(mx &lt; d) mx = d;</span><br><span class="line">	<span class="keyword">return</span> mx;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">min</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b,<span class="keyword">int</span> c,<span class="keyword">int</span> d)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> mi = a;<span class="keyword">if</span>(mi &gt; b) mi = b;<span class="keyword">if</span>(mi &gt; c) mi = c;<span class="keyword">if</span>(mi &gt; d) mi = d;</span><br><span class="line">	<span class="keyword">return</span> mi;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt; N;i++) Log[i] = Log[i/<span class="number">2</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= m;j++) </span><br><span class="line">		st[<span class="number">0</span>][i][j][<span class="number">0</span>] = st[<span class="number">1</span>][i][j][<span class="number">0</span>] = a[i][j];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">1</span>;k &lt;= <span class="number">12</span>;k++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i + (<span class="number">1</span>&lt;&lt;k)<span class="number">-1</span> &lt;= n;i++)&#123;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j + (<span class="number">1</span>&lt;&lt;k)<span class="number">-1</span> &lt;= m;j++)&#123;</span><br><span class="line">				<span class="keyword">int</span> t1 = st[<span class="number">0</span>][i][j][k<span class="number">-1</span>];</span><br><span class="line">				<span class="keyword">int</span> t2 = st[<span class="number">0</span>][i+(<span class="number">1</span>&lt;&lt;(k<span class="number">-1</span>))][j][k<span class="number">-1</span>];</span><br><span class="line">				<span class="keyword">int</span> t3 = st[<span class="number">0</span>][i][j+(<span class="number">1</span>&lt;&lt;(k<span class="number">-1</span>))][k<span class="number">-1</span>];</span><br><span class="line">				<span class="keyword">int</span> t4 = st[<span class="number">0</span>][i+(<span class="number">1</span>&lt;&lt;k<span class="number">-1</span>)][j+(<span class="number">1</span>&lt;&lt;k<span class="number">-1</span>)][k<span class="number">-1</span>];</span><br><span class="line">				st[<span class="number">0</span>][i][j][k] = min(t1,t2,t3,t4);</span><br><span class="line">				t1 = st[<span class="number">1</span>][i][j][k<span class="number">-1</span>];</span><br><span class="line">				t2 = st[<span class="number">1</span>][i+(<span class="number">1</span>&lt;&lt;(k<span class="number">-1</span>))][j][k<span class="number">-1</span>];</span><br><span class="line">				t3 = st[<span class="number">1</span>][i][j+(<span class="number">1</span>&lt;&lt;(k<span class="number">-1</span>))][k<span class="number">-1</span>];</span><br><span class="line">				t4 = st[<span class="number">1</span>][i+(<span class="number">1</span>&lt;&lt;k<span class="number">-1</span>)][j+(<span class="number">1</span>&lt;&lt;k<span class="number">-1</span>)][k<span class="number">-1</span>];</span><br><span class="line">				st[<span class="number">1</span>][i][j][k] = max(t1,t2,t3,t4);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> r,<span class="keyword">int</span> c,<span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> k = Log[len];</span><br><span class="line">	<span class="keyword">int</span> t1 = st[<span class="number">0</span>][r][c][k];</span><br><span class="line">	<span class="keyword">int</span> t2 = st[<span class="number">0</span>][r+len-(<span class="number">1</span>&lt;&lt;k)][c][k];</span><br><span class="line">	<span class="keyword">int</span> t3 = st[<span class="number">0</span>][r][c+len-(<span class="number">1</span>&lt;&lt;k)][k];</span><br><span class="line">	<span class="keyword">int</span> t4 = st[<span class="number">0</span>][r+len-(<span class="number">1</span>&lt;&lt;k)][c+len-(<span class="number">1</span>&lt;&lt;k)][k];</span><br><span class="line">	<span class="keyword">int</span> mi = min(t1,t2,t3,t4);</span><br><span class="line">	t1 = st[<span class="number">1</span>][r][c][k];</span><br><span class="line">	t2 = st[<span class="number">1</span>][r+len-(<span class="number">1</span>&lt;&lt;k)][c][k];</span><br><span class="line">	t3 = st[<span class="number">1</span>][r][c+len-(<span class="number">1</span>&lt;&lt;k)][k];</span><br><span class="line">	t4 = st[<span class="number">1</span>][r+len-(<span class="number">1</span>&lt;&lt;k)][c+len-(<span class="number">1</span>&lt;&lt;k)][k];</span><br><span class="line">	<span class="keyword">int</span> mx = max(t1,t2,t3,t4);</span><br><span class="line">	<span class="comment">//printf("%d %d\n",mx,mi);</span></span><br><span class="line">	<span class="keyword">return</span> mx - mi;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;n,&amp;m,&amp;len);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= m;j++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;a[i][j]);</span><br><span class="line">	init();</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n-len+<span class="number">1</span>;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= m-len+<span class="number">1</span>;j++)&#123;</span><br><span class="line">			<span class="keyword">int</span> tmp = ask(i,j,len);</span><br><span class="line">			ans = ans &lt; tmp?ans:tmp;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="结束语"><a href="#结束语" class="headerlink" title="结束语"></a>结束语</h4><p>大家可以发现我们的二维st表建立在正方形矩阵查询的基础上的，因此st表仅三个维度，即<code>st[r][c][k]</code> 代表以(r , c) 为左上角的边长为$2^k$的矩阵的极值；但如果所给矩阵以及所求矩阵并不是正方形而是普通矩形，那就要增加一个维度，即<code>st[r][c][k1][k2]</code> 表示以（r，c）为左上角，长为$2^{k1}$高为$2^{k2}$的矩阵的极值，其更新方法与本文所介绍的类似，都是通过4个子矩阵来更新，查询也是通过4个子矩阵来查询最终答案。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/16/bigpow/" rel="next" title="求a的大幂对P取模">
+                  <i class="fa fa-chevron-left"></i> 求a的大幂对P取模
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/16/bit-cal/" rel="prev" title="位运算">
+                  位运算 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#问题描述"><span class="nav-number">2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法思路"><span class="nav-number">3.</span> <span class="nav-text">算法思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例题-HAOI2007理想的正方形"><span class="nav-number">4.</span> <span class="nav-text">例题 HAOI2007理想的正方形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#结束语"><span class="nav-number">5.</span> <span class="nav-text">结束语</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

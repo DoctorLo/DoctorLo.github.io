@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要笛卡尔树（Cartesian Tree）是一种树形数据结构。由于其具有二叉搜索树和堆的性质，如果以一棵笛卡尔树对应一段区间的话，那么整段区间的极值就是根节点A，同时又满足A的左子树对应极值左边区间，右子树对应右边区间。这样递归定义，就会将一个区间划分若干段。而笛卡尔树之所以具有上述性质我们会在接下来讲解。本文首先介绍笛卡尔树的概念以及它具有的性质，然后介绍如何来构造一棵笛卡尔树，当然，对笛卡尔">
+<meta name="keywords" content="算法模板,数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="笛卡尔树">
+<meta property="og:url" content="http://valenshi.top/2019/08/11/cartesin/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要笛卡尔树（Cartesian Tree）是一种树形数据结构。由于其具有二叉搜索树和堆的性质，如果以一棵笛卡尔树对应一段区间的话，那么整段区间的极值就是根节点A，同时又满足A的左子树对应极值左边区间，右子树对应右边区间。这样递归定义，就会将一个区间划分若干段。而笛卡尔树之所以具有上述性质我们会在接下来讲解。本文首先介绍笛卡尔树的概念以及它具有的性质，然后介绍如何来构造一棵笛卡尔树，当然，对笛卡尔">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-20T12:39:24.602Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="笛卡尔树">
+<meta name="twitter:description" content="摘要笛卡尔树（Cartesian Tree）是一种树形数据结构。由于其具有二叉搜索树和堆的性质，如果以一棵笛卡尔树对应一段区间的话，那么整段区间的极值就是根节点A，同时又满足A的左子树对应极值左边区间，右子树对应右边区间。这样递归定义，就会将一个区间划分若干段。而笛卡尔树之所以具有上述性质我们会在接下来讲解。本文首先介绍笛卡尔树的概念以及它具有的性质，然后介绍如何来构造一棵笛卡尔树，当然，对笛卡尔">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/11/cartesin/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>笛卡尔树 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/11/cartesin/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">笛卡尔树
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-11 12:54:47" itemprop="dateCreated datePublished" datetime="2019-08-11T12:54:47+08:00">2019-08-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:39:24" itemprop="dateModified" datetime="2019-08-20T20:39:24+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>笛卡尔树（Cartesian Tree）是一种树形数据结构。由于其具有二叉搜索树和堆的性质，如果以一棵笛卡尔树对应一段区间的话，那么整段区间的极值就是根节点A，同时又满足A的左子树对应极值左边区间，右子树对应右边区间。这样递归定义，就会将一个区间划分若干段。而笛卡尔树之所以具有上述性质我们会在接下来讲解。<br>本文首先介绍笛卡尔树的概念以及它具有的性质，然后介绍如何来构造一棵笛卡尔树，当然，对笛卡尔树结构的分析也是必不可少的。</p>
+<h4 id="笛卡尔树的概念"><a href="#笛卡尔树的概念" class="headerlink" title="笛卡尔树的概念"></a>笛卡尔树的概念</h4><p>笛卡尔树（Cartesian Tree）是一种同时满足堆性质和二叉搜索树性质的一棵二叉树。因此笛卡尔树的树根对应着该树的极值（堆性质），并且对其中序遍历得到的是原序列一段连续的区间（二叉搜索树性质）。<br>我们假设利用一个整数序列A：a1~an 建立笛卡尔树，那么树上每个节点有2个键值，idx（下标）和 val（值）。我们使树上每个节点的idx满足二叉搜索树性质，而val满足堆性质，于是笛卡尔树就建成了。</p>
+<h4 id="笛卡尔树具有的性质"><a href="#笛卡尔树具有的性质" class="headerlink" title="笛卡尔树具有的性质"></a>笛卡尔树具有的性质</h4><p>如果我们以A序列建立一棵笛卡尔树的话，显然笛卡尔树具有如下性质：</p>
+<ul>
+<li>父亲节点的键值val均小于（或大于）其左右子节点的键值。</li>
+<li>节点的左儿子idx比其小，右儿子的idx比其大。中序遍历即为原序列A。</li>
+</ul>
+<p>上述两条性质分别是堆和二叉搜索树的性质，而我们通过对两个键值进行不同约束，使得这两种数据结构结合在了一起，使得我们可以很轻松的求出一段区间的极值。</p>
+<p>类似笛卡尔树的数据结构有树堆（Treap），它也是将二叉搜索树和堆结合在一起，只不过其是利用堆来维持搜索树不至于退化严重，并没有利用其来求极值。因此，我们可以对比理解。</p>
+<h4 id="如何建立笛卡尔树"><a href="#如何建立笛卡尔树" class="headerlink" title="如何建立笛卡尔树"></a>如何建立笛卡尔树</h4><p>对于给定序列A，建立一棵笛卡尔树的时间复杂度为O(N)。首先，如果类似于Treap中插入操作来建立一棵笛卡尔树的话，时间复杂度是O(N* log N)，但是由于给定序列的下标idx是递增的，因此我们可以利用单调栈在线性时间内建树。</p>
+<p>首先考虑对于一棵已经建好的子树$T_i$，对于新来的节点x = Node(idx = i+1，val = value)，其一定是要沿着当前节点的根一路向右走，直至找到合适的位置。假设我们把节点x插入到最右边，那么首先可知在idx维度是合法的，但是其val并不一定比起父亲节点要大（假设这颗笛卡尔树是小根堆），因此如果x.val 小于其父亲的val，那么就需要交换位置，同理，就像在Treap中一样一直交换到合适的位置。</p>
+<p>而如果我们栈S中存放的是当前最右边子树（实际上就是一个节点）的根节点y，那么如果x位置合法，则将x压入S，作为y的右子树，此时x成为了新的根节点；如果x不合法，则将栈顶元素弹出，再与下一个节点比较，直至找到合法位置再将x压入，而弹出的节点则应该放在节点x的左边。（如果弹出不止一个节点，则应该作为x节点的左子树）</p>
+<p>而每个点进栈和出栈至多一次，因此时间复杂度是O(N)。</p>
+<p><strong>建立一棵保存区间最小值的笛卡尔树具体步骤如下：</strong></p>
+<ol>
+<li>将待插入节点 x 与当前栈顶元素比较，若其val大于当前栈顶元素，则作为栈顶元素的右儿子，并入栈，插入下一个元素，否则转2。</li>
+<li>若待插入节点 x 的 val 小于当前栈顶元素，则将栈顶元素弹出，不断重复直至栈顶元素的 val 小于节点 x 的val，此时最后一个弹出的栈顶元素作为节点 x 的左儿子。</li>
+<li>当所有节点插入完毕后，栈底节点则为这颗笛卡尔树的根节点。</li>
+</ol>
+<p>当然上述判断栈是否为空的步骤并未加上，实际书写代码时应该注意这点。</p>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4><p>我们以HDU1506为例。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> a[N],tot = <span class="number">0</span>,n;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line">ll ans;</span><br><span class="line"><span class="function">ll <span class="title">max</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a &lt; b?b:a;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> idx,val;	<span class="comment">//下标、权值 </span></span><br><span class="line">	<span class="keyword">int</span> l,r,par;	<span class="comment">//左儿子、右儿子、父亲节点的编号 </span></span><br><span class="line">	Node()&#123;&#125;</span><br><span class="line">	Node(<span class="keyword">int</span> idx,<span class="keyword">int</span> val)</span><br><span class="line">	:idx(idx),val(val)&#123;</span><br><span class="line">		l = r = par = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;t[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">BuildTree</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> k = i<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">while</span>(t[k].val &gt; t[i].val) k = t[k].par;</span><br><span class="line">		t[i].l = t[k].r;<span class="comment">//k的右子树作为i的左子树 </span></span><br><span class="line">		t[k].r = i;		<span class="comment">//i作为k的右子树 </span></span><br><span class="line">		t[i].par = k;	<span class="comment">//i的父亲是k </span></span><br><span class="line">		t[t[i].l].par = i;<span class="comment">//i的左子树的父亲是i </span></span><br><span class="line">	<span class="comment">//	printf("%d %d\n",i,k);</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> t[<span class="number">0</span>].r;<span class="comment">//最终树的根节点的编号 </span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="comment">//printf("%d\n",rt);</span></span><br><span class="line">	<span class="keyword">if</span>(rt == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>; </span><br><span class="line">	ll sz = <span class="number">1</span>;</span><br><span class="line">	sz += dfs(t[rt].l);</span><br><span class="line">	sz += dfs(t[rt].r);</span><br><span class="line">	ans = max(ans,sz*(t[rt].val));</span><br><span class="line">	<span class="keyword">return</span> sz;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)</span><br><span class="line">		t[i] = Node(i,a[i]);</span><br><span class="line">	tot = ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> rt = BuildTree();</span><br><span class="line">	dfs(rt);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n) &amp;&amp; n)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,a+i);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/11/BIT2/" rel="next" title="树状数组区间修改+区间查询">
+                  <i class="fa fa-chevron-left"></i> 树状数组区间修改+区间查询
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/11/IDA/" rel="prev" title="A* 与 IDA*">
+                  A* 与 IDA* <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#笛卡尔树的概念"><span class="nav-number">2.</span> <span class="nav-text">笛卡尔树的概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#笛卡尔树具有的性质"><span class="nav-number">3.</span> <span class="nav-text">笛卡尔树具有的性质</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何建立笛卡尔树"><span class="nav-number">4.</span> <span class="nav-text">如何建立笛卡尔树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码示例"><span class="nav-number">5.</span> <span class="nav-text">代码示例</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="划分树笔记问题模型： 对于给定的n个元素的序列A，有m次询问，每次询问给L ，R，K，请求出位于[L,R]内第K大的数。  解题思路：朴素算法：用快速排序。由于我们有m次询问，而每次询问区间左右端点是不同的，故如果对每个询问进行排序，我们在得到答案后还需要将序列恢复原状。按照快速排序的效率O(nlgn)，m次询问就是O(mnlgn)。如果m和n都很大，效率就低的可怜。划分树：由于划分树是基于线段树">
+<meta name="keywords" content="算法模板,数据结构与算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="划分树模板">
+<meta property="og:url" content="http://valenshi.top/2019/08/11/hfs/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="划分树笔记问题模型： 对于给定的n个元素的序列A，有m次询问，每次询问给L ，R，K，请求出位于[L,R]内第K大的数。  解题思路：朴素算法：用快速排序。由于我们有m次询问，而每次询问区间左右端点是不同的，故如果对每个询问进行排序，我们在得到答案后还需要将序列恢复原状。按照快速排序的效率O(nlgn)，m次询问就是O(mnlgn)。如果m和n都很大，效率就低的可怜。划分树：由于划分树是基于线段树">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-20T12:40:19.117Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="划分树模板">
+<meta name="twitter:description" content="划分树笔记问题模型： 对于给定的n个元素的序列A，有m次询问，每次询问给L ，R，K，请求出位于[L,R]内第K大的数。  解题思路：朴素算法：用快速排序。由于我们有m次询问，而每次询问区间左右端点是不同的，故如果对每个询问进行排序，我们在得到答案后还需要将序列恢复原状。按照快速排序的效率O(nlgn)，m次询问就是O(mnlgn)。如果m和n都很大，效率就低的可怜。划分树：由于划分树是基于线段树">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/11/hfs/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>划分树模板 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/11/hfs/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">划分树模板
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-11 13:00:18" itemprop="dateCreated datePublished" datetime="2019-08-11T13:00:18+08:00">2019-08-11</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:40:19" itemprop="dateModified" datetime="2019-08-20T20:40:19+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="划分树笔记"><a href="#划分树笔记" class="headerlink" title="划分树笔记"></a>划分树笔记</h3><h4 id="问题模型："><a href="#问题模型：" class="headerlink" title="问题模型："></a>问题模型：</h4><blockquote>
+<p>对于给定的n个元素的序列A，有m次询问，每次询问给L ，R，K，请求出位于[L,R]内第K大的数。</p>
+</blockquote>
+<h4 id="解题思路："><a href="#解题思路：" class="headerlink" title="解题思路："></a>解题思路：</h4><p><strong>朴素算法：</strong><br>用快速排序。由于我们有m次询问，而每次询问区间左右端点是不同的，故如果对每个询问进行排序，我们在得到答案后还需要将序列恢复原状。按照快速排序的效率O(nlgn)，m次询问就是O(mnlgn)。如果m和n都很大，效率就低的可怜。<br><strong>划分树：</strong><br>由于划分树是基于线段树的一种数据结构，所以先回忆一下线段树。线段树是将一个区间划分成若干单元区间，并用二叉树结构储存，因而可以快速修改和查询。划分树是对一个序列进行划分，每个序列有两个子序列，左子序列中的元素不大于右子序列所有元素。<br>如果我们用一个数组tree[25][MAXN]来存放每层对应位置的元素；创建toLeft[25][MAXN]，其中toLeft[dep][i]表示第dep层第1~i个元素有多少个进入左子序列。假设我们原始序列区间为[L,R]（初始时是[1,n]），而我们要找到[l,r]中第k大的数; <strong>设cnt = toLeft[r] - toLeft[l-1]，那么说明[l,r]区间内前cnt小的数都在左子序列，所以我们下一步就可以根据k和cnt的大小关系选择走左子序列或右子序列，直至找到该元素。</strong> </p>
+<h4 id="建树："><a href="#建树：" class="headerlink" title="建树："></a>建树：</h4><p><strong>建树思路：</strong><br>建树过程很简单，和线段树类似，将一个大区间划分成若干单位区间，这里单位区间是只有一个元素时。加上我们之前说了，划分树的 左子区间所有元素 小于 右区间的元素，而为了树的平衡（平衡才是效率的保证！），所以我们可以取一个<strong>中位数</strong>，将当前区间中所有小于中位数的放在左子序列，反之放在右子序列。如此反复二分递归直至当前区间只有一个元素终止。<br>之前我们开数组时，只开了25层，即tree[25][MAXN]，因为如果我们的树构建的足够好（左右子树元素个数相近），那么1e5规模下树顶多20层。（这里我将树的术语和序列、区间混用，因为我们是用数组模拟建树，所以本质上没什么不同，重要的是逻辑结构而不是物理结构）<br><strong>中位数不唯一：</strong><br>我们说了左右子树元素个数相近的树才是最够好的树，因为这样树的深度最小，而我们查询操作和树的深度成正比。如果中位数唯一，那么很显然左右子区间元素个数最多相差1；如果不唯一，根据我们的定义，左子区间放小于中位数的数，这样可能造成左右子区间元素个数相差过大（考虑1，2，2，2，2，2，2，2，3），所以我们需要一个策略来在这种情况下保证数仍然平衡。<br>想要树平衡，只需让左右子树元素个数相近就行了，假设当前区间有N个元素，那么就要分给左子区间N/2个，剩下的分给右区间。所以我们设same = N/2，如果我们将当前区间所有小于中位数的元素都分给了左子区间，但是same仍不为0，那么我们就要再分same个中位数给左子区间，然后再将剩下的数分给右子区间。如此一来左子区间元素个数为same，右子区间也为N-same，最大相差1。</p>
+<h4 id="查询："><a href="#查询：" class="headerlink" title="查询："></a>查询：</h4><p>对于查询，我们需要知道6个信息：当前区间的左右端点[L,R]，需要查询的区间[l,r]，当前区间所在的层数dep，以及k。<strong>我们想知道在区间[L,R]内的小区间[l,r]内第k大的数是谁。</strong><br>设cnt = toLeft[dep][r] - toLeft[dep][l-1]，那么说明[l,r]区间内前cnt小的数都在左子序列，所以我们下一步就可以根据k和cnt的大小关系选择走左子序列或右子序列，直至找到该元素。具体实现时，我们还需要考虑L和R如何变化，以及子区间内l和r以及k如何变化（即如何缩小可行区间），详情请参照代码理解。</p>
+<h4 id="代码模板："><a href="#代码模板：" class="headerlink" title="代码模板："></a>代码模板：</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	划分树模板</span></span><br><span class="line"><span class="comment">	创建于：2019/4/10</span></span><br><span class="line"><span class="comment">	最后更新：2019/4/10 </span></span><br><span class="line"><span class="comment">*/</span> </span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> MAXN = <span class="number">100100</span>;</span><br><span class="line"><span class="keyword">int</span> tree[<span class="number">20</span>][MAXN];<span class="comment">//表示每层每个位置的值 </span></span><br><span class="line"><span class="keyword">int</span> toLeft[<span class="number">20</span>][MAXN]; <span class="comment">//已经排好序的数 </span></span><br><span class="line"><span class="comment">//toLeft[dep][i]为dep层[1,i]有几个节点分到左子区间 </span></span><br><span class="line"><span class="keyword">int</span> sorted[MAXN];</span><br><span class="line"><span class="comment">//当前序列的左右端点、层数 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">build</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> dep)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l == r) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">int</span> mid = (l+r)/<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span> same = mid - l + <span class="number">1</span>;<span class="comment">//用于处理多个中位数相等 </span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = l;i &lt;= r;i++) </span><br><span class="line">		<span class="keyword">if</span>(tree[dep][i]  &lt; sorted[mid]) same--;</span><br><span class="line">	<span class="keyword">int</span> lpos = l;</span><br><span class="line">	<span class="keyword">int</span> rpos = mid+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = l;i &lt;= r;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(tree[dep][i] &lt; sorted[mid]) tree[dep+<span class="number">1</span>][lpos++] = tree[dep][i];</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(tree[dep][i] == sorted[mid] &amp;&amp; same &gt; <span class="number">0</span>)&#123;</span><br><span class="line">			tree[dep+<span class="number">1</span>][lpos++] = tree[dep][i];</span><br><span class="line">			same--;</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			tree[dep+<span class="number">1</span>][rpos++] = tree[dep][i];</span><br><span class="line">		&#125;</span><br><span class="line">		toLeft[dep][i] = toLeft[dep][l<span class="number">-1</span>] + lpos - l;</span><br><span class="line">	&#125;</span><br><span class="line">	build(l,mid,dep+<span class="number">1</span>);</span><br><span class="line">	build(mid+<span class="number">1</span>,r,dep+<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//查询区间第K大的数，[L,R]是大区间，[l,r]是要查询的小区间 </span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> L,<span class="keyword">int</span> R,<span class="keyword">int</span> l,<span class="keyword">int</span> r,<span class="keyword">int</span> dep,<span class="keyword">int</span> k)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l == r) <span class="keyword">return</span> tree[dep][l];</span><br><span class="line">	<span class="keyword">int</span> mid = (L+R)/<span class="number">2</span>;</span><br><span class="line">	<span class="keyword">int</span> cnt = toLeft[dep][r] - toLeft[dep][l<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">if</span>(cnt &gt;= k)&#123;</span><br><span class="line">		<span class="keyword">int</span> newl = L + toLeft[dep][l<span class="number">-1</span>] - toLeft[dep][L<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">int</span> newr = newl + cnt - <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">return</span> query(L,mid,newl,newr,dep+<span class="number">1</span>,k);</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">int</span> newr = r + toLeft[dep][R] - toLeft[dep][r];</span><br><span class="line">		<span class="keyword">int</span> newl = newr - (r-l-cnt);</span><br><span class="line">		<span class="keyword">return</span> query(mid+<span class="number">1</span>,R,newl,newr,dep+<span class="number">1</span>,k-cnt);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n,m;<span class="comment">//n个元素，m次询问 </span></span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;tree[<span class="number">0</span>][i]);</span><br><span class="line">		sorted[i] = tree[<span class="number">0</span>][i];</span><br><span class="line">	&#125; </span><br><span class="line">	sort(sorted+<span class="number">1</span>,sorted+n+<span class="number">1</span>);</span><br><span class="line">	build(<span class="number">1</span>,n,<span class="number">0</span>);	<span class="comment">//左闭右闭 </span></span><br><span class="line">	<span class="keyword">int</span> s,t,k;</span><br><span class="line">	<span class="keyword">while</span>(m--)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;s,&amp;t,&amp;k);</span><br><span class="line">		<span class="comment">//在1~n位置中找到s~t位置内第k大的数 </span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,query(<span class="number">1</span>,n,s,t,<span class="number">0</span>,k));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/11/cdq/" rel="next" title="cdq分治">
+                  <i class="fa fa-chevron-left"></i> cdq分治
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/11/pollard-rho/" rel="prev" title="Pollard_rho算法">
+                  Pollard_rho算法 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#划分树笔记"><span class="nav-number">1.</span> <span class="nav-text">划分树笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#问题模型："><span class="nav-number">1.1.</span> <span class="nav-text">问题模型：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解题思路："><span class="nav-number">1.2.</span> <span class="nav-text">解题思路：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#建树："><span class="nav-number">1.3.</span> <span class="nav-text">建树：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#查询："><span class="nav-number">1.4.</span> <span class="nav-text">查询：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码模板："><span class="nav-number">1.5.</span> <span class="nav-text">代码模板：</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

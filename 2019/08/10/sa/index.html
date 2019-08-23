@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="什么是后缀数组字符串后缀（Suffix）指的是从字符串的某个位置开始到其末尾的字符串子串。我们认为原串和空串也是后缀。反之，从字符串开头到某个位置的字符串子串则称为前缀。 后缀数组（Suffix Array）指的是将某个字符串的所有后缀按字典序排序后得到的数组。不过数组中并不需要直接保存所有的后缀字符串，只要记录对应的起始位置就好了。 后缀数组的计算假设我们要计算长度为n的字符串S的后缀数组。最朴">
+<meta name="keywords" content="算法模板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="后缀数组笔记">
+<meta property="og:url" content="http://valenshi.top/2019/08/10/sa/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="什么是后缀数组字符串后缀（Suffix）指的是从字符串的某个位置开始到其末尾的字符串子串。我们认为原串和空串也是后缀。反之，从字符串开头到某个位置的字符串子串则称为前缀。 后缀数组（Suffix Array）指的是将某个字符串的所有后缀按字典序排序后得到的数组。不过数组中并不需要直接保存所有的后缀字符串，只要记录对应的起始位置就好了。 后缀数组的计算假设我们要计算长度为n的字符串S的后缀数组。最朴">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-20T12:41:11.282Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="后缀数组笔记">
+<meta name="twitter:description" content="什么是后缀数组字符串后缀（Suffix）指的是从字符串的某个位置开始到其末尾的字符串子串。我们认为原串和空串也是后缀。反之，从字符串开头到某个位置的字符串子串则称为前缀。 后缀数组（Suffix Array）指的是将某个字符串的所有后缀按字典序排序后得到的数组。不过数组中并不需要直接保存所有的后缀字符串，只要记录对应的起始位置就好了。 后缀数组的计算假设我们要计算长度为n的字符串S的后缀数组。最朴">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/10/sa/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>后缀数组笔记 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/10/sa/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">后缀数组笔记
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 16:29:44" itemprop="dateCreated datePublished" datetime="2019-08-10T16:29:44+08:00">2019-08-10</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:41:11" itemprop="dateModified" datetime="2019-08-20T20:41:11+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="什么是后缀数组"><a href="#什么是后缀数组" class="headerlink" title="什么是后缀数组"></a>什么是后缀数组</h4><p>字符串后缀（Suffix）指的是从字符串的某个位置开始到其末尾的字符串子串。我们认为原串和空串也是后缀。反之，从字符串开头到某个位置的字符串子串则称为前缀。</p>
+<p>后缀数组（Suffix Array）指的是将某个字符串的所有后缀按字典序排序后得到的数组。不过数组中并不需要直接保存所有的后缀字符串，只要记录对应的起始位置就好了。</p>
+<h4 id="后缀数组的计算"><a href="#后缀数组的计算" class="headerlink" title="后缀数组的计算"></a>后缀数组的计算</h4><p>假设我们要计算长度为n的字符串S的后缀数组。最朴素的做法就是直接把所有后缀进行排序，将n个长度为O(n)的字符串进行排序的时间复杂度为<script type="math/tex">O(N^2logN)</script>。而如果灵活运用所有的字符串都是S的后缀这一性质，就可以得到更高效的算法。下面介绍一种由Manver和Myers发明的O(N log N)复杂度的算法。</p>
+<p>该算法的基本思想是倍增。首先计算从每个位置开始的长度为2的子串的顺序，再利用这个结果计算长度为4的子串的顺序，接下来计算长度为8的子串的顺序，不断倍增，直到长度大于等于n就得到了后缀数组。下面，<strong>我们用 S[i , k] 表示从位置i开始的长度为k的字符串子串。</strong> 其中，剩余字符不足k个时，表示的是从位置 i 开始到字符串末尾的子串。</p>
+<p>要计算长度为 2 的子串顺序，只要排序两个字符组成的数对就好了。现在假设已经求得了长度为 k 的字串的顺序，要求长度为 2k 的子串顺序。记$rank_k$为S[i , k] 在所有排好序的长度为k的子串中是第几小的。要计算长度为 2k 的子串的顺序，就只要对两个rank组成的数对进行排序就好了。我们通过对<script type="math/tex">rank_k(i)</script> 与 <script type="math/tex">rank_k(j+k)</script> 的数对的比较来 替代对 S[i , 2k] 和 S[j , 2k] ，比较<script type="math/tex">randk_k(i+k)</script>和<script type="math/tex">rank_j(j+k)</script>就相当于比较S[i+k , k] 和 S[j+k , k] 。所以，我们可以这样高效的比较长度为 2k 的<strong>子串</strong> ，并将它们排序。</p>
+<h4 id="算法模板"><a href="#算法模板" class="headerlink" title="算法模板"></a>算法模板</h4><p>该代码共用到了三个数组，tmp , sa  ,  rank；其中tmp数组是用来临时存放新计算的rank的，而 sa[i] 则存放的当前长度为k时字典序第 i 小的字符起始位置是sa[i]。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n,k;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> sa[N],rank[N],tmp[N];</span><br><span class="line"><span class="comment">//比较(rank[i],rank[i+k])和(rank[j],rank[j+k]) </span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rank[i] != rank[j]) <span class="keyword">return</span> rank[i] &lt; rank[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n ? rank[i+k] : <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n ? rank[j+k] : <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//计算字符串S的后缀数组 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">char</span>* S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	n = <span class="built_in">strlen</span>(str);</span><br><span class="line">	<span class="comment">//初始长度为1，rank直接取字符的编码</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rank[i] = i &lt; n ? S[i] : <span class="number">-1</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="comment">//利用对长度为k的排序结果对长度为2k的排序</span></span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+n+<span class="number">1</span>,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + (compare_sa(sa[i<span class="number">-1</span>],sa[i])?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rank[i] = tmp[i];</span><br><span class="line">	&#125; </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str) != EOF)&#123;</span><br><span class="line">		construct_sa(str,sa);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>,sa[i]+<span class="number">1</span>);</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h4><p><strong>POJ3518：Sequence</strong><br><a href="http://poj.org/problem?id=3581" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述：</strong><br>给定 N 个数字组成的序列$A_1 , A_2 , … , A_n$。其中$A_1$比其它数字都大。现在要把这个序列分成三个子段，并将每段分别反转，求能得到的字典序最小的序列是什么？要求分得的每段都不为空。<br><strong>解题思路：</strong><br>确定第一段是很简单的，因为第一个数最大，所以肯定旋转后要在末尾，所以只要把A数组倒置后求后缀数组，取字典序最小且合法的后缀，即为第一段的答案。这里的合法是指剩下的元素个数要大于2，不然没法分成3段。</p>
+<p>然后要想把剩余的部分分成两段。不过这次的两端并不是独立的，不能简单的比较前半部分的字典序取最小者。不过，将序列分割成两端再分别反转得到的序列，可以看作是两个原序列拼接后得到的新序列中的某个子串反转后得到的序列。因此，只需要计算拼接后的序列的后缀数组，从中选择字典序尽量小并且合法的即可。</p>
+<p>比如：从ABCDE中选俩段反转后字典序最小。等同于从EDCBAEDCBA中选择一个字典序最小的合法子串。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span>+<span class="number">20</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">int</span> A[N],rev[<span class="number">2</span>*N],sa[<span class="number">2</span>*N];</span><br><span class="line"><span class="keyword">int</span> n,k,m,tmp[<span class="number">2</span>*N],rank[<span class="number">2</span>*N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rank[i] != rank[j]) <span class="keyword">return</span> rank[i] &lt; rank[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n ? rank[i+k]:-INF<span class="number">-1</span>;<span class="comment">//这里不要搞错 </span></span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n ? rank[j+k]:-INF<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//注意A的下标是[0,len)的 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">int</span> A[],<span class="keyword">int</span> len,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	n = len;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rank[i] = i &lt; n ? A[i] : -INF;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+n+<span class="number">1</span>,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + (compare_sa(sa[i<span class="number">-1</span>],sa[i])?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rank[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	reverse_copy(A,A+m,rev);</span><br><span class="line">	construct_sa(rev,m,sa);</span><br><span class="line">	<span class="keyword">int</span> p1,p2;</span><br><span class="line">	<span class="comment">//考虑一下p1需要满足的条件 </span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++)&#123;</span><br><span class="line">		p1 = m-sa[i];</span><br><span class="line">		<span class="keyword">if</span>(p1 &gt;= <span class="number">1</span> &amp;&amp; m-p1 &gt;= <span class="number">2</span>) <span class="keyword">break</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	reverse_copy(p1+A,A+m,rev);</span><br><span class="line">	reverse_copy(p1+A,A+m,rev+m-p1); </span><br><span class="line">	construct_sa(rev,<span class="number">2</span>*(m-p1),sa);</span><br><span class="line">	<span class="comment">//考虑p2的范围 </span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">2</span>*(m-p1);i++)&#123;</span><br><span class="line">		p2 = sa[i];</span><br><span class="line">		<span class="keyword">if</span>(p2 &gt; <span class="number">0</span> &amp;&amp; p2 &lt; m-p1) <span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	reverse(A,A+p1);</span><br><span class="line">	<span class="comment">//输出答案 </span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; p1;i++) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,A[i]);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = p2;i &lt; p2+m-p1;i++) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,rev[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; m;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,A+i);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li>秋叶拓哉，挑战程序设计竞赛第2版，北京：人民邮电出版社，2013.6，378-381</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/08/Miller-Rabin/" rel="next" title="Miller_Rabin模板">
+                  <i class="fa fa-chevron-left"></i> Miller_Rabin模板
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/10/lcp/" rel="prev" title="高度数组与最长公共前缀">
+                  高度数组与最长公共前缀 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#什么是后缀数组"><span class="nav-number">1.</span> <span class="nav-text">什么是后缀数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#后缀数组的计算"><span class="nav-number">2.</span> <span class="nav-text">后缀数组的计算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法模板"><span class="nav-number">3.</span> <span class="nav-text">算法模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例题"><span class="nav-number">4.</span> <span class="nav-text">例题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

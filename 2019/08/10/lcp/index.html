@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要本文是关于后缀数组的一个拓展，问题模型来自于最长公共前缀（Longest Common Prefix Array）问题，我们为解决该模型，在后缀数组的基础上设计了一个精巧的数组——高度数组（lcp），同时由于该数组在处理各类字符串相关问题时有着较好的用途，因此值得掌握。 本文将直接从高度数组讲起，假设读者具有后缀数组的基础知识。首先本文会介绍高度数组的定义以及用途，接着讲解如何在O(N)时间内">
+<meta name="keywords" content="算法模板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高度数组与最长公共前缀">
+<meta property="og:url" content="http://valenshi.top/2019/08/10/lcp/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要本文是关于后缀数组的一个拓展，问题模型来自于最长公共前缀（Longest Common Prefix Array）问题，我们为解决该模型，在后缀数组的基础上设计了一个精巧的数组——高度数组（lcp），同时由于该数组在处理各类字符串相关问题时有着较好的用途，因此值得掌握。 本文将直接从高度数组讲起，假设读者具有后缀数组的基础知识。首先本文会介绍高度数组的定义以及用途，接着讲解如何在O(N)时间内">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-20T12:40:53.742Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="高度数组与最长公共前缀">
+<meta name="twitter:description" content="摘要本文是关于后缀数组的一个拓展，问题模型来自于最长公共前缀（Longest Common Prefix Array）问题，我们为解决该模型，在后缀数组的基础上设计了一个精巧的数组——高度数组（lcp），同时由于该数组在处理各类字符串相关问题时有着较好的用途，因此值得掌握。 本文将直接从高度数组讲起，假设读者具有后缀数组的基础知识。首先本文会介绍高度数组的定义以及用途，接着讲解如何在O(N)时间内">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/10/lcp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>高度数组与最长公共前缀 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/10/lcp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">高度数组与最长公共前缀
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-10 16:29:48" itemprop="dateCreated datePublished" datetime="2019-08-10T16:29:48+08:00">2019-08-10</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:40:53" itemprop="dateModified" datetime="2019-08-20T20:40:53+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>本文是关于后缀数组的一个拓展，问题模型来自于最长公共前缀（Longest Common Prefix Array）问题，我们为解决该模型，在后缀数组的基础上设计了一个精巧的数组——高度数组（lcp），同时由于该数组在处理各类字符串相关问题时有着较好的用途，因此值得掌握。</p>
+<p>本文将直接从高度数组讲起，假设读者具有后缀数组的基础知识。首先本文会介绍高度数组的定义以及用途，接着讲解如何在O(N)时间内求出高度数组，最后将介绍高度数组的应用。</p>
+<h4 id="高度数组（LCP-Array-，Longest-Common-Prefix-Array）"><a href="#高度数组（LCP-Array-，Longest-Common-Prefix-Array）" class="headerlink" title="高度数组（LCP Array ，Longest Common Prefix Array）"></a>高度数组（LCP Array ，Longest Common Prefix Array）</h4><p>所谓的高度数组，指的是由后缀数组中相邻两个后缀的最长公共前缀（LCP）的长度组成的数组。记后缀数组为sa，高度数组为lcp，则有后缀S[ sa[i]… ] 与 S[sa[i+1] … ] 的最长公共前缀的长度为lcp[i] 。我们可以在O(n)时间内高效地求得高度数组，有了高度数组，后缀数组将成为一个更加有力的工具。高度数据虽然计算简单，但非常巧妙，使用了类似尺取法的技巧。记rank[i] 为位置 i 开始的后缀在后缀数组中的顺序，即有rank[ sa[i] ] = i。</p>
+<h4 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h4><p>我们从位置0的后缀开始，从前往后依次计算后缀S[i…]与后缀S[sa[rank[i]-1]…]（即后缀数组中的前一个后缀）的最长公共前缀的长度。此时，假设我们已经求得了位置 i 对应的高度<script type="math/tex">h_i</script>，<strong>那么我们可以证明位置 i+1 对应的高度应该不小于<script type="math/tex">h_i-1</script>。</strong></p>
+<p>为什么呢？记k = sa[rank[i] - 1] ，已知后缀S[i…]和S[k…]的头部<script type="math/tex">h_i</script>个字符是相等的，那么后缀S[i+1…]和S[k+1…]分别是二者去除首字符的结果，所以它们头部<script type="math/tex">h_i-1</script>个字符是相等的。虽然在后缀数组中，S[i+1…]前面一个元素未必就是S[k+1…]，但即便如此，公共前缀的长度也是只增不减的。因此，只要从<script type="math/tex">h_i-1</script>开始检查，计算最长公共前缀的长度就好了。</p>
+<h4 id="代码模板"><a href="#代码模板" class="headerlink" title="代码模板"></a>代码模板</h4><p>因为高度最多增加n次，所以总的时间复杂度为O(n)。如果把这个问题当作位置i对应的区间是[i,i+h)的尺取法来看，就很容易理解。区间的左右端点始终不会向左移，并且是不超过n的整数。<br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n,k;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	sa[i]表示排名为i的后缀起始位置是多少</span></span><br><span class="line"><span class="comment">	rank[i]表示起始位置是i的串排名是多少</span></span><br><span class="line"><span class="comment">	rank[sa[i] ] = i , sa[rank[i] ] = i,rank与sa互逆 </span></span><br><span class="line"><span class="comment">*/</span> </span><br><span class="line"><span class="keyword">int</span> sa[N],rank[N],tmp[N],lcp[N];</span><br><span class="line"><span class="comment">//比较(rank[i],rank[i+k])和(rank[j],rank[j+k]) </span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rank[i] != rank[j]) <span class="keyword">return</span> rank[i] &lt; rank[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n ? rank[i+k] : <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n ? rank[j+k] : <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//计算字符串S的后缀数组 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">char</span>* S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	n = <span class="built_in">strlen</span>(str);</span><br><span class="line">	<span class="comment">//初始长度为1，rank直接取字符的编码</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rank[i] = i &lt; n ? S[i] : <span class="number">-1</span>;</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="comment">//利用对长度为k的排序结果对长度为2k的排序</span></span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+n+<span class="number">1</span>,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + (compare_sa(sa[i<span class="number">-1</span>],sa[i])?<span class="number">1</span>:<span class="number">0</span>);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rank[i] = tmp[i];</span><br><span class="line">	&#125; </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//最长公共前缀模板,其中sa为后缀数组,求得结果存放在lcp </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">char</span> *S,<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="built_in">strlen</span>(S);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rank[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>;lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">/*lcp[i] 表示起始位置为sa[i]与</span></span><br><span class="line"><span class="comment">		起始位置为sa[i+1]的串的最长公共前缀长度*/</span> </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j = sa[rank[i]<span class="number">-1</span>];</span><br><span class="line">	<span class="comment">/*此处j表示排在"以i开始的后缀"前面一名的子串的起始位置*/</span> </span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j + h &lt; n &amp;&amp; i+h &lt; n;h++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="comment">/*h为以i开头的后缀与以j开头的后缀的"最长公共前缀"的长度*/</span> </span><br><span class="line">		lcp[rank[i]<span class="number">-1</span>] = h;</span><br><span class="line">	<span class="comment">/*于是以j开头的后缀 与以i开头的后缀 的 最长公共前缀的长度</span></span><br><span class="line"><span class="comment">		被存放在lcp[rank[i]-1]中,因为lcp定义的就是: </span></span><br><span class="line"><span class="comment">		lcp[k] 为排名为i的后缀与排名为i+1的后缀的最长公共前缀的长度*/</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str) != EOF)&#123;</span><br><span class="line">		construct_sa(str,sa);</span><br><span class="line">		construct_lcp(str,sa,lcp);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d "</span>,lcp[i]);</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li>秋叶拓哉，挑战程序设计竞赛第2版，北京：人民邮电出版社，2013.6，378-381</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/10/sa/" rel="next" title="后缀数组笔记">
+                  <i class="fa fa-chevron-left"></i> 后缀数组笔记
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/08/11/lca/" rel="prev" title="倍增求LCA">
+                  倍增求LCA <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#高度数组（LCP-Array-，Longest-Common-Prefix-Array）"><span class="nav-number">2.</span> <span class="nav-text">高度数组（LCP Array ，Longest Common Prefix Array）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构造方法"><span class="nav-number">3.</span> <span class="nav-text">构造方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#代码模板"><span class="nav-number">4.</span> <span class="nav-text">代码模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

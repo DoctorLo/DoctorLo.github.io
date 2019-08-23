@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Treap是是英文Tree和Heap的合成词，又称树堆。树堆是指具有随机附加域，且附加域满足堆性质的二叉搜索树。它属于平衡树的一种，主要是为了克服二叉搜索树易退化的情况。Treap利用“随机”来创造平衡条件，我们在插入每个节点时，除了其值val，我们还给它随机附加一个权值dat，使得权值val满足BST性质，而dat满足二叉堆性质。如此一来我们就保证了树的深度，使得检索、插入、求前驱、后继以及删除">
+<meta name="keywords" content="�㷨,ACM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Treap">
+<meta property="og:url" content="http://valenshi.top/2019/07/25/Treap/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="Treap是是英文Tree和Heap的合成词，又称树堆。树堆是指具有随机附加域，且附加域满足堆性质的二叉搜索树。它属于平衡树的一种，主要是为了克服二叉搜索树易退化的情况。Treap利用“随机”来创造平衡条件，我们在插入每个节点时，除了其值val，我们还给它随机附加一个权值dat，使得权值val满足BST性质，而dat满足二叉堆性质。如此一来我们就保证了树的深度，使得检索、插入、求前驱、后继以及删除">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-20T12:41:37.513Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Treap">
+<meta name="twitter:description" content="Treap是是英文Tree和Heap的合成词，又称树堆。树堆是指具有随机附加域，且附加域满足堆性质的二叉搜索树。它属于平衡树的一种，主要是为了克服二叉搜索树易退化的情况。Treap利用“随机”来创造平衡条件，我们在插入每个节点时，除了其值val，我们还给它随机附加一个权值dat，使得权值val满足BST性质，而dat满足二叉堆性质。如此一来我们就保证了树的深度，使得检索、插入、求前驱、后继以及删除">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/07/25/Treap/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Treap | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/07/25/Treap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Treap
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-07-25 22:36:36" itemprop="dateCreated datePublished" datetime="2019-07-25T22:36:36+08:00">2019-07-25</time>
+            </span>
+          
+            
+
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-08-20 20:41:37" itemprop="dateModified" datetime="2019-08-20T20:41:37+08:00">2019-08-20</time>
+              </span>
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Treap是是英文Tree和Heap的合成词，又称树堆。树堆是指具有随机附加域，且附加域满足堆性质的二叉搜索树。它属于平衡树的一种，主要是为了克服二叉搜索树易退化的情况。Treap利用“随机”来创造平衡条件，我们在插入每个节点时，除了其值val，我们还给它随机附加一个权值dat，使得权值val满足BST性质，而dat满足二叉堆性质。如此一来我们就保证了树的深度，使得检索、插入、求前驱、后继以及删除节点的时间复杂度都是O(log N)。<br><strong>例题：</strong></p>
+<blockquote>
+<p>普通平衡树BZOJ3224<br>您需要写一种数据结构，来维护一些数，其中需要提供以下操作：</p>
+<ul>
+<li>插入数值x</li>
+<li>删除数值x（若有多个相同的数，应只删除一个）</li>
+<li>查询数值x的排名（若有多个相同的数，应输出最小的排名）</li>
+<li>查询排名为x的数值</li>
+<li>求数值x的前驱（前驱定义为小于x的最大的数）</li>
+<li>求数值x的后继（后继定义为大于x的最小的数）</li>
+</ul>
+</blockquote>
+<p><strong>解题思路：</strong><br>这是一道平衡树的模板题，我们需要做的操作是在线的增删查，且查询分为四种。我们采用Treap解决。<br>根据题意，数据种可能有相同的数值，我们可以给每个节点增加一个域cnt，用来记录该节点的“副本数“，初始为1。若插入已存在是数值，就直接把该”副本数“加1。在删除时，减少该副本数，当减为0时删除该节点。如此就解决了关键码相同的问题。<br>对于查询排名，我们可以给每个节点新增一个域size，记录以该节点为根的子树中所有节点的”副本数“之和。<br>与线段树一样，我们需要在插入或者删除时从下往上更新size。另外，在发生旋转操作时，也需要修改size。最后，在检索BST基础上，通过判断左右子树size的大小，选择适当的一侧递归，就很容易查询排名了。</p>
+<p><strong>代码示例：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SIZE = <span class="number">100010</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Treap</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> l, r; <span class="comment">// 左右子节点在数组中的下标</span></span><br><span class="line">	<span class="keyword">int</span> val, dat; <span class="comment">// 节点关键码、权值</span></span><br><span class="line">	<span class="keyword">int</span> cnt, size; <span class="comment">// 副本数、子树大小</span></span><br><span class="line">&#125; a[SIZE]; <span class="comment">// 数组模拟链表</span></span><br><span class="line"><span class="keyword">int</span> tot, root, n, INF = <span class="number">0x7fffffff</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">New</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	a[++tot].val = val;</span><br><span class="line">	a[tot].dat = rand();</span><br><span class="line">	a[tot].cnt = a[tot].size = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">return</span> tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Update</span><span class="params">(<span class="keyword">int</span> p)</span> </span>&#123;</span><br><span class="line">	a[p].size = a[a[p].l].size + a[a[p].r].size + a[p].cnt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Build</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	New(-INF), New(INF);</span><br><span class="line">	root = <span class="number">1</span>, a[<span class="number">1</span>].r = <span class="number">2</span>;</span><br><span class="line">	Update(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetRankByVal</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (p == <span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span> (val == a[p].val) <span class="keyword">return</span> a[a[p].l].size + <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">if</span> (val &lt; a[p].val) <span class="keyword">return</span> GetRankByVal(a[p].l, val);</span><br><span class="line">	<span class="keyword">return</span> GetRankByVal(a[p].r, val) + a[a[p].l].size + a[p].cnt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetValByRank</span><span class="params">(<span class="keyword">int</span> p, <span class="keyword">int</span> rank)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (p == <span class="number">0</span>) <span class="keyword">return</span> INF;</span><br><span class="line">	<span class="keyword">if</span> (a[a[p].l].size &gt;= rank) <span class="keyword">return</span> GetValByRank(a[p].l, rank);</span><br><span class="line">	<span class="keyword">if</span> (a[a[p].l].size + a[p].cnt &gt;= rank) <span class="keyword">return</span> a[p].val;</span><br><span class="line">	<span class="keyword">return</span> GetValByRank(a[p].r, rank - a[a[p].l].size - a[p].cnt);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zig</span><span class="params">(<span class="keyword">int</span> &amp;p)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> q = a[p].l;</span><br><span class="line">	a[p].l = a[q].r, a[q].r = p, p = q;</span><br><span class="line">	Update(a[p].r), Update(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">zag</span><span class="params">(<span class="keyword">int</span> &amp;p)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> q = a[p].r;</span><br><span class="line">	a[p].r = a[q].l, a[q].l = p, p = q;</span><br><span class="line">	Update(a[p].l), Update(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">int</span> &amp;p, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (p == <span class="number">0</span>) &#123;</span><br><span class="line">		p = New(val);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (val == a[p].val) &#123;</span><br><span class="line">		a[p].cnt++, Update(p);</span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span> (val &lt; a[p].val) &#123;</span><br><span class="line">		Insert(a[p].l, val);</span><br><span class="line">		<span class="keyword">if</span> (a[p].dat &lt; a[a[p].l].dat) zig(p); <span class="comment">// 不满足堆性质，右旋</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		Insert(a[p].r, val);</span><br><span class="line">		<span class="keyword">if</span> (a[p].dat &lt; a[a[p].r].dat) zag(p); <span class="comment">// 不满足堆性质，左旋</span></span><br><span class="line">	&#125;</span><br><span class="line">	Update(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetPre</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">1</span>; <span class="comment">// a[1].val==-INF</span></span><br><span class="line">	<span class="keyword">int</span> p = root;</span><br><span class="line">	<span class="keyword">while</span> (p) &#123;</span><br><span class="line">		<span class="keyword">if</span> (val == a[p].val) &#123;</span><br><span class="line">			<span class="keyword">if</span> (a[p].l &gt; <span class="number">0</span>) &#123;</span><br><span class="line">				p = a[p].l;</span><br><span class="line">				<span class="keyword">while</span> (a[p].r &gt; <span class="number">0</span>) p = a[p].r; <span class="comment">// 左子树上一直向右走</span></span><br><span class="line">				ans = p;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (a[p].val &lt; val &amp;&amp; a[p].val &gt; a[ans].val) ans = p;</span><br><span class="line">		p = val &lt; a[p].val ? a[p].l : a[p].r;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> a[ans].val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">GetNext</span><span class="params">(<span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">2</span>; <span class="comment">// a[2].val==INF</span></span><br><span class="line">	<span class="keyword">int</span> p = root;</span><br><span class="line">	<span class="keyword">while</span> (p) &#123;</span><br><span class="line">		<span class="keyword">if</span> (val == a[p].val) &#123;</span><br><span class="line">			<span class="keyword">if</span> (a[p].r &gt; <span class="number">0</span>) &#123;</span><br><span class="line">				p = a[p].r;</span><br><span class="line">				<span class="keyword">while</span> (a[p].l &gt; <span class="number">0</span>) p = a[p].l; <span class="comment">// 右子树上一直向左走</span></span><br><span class="line">				ans = p;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (a[p].val &gt; val &amp;&amp; a[p].val &lt; a[ans].val) ans = p;</span><br><span class="line">		p = val &lt; a[p].val ? a[p].l : a[p].r;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> a[ans].val;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Remove</span><span class="params">(<span class="keyword">int</span> &amp;p, <span class="keyword">int</span> val)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (p == <span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">if</span> (val == a[p].val) &#123; <span class="comment">// 检索到了val</span></span><br><span class="line">		<span class="keyword">if</span> (a[p].cnt &gt; <span class="number">1</span>) &#123; <span class="comment">// 有重复，减少副本数即可</span></span><br><span class="line">			a[p].cnt--, Update(p);</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (a[p].l || a[p].r) &#123; <span class="comment">// 不是叶子节点，向下旋转</span></span><br><span class="line">			<span class="keyword">if</span> (a[p].r == <span class="number">0</span> || a[a[p].l].dat &gt; a[a[p].r].dat)</span><br><span class="line">				zig(p), Remove(a[p].r, val);</span><br><span class="line">			<span class="keyword">else</span></span><br><span class="line">				zag(p), Remove(a[p].l, val);</span><br><span class="line">			Update(p);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> p = <span class="number">0</span>; <span class="comment">// 叶子节点，删除</span></span><br><span class="line">		<span class="keyword">return</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	val &lt; a[p].val ? Remove(a[p].l, val) : Remove(a[p].r, val);</span><br><span class="line">	Update(p);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Build();</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">	<span class="keyword">while</span> (n--) &#123;</span><br><span class="line">		<span class="keyword">int</span> opt, x;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>, &amp;opt, &amp;x);</span><br><span class="line">		<span class="keyword">switch</span> (opt) &#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">1</span>:</span><br><span class="line">			Insert(root, x);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">2</span>:</span><br><span class="line">			Remove(root, x);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">3</span>:</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, GetRankByVal(root, x) - <span class="number">1</span>);</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">4</span>:</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, GetValByRank(root, x + <span class="number">1</span>));</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">5</span>:</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, GetPre(x));</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		<span class="keyword">case</span> <span class="number">6</span>:</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d\n"</span>, GetNext(x));</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>参考书目：</strong></p>
+<ul>
+<li>《算法竞赛进阶指南》李煜东.P229</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/07/26/xxj/" rel="prev" title="线性基">
+                  线性基 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
