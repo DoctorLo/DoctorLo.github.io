@@ -55,20 +55,20 @@
   };
 </script>
 
-  <meta name="description" content="按照数据结构来划分的话，最长上升子序列(LIS)是属于线性DP，其作为动态规划经典入门模型，重要性也是不言而喻的。而LIS问题也有很多种变型，对于这些问题有的超过了动态规划的适用范围，有的需要对转移方程进行更改，需要具体问题具体分析。 前置知识：  子序列的概念 动态规划一般步骤 二分查找   问题模型：给定一个长度为N的数列A，求数值单调递增的子序列长度最长是多少。  解题思路：状态表示：我们设">
-<meta name="keywords" content="算法模板,数据结构与算法">
+  <meta name="description" content="测试地址 题意简述哈蒙有n条导线排成一排，每条导线有一个电阻值，神奇的电光只能从一根导线传到电阻比它大的上面，而且必须从左边向右传导，当然导线不必是连续的。 哈蒙想知道电光最多能通过多少条导线，还想知道这样的方案有多少。 解题思路第一问就是简单的LIS问题，即询问最长上升子序列的长度。第二问是询问最长上升子序列的数量，如果用暴力做法，只需要多开一个数组记录数量即可，时间复杂度O(N^2)；实际上我">
+<meta name="keywords" content="LIS,树状数组">
 <meta property="og:type" content="article">
-<meta property="og:title" content="最长上升子序列模板">
-<meta property="og:url" content="http://valenshi.top/2019/08/16/lis/index.html">
+<meta property="og:title" content="JZOJ4920降雷皇(最长上升子序列数量)">
+<meta property="og:url" content="http://valenshi.top/2019/08/24/JZOJ4920/index.html">
 <meta property="og:site_name" content="ValenShi&#39;s Blog">
-<meta property="og:description" content="按照数据结构来划分的话，最长上升子序列(LIS)是属于线性DP，其作为动态规划经典入门模型，重要性也是不言而喻的。而LIS问题也有很多种变型，对于这些问题有的超过了动态规划的适用范围，有的需要对转移方程进行更改，需要具体问题具体分析。 前置知识：  子序列的概念 动态规划一般步骤 二分查找   问题模型：给定一个长度为N的数列A，求数值单调递增的子序列长度最长是多少。  解题思路：状态表示：我们设">
+<meta property="og:description" content="测试地址 题意简述哈蒙有n条导线排成一排，每条导线有一个电阻值，神奇的电光只能从一根导线传到电阻比它大的上面，而且必须从左边向右传导，当然导线不必是连续的。 哈蒙想知道电光最多能通过多少条导线，还想知道这样的方案有多少。 解题思路第一问就是简单的LIS问题，即询问最长上升子序列的长度。第二问是询问最长上升子序列的数量，如果用暴力做法，只需要多开一个数组记录数量即可，时间复杂度O(N^2)；实际上我">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-20T12:45:04.094Z">
+<meta property="og:updated_time" content="2019-08-24T07:52:38.529Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="最长上升子序列模板">
-<meta name="twitter:description" content="按照数据结构来划分的话，最长上升子序列(LIS)是属于线性DP，其作为动态规划经典入门模型，重要性也是不言而喻的。而LIS问题也有很多种变型，对于这些问题有的超过了动态规划的适用范围，有的需要对转移方程进行更改，需要具体问题具体分析。 前置知识：  子序列的概念 动态规划一般步骤 二分查找   问题模型：给定一个长度为N的数列A，求数值单调递增的子序列长度最长是多少。  解题思路：状态表示：我们设">
+<meta name="twitter:title" content="JZOJ4920降雷皇(最长上升子序列数量)">
+<meta name="twitter:description" content="测试地址 题意简述哈蒙有n条导线排成一排，每条导线有一个电阻值，神奇的电光只能从一根导线传到电阻比它大的上面，而且必须从左边向右传导，当然导线不必是连续的。 哈蒙想知道电光最多能通过多少条导线，还想知道这样的方案有多少。 解题思路第一问就是简单的LIS问题，即询问最长上升子序列的长度。第二问是询问最长上升子序列的数量，如果用暴力做法，只需要多开一个数组记录数量即可，时间复杂度O(N^2)；实际上我">
   <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
-  <link rel="canonical" href="http://valenshi.top/2019/08/16/lis/">
+  <link rel="canonical" href="http://valenshi.top/2019/08/24/JZOJ4920/">
 
 
 <script id="page-configurations">
@@ -82,7 +82,7 @@
   };
 </script>
 
-  <title>最长上升子序列模板 | ValenShi's Blog</title>
+  <title>JZOJ4920降雷皇(最长上升子序列数量) | ValenShi's Blog</title>
   
 
 
@@ -257,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/16/lis/">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/24/JZOJ4920/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -271,7 +271,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">最长上升子序列模板
+          <h1 class="post-title" itemprop="name headline">JZOJ4920降雷皇(最长上升子序列数量)
 
             
           </h1>
@@ -288,19 +288,11 @@
                 
               
 
-              <time title="创建时间：2019-08-16 22:00:15" itemprop="dateCreated datePublished" datetime="2019-08-16T22:00:15+08:00">2019-08-16</time>
+              <time title="创建时间：2019-08-24 15:51:10 / 修改时间：15:52:38" itemprop="dateCreated datePublished" datetime="2019-08-24T15:51:10+08:00">2019-08-24</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-20 20:45:04" itemprop="dateModified" datetime="2019-08-20T20:45:04+08:00">2019-08-20</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -309,7 +301,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
 
                 
                 
@@ -328,31 +320,13 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>按照数据结构来划分的话，最长上升子序列(LIS)是属于线性DP，其作为动态规划经典入门模型，重要性也是不言而喻的。而LIS问题也有很多种变型，对于这些问题有的超过了动态规划的适用范围，有的需要对转移方程进行更改，需要具体问题具体分析。</p>
-<p><strong>前置知识：</strong></p>
-<ul>
-<li>子序列的概念</li>
-<li>动态规划一般步骤</li>
-<li>二分查找</li>
-</ul>
-<blockquote>
-<p>问题模型：给定一个长度为N的数列A，求数值单调递增的子序列长度最长是多少。</p>
-</blockquote>
-<p><strong>解题思路：</strong><br>状态表示：我们设F[i]表示以A[i]为结尾的“最长上升子序列”的长度。<br>阶段划分：子序列的结尾位置（数列A中的位置，从前到后）。<br>转移方程：F[i] = max{ f[j] + 1} (0 &lt;= j &lt; i 且 A[j] &lt; A[i])。<br>边界：F[0] = 0。<br>目标：max{F[i]} ( 0 &lt;= i &lt; = N)。</p>
-<p>如此设计目标函数与转移方程，很显然可以得到正确结果，其效率是O(N^2)，代码实现也很简单。</p>
-<p><strong>优化：</strong><br>首先考虑一下上述算法最耗时的地方在哪，显然我们每次都要用O(N)的时间遍历前i-1个位置上的元素来更新F[i]，而能更新F[i]的元素A[j]需要满足两个条件：A[j] &lt; A[i]且F[j] &gt;= F[i]，那么F[i]就可以被更新为F[j]+1。在这个过程中，A[j]也可以描述为“小于A[i]的所有元素中F的值最大的那个”，通过这个描述来找A[j]的效率是O(N)。<br>考虑另一种方式，我们新增一个辅助数组d，d[i] 表示“长度为i的最长上升子序列的最小结尾是多少”，那么很显然，d数组中的元素是严格递增的。且每当我们读取到A序列中的一个元素A[i]时，都有两种情况：</p>
-<ol>
-<li>A[i] &gt; d[len]，此时 d[++len] = A[i]。 </li>
-<li>A[i] &lt;= d[len]，此时说明d数组中某个元素可以被A[i]更新，我们采用二分查找的方式更新d数组即可。</li>
-</ol>
-<p>其中len代表当前最长上升子序列的长度。<br>上述方法中，如果遇到情况1，那么效率是O(1)，情况2，效率就是O(log N)，总体来讲，对于大量数据，该优化效果还是很喜人的。</p>
-<p><strong>优化的正确性说明：</strong><br>上述优化可以用堆栈思想来解释，也可以将其看作一个小技巧。借助于d数组，对于序列A中的每个元素A[i]，我们都可以快速找到“小于A[i]的所有元素中F的值最大的那个”，<strong>因为d[len]存放的就是最长上升子序列长度为len时的最小元素</strong> 。如果A[i] &lt;= d[len]，那么很显然当前的最长上升子序列长度len不能再增加了（因为A[i] 不能添加在A的子序列d[1] ~d[len] 的后面），且d数组可以被更新(再不济也可以将d[len] 更新为 A[i]，因为 A[i] &lt; d[len])。于是借助于d数组的特性，完成了优化，当然也有所牺牲。</p>
-<p><strong>代码示例：</strong><br><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> d[<span class="number">100005</span>];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">b_search</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> s,<span class="keyword">int</span> e)</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(s &lt; e)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = s+(e-s)/<span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span>(d[mid] &gt;= x) e = mid;</span><br><span class="line">        <span class="keyword">else</span> s = mid+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">LIS</span><span class="params">(<span class="keyword">int</span> A[],<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">    <span class="built_in">memset</span>(d,<span class="number">0</span>,<span class="keyword">sizeof</span> d);</span><br><span class="line">    <span class="keyword">int</span> len = <span class="number">1</span>;</span><br><span class="line">    d[<span class="number">1</span>] = A[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; n;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(A[i] &gt;= d[len])  d[++len] = A[i];</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">int</span> p = b_search(A[i],<span class="number">1</span>,len);</span><br><span class="line">            d[p] = A[i];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="comment">//  for(int i = 0;i &lt; len;i++)  cout &lt;&lt; d[i+1]&lt;&lt;" ";</span></span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h5 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h5><ul>
-<li>《算法竞赛进阶指南》,李煜东,P237.</li>
-<li><a href="https://www.cnblogs.com/wxjor/p/5524447.html" target="_blank" rel="noopener">博客</a></li>
-</ul>
-
+        <p><a href="http://ybt.ssoier.cn:8088/problem_show.php?pid=1742" target="_blank" rel="noopener">测试地址</a></p>
+<h5 id="题意简述"><a href="#题意简述" class="headerlink" title="题意简述"></a>题意简述</h5><p>哈蒙有n条导线排成一排，每条导线有一个电阻值，神奇的电光只能从一根导线传到电阻比它大的上面，而且必须从左边向右传导，当然导线不必是连续的。</p>
+<p>哈蒙想知道电光最多能通过多少条导线，还想知道这样的方案有多少。</p>
+<h5 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h5><p>第一问就是简单的LIS问题，即询问最长上升子序列的长度。第二问是询问最长上升子序列的数量，如果用暴力做法，只需要多开一个数组记录数量即可，时间复杂度O(N^2)；实际上我们可以利用BIT来代替枚举，使得时间复杂度至O(NlogN)。</p>
+<p>我们用一个结构体Node{v,s}来表示当最长上升子序列长度为v时，方案数是s。那么对于每一个新元素x，我们只需要找出所有 <strong>电阻值小于x的</strong> 最长上升子序列的长度v以及数量s即可（符合BIT维护前缀和功能）。</p>
+<p>当我们求出当前元素 x 的 v(最长上升子序列长度) 和 s(方案数) 后，用来更新ans，并将其插入树状数组第x个位置。由于题目保证x小于1e5，所以树状数组开到1e5即可。</p>
+<h5 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*代码参考：信息学奥赛一本通P263*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> ll P = <span class="number">123456789</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	ll v,s;</span><br><span class="line">	Node()&#123;</span><br><span class="line">		v = <span class="number">0</span>, s = <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;tr[N],tmp,ans;</span><br><span class="line"><span class="keyword">int</span> n,ty;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">updata</span><span class="params">(<span class="keyword">int</span> x,Node y)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*更改电阻值为x时的长度和方案数*/</span> </span><br><span class="line">	<span class="keyword">while</span>(x &lt;= N)&#123;</span><br><span class="line">		<span class="keyword">if</span>(y.v &gt; tr[x].v) tr[x] = y;<span class="comment">//如果长度变长,直接更新答案 </span></span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(y.v == tr[x].v) tr[x].s = (tr[x].s+y.s)%P;</span><br><span class="line">		x += x&amp;-x;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> Node <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回当电阻 &lt;= x时,最长上升子序列的长度和方案数*/</span></span><br><span class="line">	Node res;res.s = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(x)&#123;</span><br><span class="line">		<span class="keyword">if</span>(tr[x].v &gt; res.v) res = tr[x];</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(tr[x].v == res.v) res.s = (res.s + tr[x].s)%P;</span><br><span class="line">		x -= x&amp;-x;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">ckmax</span><span class="params">(Node &amp;x,<span class="keyword">const</span> Node&amp; y)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*更新最终答案,即最长上升子序列以及个数*/</span></span><br><span class="line">	<span class="keyword">if</span>(x.v &lt; y.v) x = y;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(x.v == y.v) x.s = (x.s+y.s)%P;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;ty);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;x);</span><br><span class="line">		tmp = ask(x<span class="number">-1</span>);<span class="comment">//因为这里保证x不超过1e5,所以不需要离散化 </span></span><br><span class="line">		tmp.v++;</span><br><span class="line">		ckmax(ans,tmp);	<span class="comment">//更新答案 </span></span><br><span class="line">		updata(x,tmp);	<span class="comment">//更新树状数组 </span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans.v);</span><br><span class="line">	<span class="keyword">if</span>(ty == <span class="number">1</span>) <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans.s);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
 
     
@@ -367,9 +341,9 @@
           
           <div class="post-tags">
             
-              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+              <a href="/tags/LIS/" rel="tag"># LIS</a>
             
-              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+              <a href="/tags/树状数组/" rel="tag"># 树状数组</a>
             
           </div>
         
@@ -379,8 +353,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/08/16/bingchaji/" rel="next" title="“拓展域”与“边带权”并查集">
-                  <i class="fa fa-chevron-left"></i> “拓展域”与“边带权”并查集
+                <a href="/2019/08/22/hdu6685/" rel="next" title="Rikka with Coin 解题报告">
+                  <i class="fa fa-chevron-left"></i> Rikka with Coin 解题报告
                 </a>
               
             </div>
@@ -388,10 +362,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/08/16/dijkstra/" rel="prev" title="最短路径算法">
-                  最短路径算法 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -527,7 +497,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#参考资料"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#题意简述"><span class="nav-number">1.</span> <span class="nav-text">题意简述</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#解题思路"><span class="nav-number">2.</span> <span class="nav-text">解题思路</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代码示例"><span class="nav-number">3.</span> <span class="nav-text">代码示例</span></a></li></ol></div>
             
 
           </div>
@@ -646,55 +616,6 @@
 
   
 
-  
-    
-      <script type="text/x-mathjax-config">
-
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-      equationNumbers: {
-        autoNumber: 'AMS'
-      }
-    }
-  });
-
-  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
-    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
-      if (data.display) {
-        var next = data.script.nextSibling;
-        while (next && next.nodeName.toLowerCase() === '#text') {
-          next = next.nextSibling;
-        }
-        if (next && next.nodeName.toLowerCase() === 'br') {
-          next.parentNode.removeChild(next);
-        }
-      }
-    });
-  });
-
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for (i = 0; i < all.length; i += 1) {
-      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
-      if (element.nodeName.toLowerCase() == 'li') {
-        element = element.parentNode;
-      }
-      element.classList.add('has-jax');
-    }
-  });
-</script>
-<script>
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
-    MathJax.Hub.Typeset();
-  }, window.MathJax);
-</script>
-
-    
   
 
   
