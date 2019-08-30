@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="1005 Welcome Party测试地址题意简述：一共有n名同学，每位同学都会唱歌和跳舞，第 i 位同学的唱歌和跳舞的能力值分别为$x_i,y_i$，现在将这些同学分为唱歌队和跳舞队，每队的价值等于该队中该能力值最高的同学的能力值，请问两队价值差最小是多少呢？ 解题思路：这题其实不算太难，但是思路容易乱。首先由于每队的价值等于该队中最高的能力值，所以可以从高到低枚举每一位同学的x，并更新ans">
+<meta name="keywords" content="思维,启发式分治">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019航电暑期多校部分题解">
+<meta property="og:url" content="http://valenshi.top/2019/08/30/hdu10/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="1005 Welcome Party测试地址题意简述：一共有n名同学，每位同学都会唱歌和跳舞，第 i 位同学的唱歌和跳舞的能力值分别为$x_i,y_i$，现在将这些同学分为唱歌队和跳舞队，每队的价值等于该队中该能力值最高的同学的能力值，请问两队价值差最小是多少呢？ 解题思路：这题其实不算太难，但是思路容易乱。首先由于每队的价值等于该队中最高的能力值，所以可以从高到低枚举每一位同学的x，并更新ans">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-30T05:10:20.563Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2019航电暑期多校部分题解">
+<meta name="twitter:description" content="1005 Welcome Party测试地址题意简述：一共有n名同学，每位同学都会唱歌和跳舞，第 i 位同学的唱歌和跳舞的能力值分别为$x_i,y_i$，现在将这些同学分为唱歌队和跳舞队，每队的价值等于该队中该能力值最高的同学的能力值，请问两队价值差最小是多少呢？ 解题思路：这题其实不算太难，但是思路容易乱。首先由于每队的价值等于该队中最高的能力值，所以可以从高到低枚举每一位同学的x，并更新ans">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/08/30/hdu10/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>2019航电暑期多校部分题解 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/30/hdu10/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">2019航电暑期多校部分题解
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-08-30 13:08:50 / 修改时间：13:10:20" itemprop="dateCreated datePublished" datetime="2019-08-30T13:08:50+08:00">2019-08-30</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1005-Welcome-Party"><a href="#1005-Welcome-Party" class="headerlink" title="1005 Welcome Party"></a>1005 Welcome Party</h4><p><a href="http://acm.hdu.edu.cn/showproblem.php?pid=6695" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述：</strong><br>一共有n名同学，每位同学都会唱歌和跳舞，第 i 位同学的唱歌和跳舞的能力值分别为$x_i,y_i$，现在将这些同学分为唱歌队和跳舞队，每队的价值等于该队中该能力值最高的同学的能力值，请问两队价值差最小是多少呢？</p>
+<p><strong>解题思路：</strong><br>这题其实不算太难，但是思路容易乱。首先由于每队的价值等于该队中最高的能力值，所以可以从高到低枚举每一位同学的x，并更新ans；对当前枚举到的x，我们在所有其他同学中找到最接近 x 的 y （即abs(x-y)最小），这个y必须是 <strong>比所有被枚举过的同学的y要大。</strong> 否则该同学就不是跳舞队中最大能力值（因为被枚举过的同学一定去跳舞了），该y就不能更新答案了。<br>当然细节在于如何找寻最接近x的y。</p>
+<p><strong>代码示例：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">#include&lt;cstdio&gt;</span><br><span class="line">#include&lt;set&gt;</span><br><span class="line">#include&lt;algorithm&gt;</span><br><span class="line">using namespace std;</span><br><span class="line">const int N = 1e5+10;</span><br><span class="line">int t,n;</span><br><span class="line">typedef long long ll;</span><br><span class="line">pair&lt;ll,ll&gt; a[N];</span><br><span class="line">#define x first</span><br><span class="line">#define y second</span><br><span class="line">multiset&lt;ll&gt; s2;</span><br><span class="line">void solve()&#123;</span><br><span class="line">	s2.clear();</span><br><span class="line">	sort(a+1,a+1+n); ll ans = 1ll&lt;&lt;60, mx = 0;</span><br><span class="line">	for(int i = 1;i &lt;= n;i++) s2.insert(a[i].y);</span><br><span class="line">	for(int i = n;i &gt;= 1;i--)&#123;</span><br><span class="line">		//先把当前同学的y删掉,防止选到同一位同学 </span><br><span class="line">		s2.erase(s2.find(a[i].y)); </span><br><span class="line">		//要么比mx大的值更新ans,要么就mx更新ans </span><br><span class="line">		if(mx) ans = min(ans,abs(mx-a[i].x));</span><br><span class="line">		</span><br><span class="line">		multiset&lt;ll&gt;::iterator it = s2.lower_bound(a[i].x);</span><br><span class="line">		if(it == s2.end()) it--;</span><br><span class="line">		if(*it &gt;= mx) ans = min(ans,abs(*it-a[i].x));</span><br><span class="line">		if(it != s2.begin()) it--;</span><br><span class="line">		if(*it &gt;= mx) ans = min(ans,abs(*it-a[i].x));</span><br><span class="line">		mx = max(mx,a[i].y);</span><br><span class="line">		//printf(&quot;%lld %lld %lld %lld %lld\n&quot;,mx,a[i].x,a[i].y,*it,ans);</span><br><span class="line">		</span><br><span class="line">		s2.insert(a[i].y);</span><br><span class="line">	&#125;</span><br><span class="line">	printf(&quot;%lld\n&quot;,ans);</span><br><span class="line">&#125;</span><br><span class="line">int main()&#123;</span><br><span class="line">	scanf(&quot;%d&quot;,&amp;t);</span><br><span class="line">	while(t--)&#123;</span><br><span class="line">		scanf(&quot;%d&quot;,&amp;n);</span><br><span class="line">		for(int i = 1;i &lt;= n;i++) scanf(&quot;%lld%lld&quot;,&amp;a[i].x,&amp;a[i].y);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="1011-Make-Rounddog-Happy"><a href="#1011-Make-Rounddog-Happy" class="headerlink" title="1011 Make Rounddog Happy"></a>1011 Make Rounddog Happy</h4><p><a href="http://acm.hdu.edu.cn/showproblem.php?pid=6701" target="_blank" rel="noopener">测试地址</a></p>
+<p><strong>题意简述：</strong><br>给出一个包含n个元素的序列a，其中 $1 &lt;= a_i &lt;= n$，友好子串的定义如下：</p>
+<ul>
+<li>[l , r]位置上的所有元素各不相同。</li>
+<li>$Max(a_l, a_{l+1} , … , a_r) - (r - l + 1) &lt;= k$。</li>
+</ul>
+<p>给出一个序列，请问该序列中有多少友好子串。</p>
+<p><strong>解题思路：</strong><br>这题是启发式分治，所谓启发式算法主要是指基于直观或经验而构造的算法，它不一定是最优的，但一定是可行的，并且时间要在可接受范围内。现阶段的启发式算法主要以仿自然算法（模拟）为主。<br>假设一个区间[l,r]内最大的元素下标为p，那么对于a[p]，在[l,r]内有多少个子区间包含p，且满足a[p] - k &lt;= r-l+1，这是子问题。我们可以将该问题分为[l , p]与[p , r]来看，我们对于这两个区间任选其一统计即可，于是我们可以选元素较少的那一个区间，这样元素最多不超过(r-l+1)/2。<br>假设左区间 [l  , p] 元素较少，我们在本次统计中（对[l , r]上以a[p]为最大值的子区间个数）对于每个位置 i （i 属于[l , p]）来计算以 i 为左端点，有多少个子区间满足要求；而满足要求的子区间个数等于tr-tl+1，因为[tl , tr]中任意一个位置都可以作为右端点，因为其满足a[p] - k &lt;= R-L（R为[tl ,tr]内一点，L为 i ）。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">3e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">int</span> a[N],st[N][<span class="number">25</span>],Log[N]; </span><br><span class="line"><span class="keyword">int</span> t,n,k;</span><br><span class="line"><span class="keyword">int</span> L[N],R[N];<span class="comment">//记录每个位置左右最远 不重复 且比其小的数的数量 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">/*初始化st表*/</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt; N;i++) Log[i] = Log[i/<span class="number">2</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) st[i][<span class="number">0</span>] = i;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;(<span class="number">1</span>&lt;&lt;j) &lt;= n;j++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i+(<span class="number">1</span>&lt;&lt;(j<span class="number">-1</span>)) &lt;= n;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> t1 = st[i][j<span class="number">-1</span>],t2 = st[i+(<span class="number">1</span>&lt;&lt;(j<span class="number">-1</span>))][j<span class="number">-1</span>];</span><br><span class="line">			st[i][j] = a[t1] &lt; a[t2]?t2:t1;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回[l,r]内最大的数的下标*/</span> </span><br><span class="line">	<span class="keyword">int</span> kk = Log[r-l+<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">int</span> t1 = st[l][kk], t2 = st[r-(<span class="number">1</span>&lt;&lt;kk)+<span class="number">1</span>][kk];</span><br><span class="line">	<span class="keyword">return</span> a[t1] &lt; a[t2]?t2:t1;</span><br><span class="line">&#125; </span><br><span class="line">ll ans = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">cal</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*递归统计答案*/</span></span><br><span class="line">	<span class="keyword">if</span>(l &gt; r) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">int</span> p = ask(l,r); <span class="keyword">int</span> tt = a[p]-k;</span><br><span class="line">	<span class="keyword">if</span>(p-l &lt; r-p)&#123;	<span class="comment">//左边点更少 </span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = l;i &lt;= p;i++)&#123;</span><br><span class="line">			<span class="keyword">int</span> tr = min(R[i],r), tl = max(p,i+tt<span class="number">-1</span>);</span><br><span class="line">			<span class="keyword">if</span>(tl &gt; tr) <span class="keyword">continue</span>;</span><br><span class="line">			ans += tr-tl+<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = r;i &gt;= p;i--)&#123;</span><br><span class="line">			<span class="keyword">int</span> tl = max(l,L[i]), tr = min(i-tt+<span class="number">1</span>,p);</span><br><span class="line">			<span class="keyword">if</span>(tl &gt; tr) <span class="keyword">continue</span>;</span><br><span class="line">			ans += tr-tl+<span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	cal(l,p<span class="number">-1</span>);</span><br><span class="line">	cal(p+<span class="number">1</span>,r);</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">int</span> vis[N];<span class="comment">//记录i最后一次出现的位置 </span></span><br><span class="line"><span class="function">ll <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回答案*/</span></span><br><span class="line">	init(); ans = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);</span><br><span class="line">	<span class="comment">/*以下代码用于更新L与R数组,通过简单的尺取法思想*/</span> </span><br><span class="line">	<span class="keyword">int</span> pre = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(vis[a[i]]) pre = max(pre,vis[a[i]]+<span class="number">1</span>);</span><br><span class="line">		L[i] = pre; vis[a[i]] = i;</span><br><span class="line">	&#125;</span><br><span class="line">	pre = n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) vis[i] = n+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = n;i &gt;= <span class="number">1</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(vis[a[i]] != n+<span class="number">1</span>) pre = min(vis[a[i]]<span class="number">-1</span>,pre);</span><br><span class="line">		R[i] = pre; vis[a[i]] = i;</span><br><span class="line">	&#125;</span><br><span class="line">	cal(<span class="number">1</span>,n);	<span class="comment">//递归分治计算 </span></span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t);</span><br><span class="line">	<span class="keyword">while</span>(t--)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;k);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,a+i);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,solve());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/思维/" rel="tag"># 思维</a>
+            
+              <a href="/tags/启发式分治/" rel="tag"># 启发式分治</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/08/28/dynamic-zx/" rel="next" title="可持久化线段树（主席树）">
+                  <i class="fa fa-chevron-left"></i> 可持久化线段树（主席树）
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1005-Welcome-Party"><span class="nav-number">1.</span> <span class="nav-text">1005 Welcome Party</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1011-Make-Rounddog-Happy"><span class="nav-number">2.</span> <span class="nav-text">1011 Make Rounddog Happy</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
