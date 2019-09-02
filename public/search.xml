@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[拓展欧拉定理+幂塔函数]]></title>
+    <url>%2F2019%2F09%2F02%2Fexphi%2F</url>
+    <content type="text"><![CDATA[拓展欧拉定理与幂塔函数欧拉定理： 若gcd(a,p) = 1，则 $a^p \equiv a^{b \% \varphi (p)}(mod \: p)$，其中gcd(a,p) = 1。拓展欧拉定理： 假设a为任意数，b和m为正整数，且$b &gt; \varphi(m)$，a和m不一定要互质，那么有如下公式： a^b~\equiv~\begin{cases}a^{b~Mod~\phi(m)} &\gcd(a,m)~=~1 \\a^b &\gcd(a,m)~\neq~1~\land~b~]]></content>
+      <categories>
+        <category>ACM学习笔记</category>
+      </categories>
+      <tags>
+        <tag>数论</tag>
+        <tag>幂塔函数</tag>
+        <tag>拓展欧拉定理</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[2018南京icpc网络赛]]></title>
     <url>%2F2019%2F08%2F30%2F2018nanjing%2F</url>
     <content type="text"><![CDATA[有嗲难，还有些卡时，思路还有些难想，虽然都是经典模型。 A. An Olympian Math Problem原题链接解题思路：如果是比赛时我估计会推公式，但在这通过率面前，我猜了个公式就交了，然后过了。答案就是n-1。 E. AC Challenge原题链接解题思路：状压dp，这类题做的很少，没忘这方面想。开始用的拓扑排序，但是很明显没有考虑到所有情况。用状压的话，就这题而言，是需要先判断当前状态是否合法，判断完之后再更新答案数组dp，最终答案是dp[(1&lt;]]></content>
