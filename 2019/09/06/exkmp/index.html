@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="问题模型：给定字符串S和子串T，S的长度为n，T的长度为m；求字符串T与字符串S的每一个后缀d的最长公共前缀。 拓展KMP算法假设 extend[] 数组： extend[i] 表示 T 与 S[i, n] 的最长公共前缀，目的是求出所有的 extend[0~n-1]。（注意到，如果存在extend[i] = m，则说明 T 在 S 中完全出现过，那么问题就变成标准KMP算法了。）我们下面的目标就">
+<meta name="keywords" content="数据结构与算法,拓展KMP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="拓展KMP算法">
+<meta property="og:url" content="http://valenshi.top/2019/09/06/exkmp/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="问题模型：给定字符串S和子串T，S的长度为n，T的长度为m；求字符串T与字符串S的每一个后缀d的最长公共前缀。 拓展KMP算法假设 extend[] 数组： extend[i] 表示 T 与 S[i, n] 的最长公共前缀，目的是求出所有的 extend[0~n-1]。（注意到，如果存在extend[i] = m，则说明 T 在 S 中完全出现过，那么问题就变成标准KMP算法了。）我们下面的目标就">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://valenshi.top/2019/09/06/exkmp/1.png">
+<meta property="og:image" content="http://valenshi.top/2019/09/06/exkmp/2.png">
+<meta property="og:updated_time" content="2019-09-06T08:24:34.010Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="拓展KMP算法">
+<meta name="twitter:description" content="问题模型：给定字符串S和子串T，S的长度为n，T的长度为m；求字符串T与字符串S的每一个后缀d的最长公共前缀。 拓展KMP算法假设 extend[] 数组： extend[i] 表示 T 与 S[i, n] 的最长公共前缀，目的是求出所有的 extend[0~n-1]。（注意到，如果存在extend[i] = m，则说明 T 在 S 中完全出现过，那么问题就变成标准KMP算法了。）我们下面的目标就">
+<meta name="twitter:image" content="http://valenshi.top/2019/09/06/exkmp/1.png">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/09/06/exkmp/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>拓展KMP算法 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/09/06/exkmp/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">拓展KMP算法
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-06 16:22:41 / 修改时间：16:24:34" itemprop="dateCreated datePublished" datetime="2019-09-06T16:22:41+08:00">2019-09-06</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><strong>问题模型：</strong><br>给定字符串S和子串T，S的长度为n，T的长度为m；求字符串T与字符串S的每一个后缀d的最长公共前缀。</p>
+<h4 id="拓展KMP算法"><a href="#拓展KMP算法" class="headerlink" title="拓展KMP算法"></a>拓展KMP算法</h4><p>假设 extend[] 数组： extend[i] 表示 T 与 S[i, n] 的最长公共前缀，目的是求出所有的 extend[0~n-1]。<br>（注意到，如果存在extend[i] = m，则说明 T 在 S 中完全出现过，那么问题就变成标准KMP算法了。）<br>我们下面的目标就是如何在较短的时间内更新extend数组；与KMP算法类似，我们通过利用next数组来阻止指针的回退。</p>
+<p><strong>下面先通过一般的例子来看我们是如何更新extend数组的：</strong></p>
+<p>S = “aaaabaa” , T = “aaaaa”。</p>
+<p>显然extend[0] = 4，显然当匹配到第5个时失配，共匹配了5次。<br>我们考虑利用已知的信息来计算extend[1]，已知S[1 , 3] = T[1 , 3]，现在要用S[1 , n-1]和T[0 , n-1]进行匹配，如果我们设 nex[1] 存放 T[1 , n-1] 与 T[0 , n-1] 的最长公共前缀，nex[1] = 4，这就说明<strong>对于S[1, n-1]，T[1 , n-1]能匹配上的字符，T[0,n-1]的前nex[1]个也能匹配的上</strong>，由于T[1,n-1]只能匹配S[1 , 3]共3个字符，那么显然前 3 个字符都可以成功匹配，我们直接匹配下一位即可；于是extend[1] = 3。</p>
+<h4 id="算法步骤"><a href="#算法步骤" class="headerlink" title="算法步骤"></a>算法步骤</h4><p><strong>定义extend[]数组：</strong> extend[i] 表示字符串 T 与字符串 S[i , n] 的最长公共前缀长度。<br><strong>定义nex[]数组：</strong> nex[i] 表示 T[i , n] 与 T[1 , n] 的最长公共前缀的长度。</p>
+<p>首先我们从左到右计算extend数组，假设在某一时刻 extend[0 , k] 已经计算完毕，并且之前匹配过程中所达到的最远距离为p，所谓最远距离即 p = MAX{ i+extend[i]  (0 &lt;= i &lt;= k) } 的最大值，p’ 为达到最远距离时的 i 。</p>
+<p><strong>现在来利用已知的信息求extend[k+1]：</strong><br>已知S[p’ , p] = T[0, p-p’]，即S[k+1 , p] = T[k+1 - p’ , p-p’]。<br>设 len = nex[k+1 - p’] ，即 len 为 T[k+1 - p’ , n-1] 与 T[0 , n-1]的最长公共前缀。</p>
+<ul>
+<li>如果k+len &lt; p，则extend[k+1] = len：<br>此时由于已知条件 以及 nex数组性质，可以知道前 len 个字符一定是匹配的。若S[k+ len+1] = T[len]，则说明 nex 是len+1而非len，于是与nex数组矛盾，故不成立；因此若k+len &lt; p，则extend[k+1] = len。</li>
+</ul>
+<p><img src="/2019/09/06/exkmp/1.png" alt="1"><br>(图1：当k+len&lt;p时情形，其中po = p’，图片来自 <em>dyx心心</em> 的博客)</p>
+<ul>
+<li>若k+len &gt;= p：<br>此时已知的是S[k+1 , p] = T[0 , p-k-1]，但是 S[p+1] 是否等同于 T[p-k] 尚且未知，因此需要向后遍历判断，同时更新p与p’。</li>
+</ul>
+<p><img src="/2019/09/06/exkmp/2.png" alt="2"><br>(图2：当k+len &gt;= p时情形，其中po = p’，图片来自 <em>dyx心心</em> 的博客)</p>
+<p>对于nex数组，其求法和extend数组类似，详情参考代码中getNex()函数实现方法。</p>
+<h4 id="例题模板"><a href="#例题模板" class="headerlink" title="例题模板"></a>例题模板</h4><p><a href="https://www.luogu.org/problem/P5410" target="_blank" rel="noopener">洛谷P5410拓展KMP模板</a><br><strong>题意简述：</strong><br>给定字符串S和T，输出next数组以及extend数组。</p>
+<p><strong>代码示例：</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e6</span>+<span class="number">10</span>; </span><br><span class="line"><span class="keyword">int</span> nex[N];		<span class="comment">//nex[i] = T[i,n-1]与T[0,n-1]最长公共前缀 </span></span><br><span class="line"><span class="keyword">char</span> S[N],T[N]; <span class="comment">//S为目标串,T为模式串 </span></span><br><span class="line"><span class="keyword">int</span> extend[N];	 </span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getNex</span><span class="params">(<span class="keyword">char</span>* str)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*计算nex数组*/</span></span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(str) ,i = <span class="number">0</span>, j, p0 ;</span><br><span class="line">	nex[<span class="number">0</span>] = len;</span><br><span class="line">	<span class="keyword">while</span>(i+<span class="number">1</span> &lt; len &amp;&amp; str[i] == str[i+<span class="number">1</span>]) i++;</span><br><span class="line">	nex[<span class="number">1</span>] = i; p0 = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(nex[i-p0]+i &lt; nex[p0]+p0) nex[i] = nex[i-p0];</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			j = nex[p0]+p0-i;</span><br><span class="line">			<span class="keyword">if</span>(j &lt; <span class="number">0</span>) j = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">while</span>(i+j &lt; len &amp;&amp; str[j] == str[j+i]) j++;</span><br><span class="line">			nex[i] = j; p0 = i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125; </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">exKMP</span><span class="params">(<span class="keyword">char</span>* str1,<span class="keyword">char</span> *str2)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*计算str2与str1的所有后缀的最长公共前缀长度,存放在extend数组中*/</span> </span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>,j,p0,l1 = <span class="built_in">strlen</span>(S), l2 = <span class="built_in">strlen</span>(T);</span><br><span class="line">	getNex(str2);</span><br><span class="line">	<span class="keyword">while</span>(i &lt; l1 &amp;&amp; i &lt; l2 &amp;&amp; str1[i] == str2[i]) i++;</span><br><span class="line">	extend[<span class="number">0</span>] = i;p0 = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; l1;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(nex[i-p0]+i &lt; extend[p0]+p0) extend[i] = nex[i-p0];</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			j = extend[p0]+p0-i;</span><br><span class="line">			<span class="keyword">if</span>(j &lt; <span class="number">0</span>) j = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">while</span>(i+j &lt; l1 &amp;&amp; j &lt; l2 &amp;&amp; str1[j+i] == str2[j]) j++;</span><br><span class="line">			extend[i] = j; p0 = i;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">/*计算并输出答案*/</span>	</span><br><span class="line">	<span class="keyword">int</span> l1 = <span class="built_in">strlen</span>(S), l2 = <span class="built_in">strlen</span>(T);</span><br><span class="line">	exKMP(S,T);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; l2;i++) <span class="built_in">printf</span>(<span class="string">"%d "</span>,nex[i]);</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">""</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; l1;i++) <span class="built_in">printf</span>(<span class="string">"%d "</span>,extend[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s%s"</span>,S,T);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li><a href="https://blog.csdn.net/dyx404514/article/details/41831947#commentBox" target="_blank" rel="noopener">dyx心心的博客</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+              <a href="/tags/拓展KMP/" rel="tag"># 拓展KMP</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/03/hdu6638-Snowy-Smile/" rel="next" title="hdu6638 Snowy Smile-线段树维护最大子矩阵">
+                  <i class="fa fa-chevron-left"></i> hdu6638 Snowy Smile-线段树维护最大子矩阵
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/09/06/hdu6629-String-Match/" rel="prev" title="hdu6629 string matching（拓展KMP）">
+                  hdu6629 string matching（拓展KMP） <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#拓展KMP算法"><span class="nav-number">1.</span> <span class="nav-text">拓展KMP算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法步骤"><span class="nav-number">2.</span> <span class="nav-text">算法步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例题模板"><span class="nav-number">3.</span> <span class="nav-text">例题模板</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>

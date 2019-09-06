@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[hdu6629 string matching（拓展KMP）]]></title>
+    <url>%2F2019%2F09%2F06%2Fhdu6629-String-Match%2F</url>
+    <content type="text"><![CDATA[hdu6629string matchingDescription:给出一个字符串S，我们执行“求出S所有后缀与S的最长公共前缀长度”这个操作，我们采取暴力算法(算法流程见题面)，请问我们在该算法中共执行了多少次比较操作？Input:第一行一个整数t，接下来共t组测试用例，每个测试用例输入一个长度小于1e6的字符串S。解题思路：可以用拓展KMP做，其中S是原串，T也是原串。暴力算法的比较次数就等同于所有后缀的最长公共前缀长度和，若没有比到字符串末尾，则还要加上一次失配的操作比较。由于本题T也是S，故可以在计算nex数组的同时便统计答案。 代码示例：12345678910111213141516171819202122232425262728293031323334353637383940#include&lt;cstdio&gt;#include&lt;cstring&gt;int t;const int N = 1e6+10; int nex[N]; //nex[i] = T[i,n-1]与T[0,n-1]最长公共前缀 char S[N];//S为目标串,T为模式串 typedef long long ll;ll ans = 0;void getNex(char* str)&#123; int len = strlen(str) ,i = 0,j,p0 ; nex[0] = len; while(i+1 &lt; len &amp;&amp; str[i] == str[i+1]) i++; nex[1] = i; p0 = 1; ans += nex[1]; if(nex[1] != len-1) ans++; for(int i = 2;i &lt; len;i++)&#123; if(nex[i-p0]+i &lt; nex[p0]+p0) nex[i] = nex[i-p0]; else &#123; j = nex[p0]+p0-i; if(j &lt; 0) j = 0; while(i+j &lt; len &amp;&amp; str[j] == str[j+i]) j++; nex[i] = j; p0 = i; &#125; ans += nex[i]; if(nex[i] != len-i) ans++; &#125;&#125; ll solve()&#123; /*计算并返回答案*/ ans = 0; getNex(S); return ans;&#125;int main()&#123; scanf("%d",&amp;t); while(t--)&#123; scanf("%s",S); printf("%lld\n",solve()); &#125; return 0;&#125;]]></content>
+      <categories>
+        <category>ACM题解</category>
+      </categories>
+      <tags>
+        <tag>拓展KMP</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[拓展KMP算法]]></title>
+    <url>%2F2019%2F09%2F06%2Fexkmp%2F</url>
+    <content type="text"><![CDATA[问题模型：给定字符串S和子串T，S的长度为n，T的长度为m；求字符串T与字符串S的每一个后缀d的最长公共前缀。 拓展KMP算法假设 extend[] 数组： extend[i] 表示 T 与 S[i, n] 的最长公共前缀，目的是求出所有的 extend[0~n-1]。（注意到，如果存在extend[i] = m，则说明 T 在 S 中完全出现过，那么问题就变成标准KMP算法了。）我们下面的目标就是如何在较短的时间内更新extend数组；与KMP算法类似，我们通过利用next数组来阻止指针的回退。 下面先通过一般的例子来看我们是如何更新extend数组的： S = “aaaabaa” , T = “aaaaa”。 显然extend[0] = 4，显然当匹配到第5个时失配，共匹配了5次。我们考虑利用已知的信息来计算extend[1]，已知S[1 , 3] = T[1 , 3]，现在要用S[1 , n-1]和T[0 , n-1]进行匹配，如果我们设 nex[1] 存放 T[1 , n-1] 与 T[0 , n-1] 的最长公共前缀，nex[1] = 4，这就说明对于S[1, n-1]，T[1 , n-1]能匹配上的字符，T[0,n-1]的前nex[1]个也能匹配的上，由于T[1,n-1]只能匹配S[1 , 3]共3个字符，那么显然前 3 个字符都可以成功匹配，我们直接匹配下一位即可；于是extend[1] = 3。 算法步骤定义extend[]数组： extend[i] 表示字符串 T 与字符串 S[i , n] 的最长公共前缀长度。定义nex[]数组： nex[i] 表示 T[i , n] 与 T[1 , n] 的最长公共前缀的长度。 首先我们从左到右计算extend数组，假设在某一时刻 extend[0 , k] 已经计算完毕，并且之前匹配过程中所达到的最远距离为p，所谓最远距离即 p = MAX{ i+extend[i] (0 &lt;= i &lt;= k) } 的最大值，p’ 为达到最远距离时的 i 。 现在来利用已知的信息求extend[k+1]：已知S[p’ , p] = T[0, p-p’]，即S[k+1 , p] = T[k+1 - p’ , p-p’]。设 len = nex[k+1 - p’] ，即 len 为 T[k+1 - p’ , n-1] 与 T[0 , n-1]的最长公共前缀。 如果k+len &lt; p，则extend[k+1] = len：此时由于已知条件 以及 nex数组性质，可以知道前 len 个字符一定是匹配的。若S[k+ len+1] = T[len]，则说明 nex 是len+1而非len，于是与nex数组矛盾，故不成立；因此若k+len &lt; p，则extend[k+1] = len。 (图1：当k+len&lt;p时情形，其中po = p’，图片来自 dyx心心 的博客) 若k+len &gt;= p：此时已知的是S[k+1 , p] = T[0 , p-k-1]，但是 S[p+1] 是否等同于 T[p-k] 尚且未知，因此需要向后遍历判断，同时更新p与p’。 (图2：当k+len &gt;= p时情形，其中po = p’，图片来自 dyx心心 的博客) 对于nex数组，其求法和extend数组类似，详情参考代码中getNex()函数实现方法。 例题模板洛谷P5410拓展KMP模板题意简述：给定字符串S和T，输出next数组以及extend数组。 代码示例： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152#include&lt;cstdio&gt;#include&lt;cstring&gt;const int N = 1e6+10; int nex[N]; //nex[i] = T[i,n-1]与T[0,n-1]最长公共前缀 char S[N],T[N]; //S为目标串,T为模式串 int extend[N]; void getNex(char* str)&#123; /*计算nex数组*/ int len = strlen(str) ,i = 0, j, p0 ; nex[0] = len; while(i+1 &lt; len &amp;&amp; str[i] == str[i+1]) i++; nex[1] = i; p0 = 1; for(int i = 2;i &lt; len;i++)&#123; if(nex[i-p0]+i &lt; nex[p0]+p0) nex[i] = nex[i-p0]; else &#123; j = nex[p0]+p0-i; if(j &lt; 0) j = 0; while(i+j &lt; len &amp;&amp; str[j] == str[j+i]) j++; nex[i] = j; p0 = i; &#125; &#125;&#125; void exKMP(char* str1,char *str2)&#123; /*计算str2与str1的所有后缀的最长公共前缀长度,存放在extend数组中*/ int i = 0,j,p0,l1 = strlen(S), l2 = strlen(T); getNex(str2); while(i &lt; l1 &amp;&amp; i &lt; l2 &amp;&amp; str1[i] == str2[i]) i++; extend[0] = i;p0 = 0; for(int i = 1;i &lt; l1;i++)&#123; if(nex[i-p0]+i &lt; extend[p0]+p0) extend[i] = nex[i-p0]; else&#123; j = extend[p0]+p0-i; if(j &lt; 0) j = 0; while(i+j &lt; l1 &amp;&amp; j &lt; l2 &amp;&amp; str1[j+i] == str2[j]) j++; extend[i] = j; p0 = i; &#125; &#125;&#125;void solve()&#123; /*计算并输出答案*/ int l1 = strlen(S), l2 = strlen(T); exKMP(S,T); for(int i = 0;i &lt; l2;i++) printf("%d ",nex[i]); puts(""); for(int i = 0;i &lt; l1;i++) printf("%d ",extend[i]);&#125;int main()&#123; scanf("%s%s",S,T); solve(); return 0;&#125; 参考资料 dyx心心的博客]]></content>
+      <categories>
+        <category>ACM学习笔记</category>
+      </categories>
+      <tags>
+        <tag>数据结构与算法</tag>
+        <tag>拓展KMP</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[hdu6638 Snowy Smile-线段树维护最大子矩阵]]></title>
     <url>%2F2019%2F09%2F03%2Fhdu6638-Snowy-Smile%2F</url>
     <content type="text"><![CDATA[题目链接 Snowy Smile题意简述：给出平面上n(n &lt;= 2000)个点，点的坐标在-1e9~1e9之间，试求出最大子矩阵的和是多少。 解题思路：考虑数据范围，2e3个点离散化后可能会有2e3个，本题中各个点是离散的，所以用普通的动态规划比较麻烦，因此本题采用$O(N^2log_2N)$的线段树+枚举。我们对x，枚举所有可能的x[i]和x[j]其中x[i]为上界，x[j]为下界，这个枚举花费时间为$O(N^2)$，而对于每一种可能的组合，再利用线段树$O(log_2N)$求出最大连续子段和，因此总时间$O(N^2log_2N)$。代码示例：12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485#include&lt;cstdio&gt;#include&lt;queue&gt;#include&lt;algorithm&gt;using namespace std;const int N = 3010;int t,n;int tmp[N]; //离散化用typedef long long ll;struct Chest&#123; int x,y,val; bool operator &lt;(const Chest &amp; B) const&#123; return x &lt; B.x; &#125;&#125;cs[N];struct SegmentTree&#123; /*分别为区间和,区间最大子段和, 从左侧开始的最大子段和,从右侧开始的最大子段和*/ ll sum,mx,lx,rx; #define sum(x) tr[x].sum #define mx(x) tr[x].mx #define lx(x) tr[x].lx #define rx(x) tr[x].rx &#125;tr[N*4];void BuildTree(int rt,int l,int r)&#123; /*在区间[l,r]上建立一棵线段树*/ sum(rt) = mx(rt) = lx(rt) = rx(rt) = 0; if(l == r) return; int mid = l+r&gt;&gt;1; BuildTree(rt*2,l,mid); BuildTree(rt*2+1,mid+1,r);&#125;void spread(int rt)&#123; /*用于根据rt的子节点更新rt的4个数据*/ sum(rt) = sum(rt*2)+sum(rt*2+1); mx(rt) = max(rx(rt*2)+lx(rt*2+1),max(mx(rt*2),mx(rt*2+1))); lx(rt) = max(lx(rt*2),sum(rt*2)+lx(rt*2+1)); rx(rt) = max(rx(rt*2+1),sum(rt*2+1)+rx(rt*2));&#125; void Insert(int rt,int p,int val,int l,int r)&#123; /*将线段树p位置的值设为val;l,r是辅助作用哦*/ if(l == r)&#123; sum(rt) += val; lx(rt) = rx(rt) = mx(rt) = sum(rt); return; &#125; int mid = l+r&gt;&gt;1; if(p &lt;= mid) Insert(rt*2,p,val,l,mid); else Insert(rt*2+1,p,val,mid+1,r); spread(rt); //在回溯时更新节点的值 &#125;ll ask()&#123; /*返回当前最大连续子段和*/ return tr[1].mx;&#125;void solve()&#123; sort(tmp+1,tmp+1+n); int cnt = unique(tmp+1,tmp+1+n)-tmp-1; sort(cs+1,cs+1+n); ll ans = 0; /*我们对每一个x[i]上限,枚举所有可能x[j]的下限, 并利用线段树求出x[i]~x[j]最大字段和*/ for(int i = 1;i &lt;= n;i++)&#123; if(cs[i].x == cs[i-1].x &amp;&amp; i != 1) continue; BuildTree(1,1,cnt); for(int j = i;j &lt;= n;j++)&#123; if(cs[j].x != cs[j-1].x &amp;&amp; i != j) ans = max(ans,ask()); int y = lower_bound(tmp+1,tmp+1+cnt,cs[j].y)-tmp; Insert(1,y,cs[j].val,1,cnt); &#125; ans = max(ans,ask());//如果全部相等,在此处特判 &#125; printf("%lld\n",ans);&#125; int main()&#123; scanf("%d",&amp;t); while(t--)&#123; scanf("%d",&amp;n); for(int i = 1;i &lt;= n;i++)&#123; scanf("%d%d%d",&amp;cs[i].x,&amp;cs[i].y,&amp;cs[i].val); tmp[i] = cs[i].y; &#125; solve(); &#125;&#125;]]></content>
@@ -187,8 +210,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数论</tag>
         <tag>数据结构与算法</tag>
+        <tag>数论</tag>
       </tags>
   </entry>
   <entry>
@@ -294,8 +317,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数论</tag>
         <tag>数据结构与算法</tag>
+        <tag>数论</tag>
       </tags>
   </entry>
   <entry>
@@ -366,8 +389,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数论</tag>
         <tag>数据结构与算法</tag>
+        <tag>数论</tag>
       </tags>
   </entry>
   <entry>
