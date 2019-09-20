@@ -55,20 +55,20 @@
   };
 </script>
 
-  <meta name="description" content="需要掌握的知识：  原码、反码、补码 按位或 按位与 异或 非 移位运算 lowbit的实现 运算符优先级原码、反码、补码原码： 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。 1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，即（0 2^2）+（1 2^1）+（0* 2^0）=2（‘^’表示幂运算符）所以1010">
-<meta name="keywords" content="数据结构与算法">
+  <meta name="description" content="计算机体系结构和内存层次 计算机体系结构 内存层次 操作系统的内存管理方式  计算机体系结构基本的分配和释放的管理要求。cpu高速缓存，存储管理单元（MMU），内存最小访问单位8bit；32位的意思是一次可以读写32位；高速缓存用来存放会重复使用的数据，用来提高效率； 内存层次缓存速度最快，首先去缓存找数据，若未命中则去内存中找，若仍未命中则去外存（虚拟内存）中找，这三者速度差别很大。 操作系统的">
+<meta name="keywords" content="内存分配">
 <meta property="og:type" content="article">
-<meta property="og:title" content="位运算">
-<meta property="og:url" content="http://valenshi.top/2019/08/16/bit-cal/index.html">
+<meta property="og:title" content="5 连续内存分配">
+<meta property="og:url" content="http://valenshi.top/2019/09/20/os5/index.html">
 <meta property="og:site_name" content="ValenShi&#39;s Blog">
-<meta property="og:description" content="需要掌握的知识：  原码、反码、补码 按位或 按位与 异或 非 移位运算 lowbit的实现 运算符优先级原码、反码、补码原码： 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。 1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，即（0 2^2）+（1 2^1）+（0* 2^0）=2（‘^’表示幂运算符）所以1010">
+<meta property="og:description" content="计算机体系结构和内存层次 计算机体系结构 内存层次 操作系统的内存管理方式  计算机体系结构基本的分配和释放的管理要求。cpu高速缓存，存储管理单元（MMU），内存最小访问单位8bit；32位的意思是一次可以读写32位；高速缓存用来存放会重复使用的数据，用来提高效率； 内存层次缓存速度最快，首先去缓存找数据，若未命中则去内存中找，若仍未命中则去外存（虚拟内存）中找，这三者速度差别很大。 操作系统的">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-16T13:53:55.632Z">
+<meta property="og:updated_time" content="2019-09-20T14:53:54.404Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="位运算">
-<meta name="twitter:description" content="需要掌握的知识：  原码、反码、补码 按位或 按位与 异或 非 移位运算 lowbit的实现 运算符优先级原码、反码、补码原码： 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。 1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，即（0 2^2）+（1 2^1）+（0* 2^0）=2（‘^’表示幂运算符）所以1010">
+<meta name="twitter:title" content="5 连续内存分配">
+<meta name="twitter:description" content="计算机体系结构和内存层次 计算机体系结构 内存层次 操作系统的内存管理方式  计算机体系结构基本的分配和释放的管理要求。cpu高速缓存，存储管理单元（MMU），内存最小访问单位8bit；32位的意思是一次可以读写32位；高速缓存用来存放会重复使用的数据，用来提高效率； 内存层次缓存速度最快，首先去缓存找数据，若未命中则去内存中找，若仍未命中则去外存（虚拟内存）中找，这三者速度差别很大。 操作系统的">
   <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
-  <link rel="canonical" href="http://valenshi.top/2019/08/16/bit-cal/">
+  <link rel="canonical" href="http://valenshi.top/2019/09/20/os5/">
 
 
 <script id="page-configurations">
@@ -82,7 +82,7 @@
   };
 </script>
 
-  <title>位运算 | ValenShi's Blog</title>
+  <title>5 连续内存分配 | ValenShi's Blog</title>
   
 
 
@@ -257,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/16/bit-cal/">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/09/20/os5/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -271,7 +271,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">位运算
+          <h1 class="post-title" itemprop="name headline">5 连续内存分配
 
             
           </h1>
@@ -288,7 +288,7 @@
                 
               
 
-              <time title="创建时间：2019-08-16 21:53:04 / 修改时间：21:53:55" itemprop="dateCreated datePublished" datetime="2019-08-16T21:53:04+08:00">2019-08-16</time>
+              <time title="创建时间：2019-09-20 22:52:54 / 修改时间：22:53:54" itemprop="dateCreated datePublished" datetime="2019-09-20T22:52:54+08:00">2019-09-20</time>
             </span>
           
             
@@ -301,7 +301,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
               
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/计算机操作系统/" itemprop="url" rel="index"><span itemprop="name">计算机操作系统</span></a></span>
 
                 
                 
@@ -320,36 +320,32 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong>需要掌握的知识：</strong></p>
-<ul>
-<li>原码、反码、补码</li>
-<li>按位或</li>
-<li>按位与</li>
-<li>异或</li>
-<li>非</li>
-<li>移位运算</li>
-<li>lowbit的实现</li>
-<li>运算符优先级<h5 id="原码、反码、补码"><a href="#原码、反码、补码" class="headerlink" title="原码、反码、补码"></a>原码、反码、补码</h5><strong>原码：</strong> 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。<blockquote>
-<p>1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，<br>即（0<em> 2^2）+（1</em> 2^1）+（0* 2^0）=2（‘^’表示幂运算符）<br>所以1010表示十进制数（-2）。</p>
-</blockquote>
-</li>
+        <h3 id="计算机体系结构和内存层次"><a href="#计算机体系结构和内存层次" class="headerlink" title="计算机体系结构和内存层次"></a>计算机体系结构和内存层次</h3><ul>
+<li>计算机体系结构</li>
+<li>内存层次</li>
+<li>操作系统的内存管理方式</li>
 </ul>
-<p><strong>面临问题：</strong> 原码下，正数相加所得结果正确，但是正数和负数相加出错。</p>
-<hr>
-<p><strong>反码：</strong> 正数的反码还是等于原码，负数的反码就是他的原码除符号位外，按位取反。</p>
-<blockquote>
-<p>3是正数，反码与原码相同，则可以表示为0011<br>-3的原码是1011，符号位保持不变，低三位（011）按位取反得（100）<br>所以-3的反码为1100</p>
-</blockquote>
-<p><strong>面临问题：</strong> 正数相加所得结果正确，正负相加所得结果正确，负负相加结果出错。</p>
-<hr>
-<p><strong>补码：</strong> 正数的补码等于他的原码，负数的补码等于反码+1。</p>
-<p>上述给出的是补码的求法，补码的真正定义是什么？为什么要这样定义？</p>
-<p>采用补码的表示方式的<strong>好处</strong>，一是可以将减法转化为加法运算，简化运算复杂度；二是可以让符号位作为数值直接参与运算，所得结果仍然是正确的，即符号位无需单独处理。</p>
-<h5 id="按位或、与、异或、非"><a href="#按位或、与、异或、非" class="headerlink" title="按位或、与、异或、非"></a>按位或、与、异或、非</h5><p>在c语言中，是将一个十进制整数（一般情况下）转化为二进制位，然后再对二进制数的每一位对应进行或、与、异或、非操作。</p>
-<h5 id="位移运算"><a href="#位移运算" class="headerlink" title="位移运算"></a>位移运算</h5><p>位移运算分为左移和算数右移，其中<strong>左移</strong>是指在二进制表示下把所有位数字同时向左移动一位，高位越界后舍弃，低位以0补充。其中越界是指，int型变量一般仅有32位，如果左移后超过了32位则舍弃超过的部分。<br><strong>算数右移</strong>是指在二进制补码表示下把数字同时向右移动，高位以符号位填充，低位越界后舍弃。算数右移等于除以2向下取整，（-5）&gt;&gt;1 = -3 , 3 &gt;&gt; 1 = 2。<br>可以发现算数右移并不等同于c语言中的整数/2，值得一提的是c语言中的整数/2是“除以2向0取整”。<br><strong>逻辑右移</strong>是在补码表示下把所有数字同时右移，高位以0补充，低位越界后舍弃，但是C++没有规定实现方式，一般编译器都会实现算数右移。</p>
-<h5 id="lowbit的实现"><a href="#lowbit的实现" class="headerlink" title="lowbit的实现"></a>lowbit的实现</h5><p><strong>定义：</strong> lowbit( n )是取出非负整数 n 在二进制表示下最低位的 1 以及它后面的0所构成的十进制数值。<br><strong>实现：</strong><br>若 n &gt; 0，且第 k 位是1，第 0 ~ k-1 位都是0。<br>先将n按位取反，那么第 k 位变成了0，第 0 ~k 位变成了1。<br>再令n = n+1，那么显然通过一系列进位，第 0~k-1 位都变成了0，而第 k 位又变成了1。<br>我们注意到，最初的 n ，与最终的n只有第 0~k 位相同，更高的位都恰好相反（举个例子推导试试），于是将它们按位与就得到了 0~k 位的数值，这个值就是我们所求的答案。</p>
-<h5 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h5><p>不确定就加括号！！位移运算最好加括号！<br><a href="https://baike.baidu.com/item/%E8%BF%90%E7%AE%97%E7%AC%A6%E4%BC%98%E5%85%88%E7%BA%A7/4752611?fr=aladdin" target="_blank" rel="noopener">百度百科，运算符优先级表</a></p>
-
+<h4 id="计算机体系结构"><a href="#计算机体系结构" class="headerlink" title="计算机体系结构"></a>计算机体系结构</h4><p>基本的分配和释放的管理要求。cpu高速缓存，存储管理单元（MMU），内存最小访问单位8bit；32位的意思是一次可以读写32位；高速缓存用来存放会重复使用的数据，用来提高效率；</p>
+<h4 id="内存层次"><a href="#内存层次" class="headerlink" title="内存层次"></a>内存层次</h4><p>缓存速度最快，首先去缓存找数据，若未命中则去内存中找，若仍未命中则去外存（虚拟内存）中找，这三者速度差别很大。</p>
+<h4 id="操作系统的内存管理"><a href="#操作系统的内存管理" class="headerlink" title="操作系统的内存管理"></a>操作系统的内存管理</h4><p>知识点：我们希望的理想状态。逻辑存储单元。<br><strong>存储管理要达到的效果：</strong></p>
+<ul>
+<li>抽象：逻辑地址空间</li>
+<li>保护：独立地址空间</li>
+<li>共享：访问相同内存</li>
+<li>虚拟化：更大的地址空间</li>
+</ul>
+<h4 id="操作系统中采用的内存管理方式："><a href="#操作系统中采用的内存管理方式：" class="headerlink" title="操作系统中采用的内存管理方式："></a>操作系统中采用的内存管理方式：</h4><ul>
+<li>重定位（relocation）</li>
+<li>分段（segmentation）</li>
+<li>分页（paging）</li>
+<li>虚拟存储（目前多数系统，如Linux，采用按需页式虚拟存储）</li>
+</ul>
+<p><strong>实现高度依赖硬件：</strong></p>
+<ul>
+<li>与计算机存储架构紧耦合</li>
+<li>MMU（内存管理单元）：处理CPU存储访问请求的硬件</li>
+</ul>
+<h3 id="地址空间和地址生成"><a href="#地址空间和地址生成" class="headerlink" title="地址空间和地址生成"></a>地址空间和地址生成</h3><h4 id="地址空间的定义"><a href="#地址空间的定义" class="headerlink" title="地址空间的定义"></a>地址空间的定义</h4><h4 id="逻辑地址生成"><a href="#逻辑地址生成" class="headerlink" title="逻辑地址生成"></a>逻辑地址生成</h4><h4 id="地址生成时机和限制"><a href="#地址生成时机和限制" class="headerlink" title="地址生成时机和限制"></a>地址生成时机和限制</h4><h4 id="地址生成过程"><a href="#地址生成过程" class="headerlink" title="地址生成过程"></a>地址生成过程</h4><h4 id="地址检查"><a href="#地址检查" class="headerlink" title="地址检查"></a>地址检查</h4>
     </div>
 
     
@@ -364,7 +360,7 @@
           
           <div class="post-tags">
             
-              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+              <a href="/tags/内存分配/" rel="tag"># 内存分配</a>
             
           </div>
         
@@ -374,8 +370,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/08/16/st2/" rel="next" title="二维st表">
-                  <i class="fa fa-chevron-left"></i> 二维st表
+                <a href="/2019/09/15/dudu-maze/" rel="next" title="Dudu's maze 解题报告">
+                  <i class="fa fa-chevron-left"></i> Dudu's maze 解题报告
                 </a>
               
             </div>
@@ -383,10 +379,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/08/16/inv/" rel="prev" title="逆元模板">
-                  逆元模板 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -558,7 +550,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#原码、反码、补码"><span class="nav-number">1.</span> <span class="nav-text">原码、反码、补码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#按位或、与、异或、非"><span class="nav-number">2.</span> <span class="nav-text">按位或、与、异或、非</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#位移运算"><span class="nav-number">3.</span> <span class="nav-text">位移运算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lowbit的实现"><span class="nav-number">4.</span> <span class="nav-text">lowbit的实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#运算符优先级"><span class="nav-number">5.</span> <span class="nav-text">运算符优先级</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#计算机体系结构和内存层次"><span class="nav-number">1.</span> <span class="nav-text">计算机体系结构和内存层次</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#计算机体系结构"><span class="nav-number">1.1.</span> <span class="nav-text">计算机体系结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#内存层次"><span class="nav-number">1.2.</span> <span class="nav-text">内存层次</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#操作系统的内存管理"><span class="nav-number">1.3.</span> <span class="nav-text">操作系统的内存管理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#操作系统中采用的内存管理方式："><span class="nav-number">1.4.</span> <span class="nav-text">操作系统中采用的内存管理方式：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#地址空间和地址生成"><span class="nav-number">2.</span> <span class="nav-text">地址空间和地址生成</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#地址空间的定义"><span class="nav-number">2.1.</span> <span class="nav-text">地址空间的定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#逻辑地址生成"><span class="nav-number">2.2.</span> <span class="nav-text">逻辑地址生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#地址生成时机和限制"><span class="nav-number">2.3.</span> <span class="nav-text">地址生成时机和限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#地址生成过程"><span class="nav-number">2.4.</span> <span class="nav-text">地址生成过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#地址检查"><span class="nav-number">2.5.</span> <span class="nav-text">地址检查</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -677,55 +669,6 @@
 
   
 
-  
-    
-      <script type="text/x-mathjax-config">
-
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-      equationNumbers: {
-        autoNumber: 'AMS'
-      }
-    }
-  });
-
-  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
-    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
-      if (data.display) {
-        var next = data.script.nextSibling;
-        while (next && next.nodeName.toLowerCase() === '#text') {
-          next = next.nextSibling;
-        }
-        if (next && next.nodeName.toLowerCase() === 'br') {
-          next.parentNode.removeChild(next);
-        }
-      }
-    });
-  });
-
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for (i = 0; i < all.length; i += 1) {
-      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
-      if (element.nodeName.toLowerCase() == 'li') {
-        element = element.parentNode;
-      }
-      element.classList.add('has-jax');
-    }
-  });
-</script>
-<script>
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
-    MathJax.Hub.Typeset();
-  }, window.MathJax);
-</script>
-
-    
   
 
   
