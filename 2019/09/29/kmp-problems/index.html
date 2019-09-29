@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="测试地址 剪花布条题意简述原题来自：HDU 2087一块花布条，里面有些图案，另有一块直接可用的小饰条，里面也有一些图案。对于给定的花布条和小饰条，计算一下能从花布条中尽可能剪出几块小饰条来呢？ 解题思路就是普通的kmp算法，只不过这里的两个模式串不能重叠，我们基于贪心策略遇到一个选一个即可。代码示例1234567891011121314151617181920212223242526272829">
+<meta name="keywords" content="KMP">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KMP算法练习题集">
+<meta property="og:url" content="http://valenshi.top/2019/09/29/kmp-problems/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="测试地址 剪花布条题意简述原题来自：HDU 2087一块花布条，里面有些图案，另有一块直接可用的小饰条，里面也有一些图案。对于给定的花布条和小饰条，计算一下能从花布条中尽可能剪出几块小饰条来呢？ 解题思路就是普通的kmp算法，只不过这里的两个模式串不能重叠，我们基于贪心策略遇到一个选一个即可。代码示例1234567891011121314151617181920212223242526272829">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-09-29T06:02:06.919Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KMP算法练习题集">
+<meta name="twitter:description" content="测试地址 剪花布条题意简述原题来自：HDU 2087一块花布条，里面有些图案，另有一块直接可用的小饰条，里面也有一些图案。对于给定的花布条和小饰条，计算一下能从花布条中尽可能剪出几块小饰条来呢？ 解题思路就是普通的kmp算法，只不过这里的两个模式串不能重叠，我们基于贪心策略遇到一个选一个即可。代码示例1234567891011121314151617181920212223242526272829">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/09/29/kmp-problems/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>KMP算法练习题集 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/09/29/kmp-problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">KMP算法练习题集
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-09-29 13:54:36 / 修改时间：14:02:06" itemprop="dateCreated datePublished" datetime="2019-09-29T13:54:36+08:00">2019-09-29</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://ybt.ssoier.cn:8088/index.php" target="_blank" rel="noopener">测试地址</a></p>
+<h4 id="剪花布条"><a href="#剪花布条" class="headerlink" title="剪花布条"></a>剪花布条</h4><p><strong>题意简述</strong><br>原题来自：HDU 2087<br>一块花布条，里面有些图案，另有一块直接可用的小饰条，里面也有一些图案。对于给定的花布条和小饰条，计算一下能从花布条中尽可能剪出几块小饰条来呢？</p>
+<p><strong>解题思路</strong><br>就是普通的kmp算法，只不过这里的两个模式串不能重叠，我们基于贪心策略遇到一个选一个即可。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e3</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> f[N],nex[N];</span><br><span class="line"><span class="keyword">char</span> S[N],T[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getNex</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(nex,<span class="number">0</span>,<span class="keyword">sizeof</span> nex);</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s)<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>,j = <span class="number">0</span>;i &lt;= len;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; s[i] != s[j+<span class="number">1</span>]) j = nex[j];</span><br><span class="line">		<span class="keyword">if</span>(s[i] == s[j+<span class="number">1</span>]) j++;</span><br><span class="line">		nex[i] = j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getF</span><span class="params">(<span class="keyword">char</span> *s,<span class="keyword">char</span> *t)</span></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(f,<span class="number">0</span>,<span class="keyword">sizeof</span> f);</span><br><span class="line">	<span class="keyword">int</span> n = <span class="built_in">strlen</span>(s)<span class="number">-1</span>, m = <span class="built_in">strlen</span>(t)<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,j = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; (j == m || s[i] != t[j+<span class="number">1</span>])) j = nex[j];</span><br><span class="line">		<span class="keyword">if</span>(s[i] == t[j+<span class="number">1</span>]) j++;</span><br><span class="line">		f[i] = j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	getNex(T);</span><br><span class="line">	getF(S,T);</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0</span>,r = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="built_in">strlen</span>(S)<span class="number">-1</span>, m = <span class="built_in">strlen</span>(T)<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(i &gt; r &amp;&amp; f[i] == m) ans++ ,r = i+m<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%s"</span>,S+<span class="number">1</span>) &amp;&amp; S[<span class="number">1</span>] != <span class="string">'#'</span>)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,T+<span class="number">1</span>); S[<span class="number">0</span>] = T[<span class="number">0</span>] = <span class="string">'#'</span>;</span><br><span class="line">		solve();</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Power-Strings"><a href="#Power-Strings" class="headerlink" title="Power Strings"></a>Power Strings</h4><p>在之前的字符串与Hash题集中做过，而且刚过去不久，不整理了。</p>
+<h4 id="Radio-Transmission"><a href="#Radio-Transmission" class="headerlink" title="Radio Transmission"></a>Radio Transmission</h4><p><strong>题意简述</strong><br>给你一个字符串，它是由某个字符串不断自我连接形成的。但是这个字符串是不确定的，现在只想知道它的最短长度是多少。</p>
+<p><strong>解题思路</strong><br>求最短循环节，给定的字符串可能是由循环节循环构成的字串的一个子串，所以就直接用求最短循环节就可以了，省去用字符串hash判断该串是否满足了。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> n,nex[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getNex</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s)<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>,j = <span class="number">0</span>;i &lt;= len;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; s[i] != s[j+<span class="number">1</span>]) j = nex[j];</span><br><span class="line">		<span class="keyword">if</span>(s[i] == s[j+<span class="number">1</span>]) j++;</span><br><span class="line">		nex[i] = j;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	getNex(str);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,n - nex[n]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str+<span class="number">1</span>);</span><br><span class="line">	str[<span class="number">0</span>] = <span class="string">'#'</span>;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="OKR-Periods-of-Words"><a href="#OKR-Periods-of-Words" class="headerlink" title="OKR-Periods of Words"></a>OKR-Periods of Words</h4><p><strong>题意简述</strong></p>
+<p>原题来自：POI 2006<br>串是有限个小写字符的序列，特别的，一个空序列也可以是一个串。一个串 P 是串 A 的前缀，当且仅当存在串 B，使得 A=PB。如果P≠A并且 P 不是一个空串，那么我们说 P 是 A 的一个 proper 前缀。<br>定义 Q 是 A 的周期，当且仅当 Q 是 A 的一个 proper 前缀并且 A 是 QQ 的前缀（不一定要是 proper 前缀）。比如串 abab 和 ababab 都是串 abababa 的周期。串 A 的最大周期就是它最长的一个周期或者是一个空串（当 A 没有周期的时候），比如说，ababab 的最大周期是 abab。串 abc 的最大周期是空串。<br>给出一个串，求出它所有前缀的最大周期长度之和。</p>
+<p><strong>解题思路</strong><br>题意有一些绕，但是还好给的是中文题面，尚可理解。就是说P是A的一个真子串，且是A的前缀，那么P就是A的proper前缀。若Q是A的proper前缀，且A是QQ（两个Q拼接在一起）的前缀（前缀不必要是真子串），那么Q就是A的周期。<br>现在要求的是A的 所有前缀的 最长周期的长度之和。</p>
+<p>如果要是求最短周期的长度，那么直接就是求最短循环节，跑一遍nex就解决了；现在要求最长周期的长度，相当于求最长的循环节（该循环节不能等于原串！否则就不是proper前缀了），那么就不断的令 j = nex[j]，找到非零的最小 nex[j] （将nex数组看作father数组，一棵father树），那么最长循环节就是 i - j 了。</p>
+<p>这样会超时，因为我们每次令j = nex[j]相当于从叶子节点走到根节点，最坏情况是O(N)才能找到最小的非零 nex[j]，总时间复杂度就是O(N^2)。</p>
+<p><strong>优化</strong><br>我们令 f[j] 表示根到 j 路径上最小非零的值。（我们把nex数组看作一棵树！！！）<br>那么对于任意的nex[p]，若nex[p] != 0，那么最长周期就是 p - f[nex[p] ]。<br>我们在求nex数组时顺便更新 f 数组，和记忆化类似，思路不难理解。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> n,nex[N],f[N];</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getNex</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s)<span class="number">-1</span>; f[<span class="number">0</span>] = INF;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>,j = <span class="number">0</span>;i &lt;= len;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; s[i] != s[j+<span class="number">1</span>]) j = nex[j];</span><br><span class="line">		<span class="keyword">if</span>(s[i] == s[j+<span class="number">1</span>]) j++;</span><br><span class="line">		nex[i] = j;</span><br><span class="line">		<span class="keyword">if</span>(j) f[j] = min(j,f[nex[j]]);</span><br><span class="line">	<span class="comment">//	printf("%d %d\n",j,f[j]);</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	getNex(str);</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(nex[i]) ans += i - f[nex[i]];</span><br><span class="line">		<span class="comment">//printf("%d %c\n",ans,str[i]);</span></span><br><span class="line">		<span class="comment">//printf("%d %d\n",nex[i],f[i]);</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin);</span></span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str+<span class="number">1</span>);</span><br><span class="line">	str[<span class="number">0</span>] = <span class="string">'#'</span>;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="似乎在梦中见过的样子"><a href="#似乎在梦中见过的样子" class="headerlink" title="似乎在梦中见过的样子"></a>似乎在梦中见过的样子</h4><p><strong>题意简述</strong><br>原题来自：2014 年湖北省队互测 Week2<br>「Madoka，不要相信 QB！」伴随着 Homura 的失望地喊叫，Madoka 与 QB 签订了契约。<br>这是 Modoka 的一个噩梦，也同时是上个轮回中所发生的事。为了使这一次 Madoka 不再与 QB 签订契约，Homura 决定在刚到学校的第一天就解决 QB。然而，QB 也是有许多替身的（但在第八话中的剧情显示它也有可能是无限重生的），不过，意志坚定的 Homura 是不会放弃的——她决定消灭所有可能是 QB 的东西。现在，她已感受到附近的状态，并且把它转化为一个长度为 n 的字符串交给了学 OI 的你。<br>现在你从她的话中知道，所有形似于 A+B+A 的字串都是 QB 或它的替身，且 ∣A∣≥k,∣B∣≥1（位置不同其他性质相同的子串算不同子串，位置相同但拆分不同的子串算同一子串），然后你必须尽快告诉 Homura 这个答案——QB 以及它的替身的数量。<br>注：对于一个字符串 S，∣S∣ 表示 S 的长度。</p>
+<p><strong>解题思路</strong><br>这题需要对照样例来理解题意，经过分析后，发现题意是如果有一个子串满足ABA形式，其中 |A|&gt;=k 且 B 不是空串，那么该子串就是QB大魔王。现在问有多少个这样的子串。</p>
+<p>首先看思路，对于一个字符串(s[1,n])，我们通过求它的nex数组，如果nex[n] &gt;= k 并且 nex[n] 小于 n/2，那么该串就是QB；如果nex[n] &gt;= n/2，那么nex[ nex[n] ] ，一直到根节点的路径上，只要有一个nex大于k且小于n/2，该串就也是QB。</p>
+<p>综上所述，我们对于一个下标为[1, p]的字符串，需要找到nex[p]到根节点（将nex数组看作一棵树）路径上大于等于 k 的最小 nex值（贪心思想）。我们用 f 数组来存放该值。之所以用 f 数组存放，是为了防止最坏情况O(N^2)遍历。</p>
+<p>所以我们对原字符串 S 的每一个后缀都进行上述操作，时间复杂度共O(N^2)，勉强过。但是常数稍微大一些就过不了了，所以统计答案也要在求 nex 和更新 f 数组时顺便累加，如果觉得这样太怂了，还可以进行别的优化，不过我懒得改了。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">15000</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> nex[N],k, f[N], ans = <span class="number">0</span>;</span><br><span class="line"><span class="comment">//f[i]为nex[i]到根中,大于k的最小的一个 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getNex</span><span class="params">(<span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s)<span class="number">-1</span>;</span><br><span class="line">	<span class="built_in">memset</span>(nex,<span class="number">0</span>,<span class="keyword">sizeof</span> nex); f[<span class="number">0</span>] = INF;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>,j = <span class="number">0</span>;i &lt;= len;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(j &gt; <span class="number">0</span> &amp;&amp; s[i] != s[j+<span class="number">1</span>]) j = nex[j];</span><br><span class="line">		<span class="keyword">if</span>(s[i] == s[j+<span class="number">1</span>]) j++;</span><br><span class="line">		nex[i] = j;</span><br><span class="line">		<span class="keyword">if</span>(j &lt; k) f[j] = INF; </span><br><span class="line">		<span class="keyword">else</span> f[j] = min(j,f[nex[j]]);</span><br><span class="line">		<span class="keyword">if</span>(f[j]&lt;&lt;<span class="number">1</span> &lt; i) ans++;</span><br><span class="line">		<span class="comment">//printf("%d %d %d %d\n",i,j,f[j],nex[j]);</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="built_in">strlen</span>(str)<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; n;i++)&#123;</span><br><span class="line">		getNex(str+i<span class="number">-1</span>);</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin);</span></span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str+<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;k);</span><br><span class="line">	str[<span class="number">0</span>] = <span class="string">'#'</span>;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Censoring"><a href="#Censoring" class="headerlink" title="Censoring"></a>Censoring</h4><p>这个我一看就知道KMP很难写，应该用自动机，所以放在自动机专题整理，另外吐槽一下书上的翻译是谁写的，太敷衍了吧。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/KMP/" rel="tag"># KMP</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/09/28/hash/" rel="next" title="哈希与哈希表">
+                  <i class="fa fa-chevron-left"></i> 哈希与哈希表
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">57</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">33</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#剪花布条"><span class="nav-number">1.</span> <span class="nav-text">剪花布条</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Power-Strings"><span class="nav-number">2.</span> <span class="nav-text">Power Strings</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Radio-Transmission"><span class="nav-number">3.</span> <span class="nav-text">Radio Transmission</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#OKR-Periods-of-Words"><span class="nav-number">4.</span> <span class="nav-text">OKR-Periods of Words</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#似乎在梦中见过的样子"><span class="nav-number">5.</span> <span class="nav-text">似乎在梦中见过的样子</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Censoring"><span class="nav-number">6.</span> <span class="nav-text">Censoring</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
