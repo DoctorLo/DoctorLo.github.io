@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="书本配套OJ我校OJ树状数组知识点：  单点修改，区间求和，O(logN)。 区间修改，区间求和，O(logN)。 二维树状数组单点修改，子矩阵求和，时间复杂度O(logN * logN)，空间O(N^2)。  与线段树相比功能比较单一，不够灵活，但胜在简短易写，可以用来打辅助。 注意事项  树状数组修改的下标不能为0，因为 lowbit(0) = 0，这就死循环了。 注意树状数组的空间，这是由值">
+<meta name="keywords" content="树状数组,二维树状数组,树状数组区间修改">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树状数组题集">
+<meta property="og:url" content="http://valenshi.top/2019/10/06/BIT-problems/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="书本配套OJ我校OJ树状数组知识点：  单点修改，区间求和，O(logN)。 区间修改，区间求和，O(logN)。 二维树状数组单点修改，子矩阵求和，时间复杂度O(logN * logN)，空间O(N^2)。  与线段树相比功能比较单一，不够灵活，但胜在简短易写，可以用来打辅助。 注意事项  树状数组修改的下标不能为0，因为 lowbit(0) = 0，这就死循环了。 注意树状数组的空间，这是由值">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-06T12:47:43.033Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树状数组题集">
+<meta name="twitter:description" content="书本配套OJ我校OJ树状数组知识点：  单点修改，区间求和，O(logN)。 区间修改，区间求和，O(logN)。 二维树状数组单点修改，子矩阵求和，时间复杂度O(logN * logN)，空间O(N^2)。  与线段树相比功能比较单一，不够灵活，但胜在简短易写，可以用来打辅助。 注意事项  树状数组修改的下标不能为0，因为 lowbit(0) = 0，这就死循环了。 注意树状数组的空间，这是由值">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/10/06/BIT-problems/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>树状数组题集 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/06/BIT-problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">树状数组题集
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-06 20:46:38 / 修改时间：20:47:43" itemprop="dateCreated datePublished" datetime="2019-10-06T20:46:38+08:00">2019-10-06</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="http://ybt.ssoier.cn:8088/index.php" target="_blank" rel="noopener">书本配套OJ</a><br><a href="http://www.mfstem.org/contests" target="_blank" rel="noopener">我校OJ</a><br><strong>树状数组知识点：</strong></p>
+<ul>
+<li>单点修改，区间求和，O(logN)。</li>
+<li>区间修改，区间求和，O(logN)。</li>
+<li>二维树状数组单点修改，子矩阵求和，时间复杂度O(logN * logN)，空间O(N^2)。</li>
+</ul>
+<p>与线段树相比功能比较单一，不够灵活，但胜在简短易写，可以用来打辅助。</p>
+<p><strong>注意事项</strong></p>
+<ul>
+<li>树状数组修改的下标不能为0，因为 lowbit(0) = 0，这就死循环了。</li>
+<li>注意树状数组的空间，这是由值域来决定的，而不是定义域。</li>
+</ul>
+<h4 id="数列操作"><a href="#数列操作" class="headerlink" title="数列操作"></a>数列操作</h4><p><strong>题目描述</strong><br>给定n个数列,规定有两种操作，一是修改某个元素，二是求子数列[a,b]的连续和。数列元素个数最多10万个，询问操作最多10万次。<br><strong>解题思路</strong><br>模板题。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">int</span> n,m; </span><br><span class="line">ll A[N],c[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*把第x位置上的数+y*/</span></span><br><span class="line">	<span class="keyword">for</span>(;x &lt;= n;x += x&amp;-x) c[x] += y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ll <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回[1,x]元素和*/</span></span><br><span class="line">	ll res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;x;x -= x&amp;-x) res += c[x];</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">int</span> k,a,b;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%lld"</span>,A+i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) Add(i,A[i]);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;k,&amp;a,&amp;b);</span><br><span class="line">		<span class="keyword">if</span>(k) Add(a,b);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ask(b)-ask(a<span class="number">-1</span>));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="数星星-Stars"><a href="#数星星-Stars" class="headerlink" title="数星星 Stars"></a>数星星 Stars</h4><p><strong>题意简述</strong><br>给定 n 个点，定义每个点的等级是在该点左下方（含正左、正下）的点的数目，试统计每个等级有多少个点。<br>(详细描述见原题面)</p>
+<p><strong>解题思路</strong><br>由于y是升序的，我们只需要记录比当前x小的star有多少个即可得知其等级 x ，然后用num[x]表示等级为x的星星个数，最终答案就是num数组。<br>CDQ分治也可以写，都是先将一维给变的有序，再统计另一维度。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">4e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> c[N],n;</span><br><span class="line"><span class="keyword">int</span> ans[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123; <span class="comment">//若x=0则死循环 </span></span><br><span class="line">	<span class="keyword">for</span>(;x &lt; N;x += x&amp;-x) c[x] += y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;x;x -= x&amp;-x) res += c[x];</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"><span class="comment">//	freopen("123.txt","r",stdin);</span></span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		ans[ask(x+<span class="number">1</span>)]++;<span class="comment">//要注意x = 0这种情况 </span></span><br><span class="line">		Add(x+<span class="number">1</span>,<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans[i]);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="校门外的树"><a href="#校门外的树" class="headerlink" title="校门外的树"></a>校门外的树</h4><p><strong>题意简述</strong></p>
+<p>原题来自：Vijos P1448<br>校门外有很多树，学校决定在某个时刻在某一段种上一种树，保证任一时刻不会出现两段相同种类的树，现有两种操作：</p>
+<ul>
+<li>K=1，读入 l,r 表示在 l 到 r 之间种上一种树，每次操作种的树的种类都不同；</li>
+<li>K=2，读入 l,r 表示询问 l 到 r 之间有多少种树。</li>
+</ul>
+<p><strong>解题思路</strong><br>刚开始以为是区间修改的题，后来发现不是。这题利用了差分数组的思想。如果我们假设c0[ x ] 存放 [1, x] 的左端点数量，c1[]存放右端点数量；如果所求区间为[l , r]，那么一共只可能有 6 种不同的线段：</p>
+<ul>
+<li>第一种是全在r右侧；</li>
+<li>第二种是左端点在 [l ,r] 内，右端点在r右侧；</li>
+<li>第三种是左右端点都在[l ,r] 内；</li>
+<li>第四种是右端点在[l ,r]内，左端点在 l 左侧；</li>
+<li>第五种是左右端点全在 l 左侧；</li>
+<li>第六种是左端点在 l 左侧，右端点在 r 右侧。</li>
+</ul>
+<p>那么我们用 l 右侧所有的右端点的数量，减去 r 右侧左端点的数量，可以画图理解，简单。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">int</span> n,m; </span><br><span class="line">ll A[N],c[<span class="number">2</span>][N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> ty,<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*把第x位置上的数+y*/</span></span><br><span class="line">	<span class="keyword">for</span>(;x &lt; N;x += x&amp;-x) c[ty][x] += y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ll <span class="title">ask</span><span class="params">(<span class="keyword">int</span> ty,<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回[1,x]元素和*/</span></span><br><span class="line">	ll res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;x;x -= x&amp;-x) res += c[ty][x];</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">int</span> k,a,b;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;k,&amp;a,&amp;b);</span><br><span class="line">		<span class="keyword">if</span>(k == <span class="number">1</span>)&#123;</span><br><span class="line">			Add(<span class="number">0</span>,a,<span class="number">1</span>); Add(<span class="number">1</span>,b,<span class="number">1</span>);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="comment">/*分类讨论,所有线段共6种情况 */</span> </span><br><span class="line">			<span class="keyword">int</span> t1 = ask(<span class="number">1</span>,N<span class="number">-1</span>) - ask(<span class="number">1</span>,a<span class="number">-1</span>); </span><br><span class="line">			<span class="keyword">int</span> t2 = ask(<span class="number">0</span>,N<span class="number">-1</span>) - ask(<span class="number">0</span>,b);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,t1-t2);</span><br><span class="line">		&#125; </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="清点人数"><a href="#清点人数" class="headerlink" title="清点人数"></a>清点人数</h4><p><strong>题意简述</strong><br>NK 中学组织同学们去五云山寨参加社会实践活动，按惯例要乘坐火车去。由于 NK 中学的学生很多，在火车开之前必须清点好人数。<br>初始时，火车上没有学生。当同学们开始上火车时，年级主任从第一节车厢出发走到最后一节车厢，每节车厢随时都有可能有同学上下。年级主任走到第 m 节车厢时，他想知道前 m 节车厢上一共有多少学生，但是他没有调头往回走的习惯。也就是说每次当他提问时，m 总会比前一次大。<br><strong>解题思路</strong><br>也是模板题。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">5e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> c[N] ,n,k;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(;x &lt; N;x += x&amp;-x) c[x] += y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;x;x -= x&amp;-x) res += c[x];</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin);</span></span><br><span class="line">	<span class="keyword">char</span> op[<span class="number">5</span>];</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;k);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= k;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,op);</span><br><span class="line">		<span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">'A'</span>)&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;x); <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ask(x));</span><br><span class="line">		&#125;<span class="keyword">else</span> <span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">'B'</span>)&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y); Add(x,y);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y); Add(x,-y);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="简单题"><a href="#简单题" class="headerlink" title="简单题"></a>简单题</h4><p><strong>题意简述</strong><br>题目来源：CQOI 2006<br>有一个 n 个元素的数组，每个元素初始均为 0。有 m 条指令，要么让其中一段连续序列数字反转——0 变 1，1 变 0（操作 1），要么询问某个元素的值（操作 2）。</p>
+<p><strong>解题思路</strong><br>一个位置如果反转偶数次，那么它还是0，否则是1，因此我们只需要统计每个位置被反转了几次即可，用到了树状数组区间修改单点查询。树状数组区间修改的推导就不写了，书上有。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> c[<span class="number">2</span>][N],n,m ,num[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getInt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> c = getchar();</span><br><span class="line">	<span class="keyword">while</span> (c!=<span class="string">'-'</span> &amp;&amp; (c&lt;<span class="string">'0'</span> || c&gt;<span class="string">'9'</span>)) c = getchar();</span><br><span class="line">	<span class="keyword">if</span> (c == <span class="string">'-'</span>) neg = <span class="literal">true</span>, c = getchar();</span><br><span class="line">	<span class="keyword">while</span> (c&gt;=<span class="string">'0'</span> &amp;&amp; c&lt;=<span class="string">'9'</span>)</span><br><span class="line">		ans = ans*<span class="number">10</span> + c-<span class="string">'0'</span>, c = getchar();</span><br><span class="line">	<span class="keyword">return</span> neg ? -ans : ans; </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> ty,<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(;x &lt;= n;x += x&amp;-x) c[ty][x] += y;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> ty,<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;x;x -= x&amp;-x) res += c[ty][x];</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin); </span></span><br><span class="line">	n = getInt(); m = getInt();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt;= m;i++)&#123;</span><br><span class="line">		z = getInt();</span><br><span class="line">		<span class="keyword">if</span>(z == <span class="number">1</span>)&#123;</span><br><span class="line">			x = getInt(); y = getInt();</span><br><span class="line">			Add(<span class="number">0</span>,x,<span class="number">1</span>); Add(<span class="number">0</span>,y+<span class="number">1</span>,<span class="number">-1</span>);</span><br><span class="line">			Add(<span class="number">1</span>,x,x); Add(<span class="number">1</span>,y+<span class="number">1</span>,-y<span class="number">-1</span>);</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			y = getInt(); x = y;</span><br><span class="line">			<span class="keyword">int</span> res = (y+<span class="number">1</span>)*ask(<span class="number">0</span>,y) - ask(<span class="number">1</span>,y) - x*ask(<span class="number">0</span>,x<span class="number">-1</span>) + ask(<span class="number">1</span>,x<span class="number">-1</span>);</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,res&amp;<span class="number">1</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="打鼹鼠"><a href="#打鼹鼠" class="headerlink" title="打鼹鼠"></a>打鼹鼠</h4><p><strong>题意简述</strong><br>这是一道模板题。<br>给出一个 n×m 的零矩阵 A，你需要完成如下操作：<br>1 x y k：表示元素 Ax,y自增 k；<br>2 a b c d：表示询问左上角为 (a,b)，右下角为 (c,d) 的子矩阵内所有数的和。</p>
+<p><strong>解题思路</strong><br>是二维树状数组模板题，但是空间卡的很紧，开到N = 5000就险过，开到N = (1&lt;&lt;12)+10就好了一点。<br>和vijos那个原题不同，数据不一样，范围也不一样，这题不会出现下标为0的情况。就注意一下二维更新和查询时，每次的y需要恢复原值即可，因此需要用个变量存放一下y初值。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = (<span class="number">1</span>&lt;&lt;<span class="number">12</span>)+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line">ll c[N][N]; </span><br><span class="line"><span class="keyword">int</span> n ,m;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getInt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> c = getchar();</span><br><span class="line">	<span class="keyword">while</span> (c!=<span class="string">'-'</span> &amp;&amp; (c&lt;<span class="string">'0'</span> || c&gt;<span class="string">'9'</span>)) c = getchar();</span><br><span class="line">	<span class="keyword">if</span> (c == <span class="string">'-'</span>) neg = <span class="literal">true</span>, c = getchar();</span><br><span class="line">	<span class="keyword">while</span> (c&gt;=<span class="string">'0'</span> &amp;&amp; c&lt;=<span class="string">'9'</span>)</span><br><span class="line">		ans = ans*<span class="number">10</span> + c-<span class="string">'0'</span>, c = getchar();</span><br><span class="line">	<span class="keyword">return</span> neg ? -ans : ans; </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Add</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	<span class="comment">//printf("%d %d %d\n",x,y,z);</span></span><br><span class="line">	<span class="keyword">for</span>(;x &lt;= n;x += x&amp;-x)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> ty = y;ty &lt;= m;ty += ty&amp;-ty) c[x][ty] += z;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">ll <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ll res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(;x;x -= x&amp;-x)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> ty = y;ty;ty -= ty&amp;-ty) res += c[x][ty];</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> a,b,c,d,x,y,k,op;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin);</span></span><br><span class="line">	n = getInt(); m = getInt();</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;op) != EOF)&#123;</span><br><span class="line">		<span class="keyword">if</span>(op == <span class="number">1</span>)&#123;</span><br><span class="line">			x = getInt(); y = getInt(); k = getInt();</span><br><span class="line">			Add(x,y,k);</span><br><span class="line">		&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">			a = getInt(); b = getInt(); c = getInt();d = getInt();</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ask(c,d)-ask(c,b<span class="number">-1</span>)-ask(a<span class="number">-1</span>,d)+ask(a<span class="number">-1</span>,b<span class="number">-1</span>));</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/树状数组/" rel="tag"># 树状数组</a>
+            
+              <a href="/tags/二维树状数组/" rel="tag"># 二维树状数组</a>
+            
+              <a href="/tags/树状数组区间修改/" rel="tag"># 树状数组区间修改</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/06/ac-problems/" rel="next" title="AC自动机题集">
+                  <i class="fa fa-chevron-left"></i> AC自动机题集
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">61</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#数列操作"><span class="nav-number">1.</span> <span class="nav-text">数列操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数星星-Stars"><span class="nav-number">2.</span> <span class="nav-text">数星星 Stars</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#校门外的树"><span class="nav-number">3.</span> <span class="nav-text">校门外的树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#清点人数"><span class="nav-number">4.</span> <span class="nav-text">清点人数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单题"><span class="nav-number">5.</span> <span class="nav-text">简单题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#打鼹鼠"><span class="nav-number">6.</span> <span class="nav-text">打鼹鼠</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
