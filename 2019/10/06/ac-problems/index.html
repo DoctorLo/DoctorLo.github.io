@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="Keywords Search题意描述原题来自：HDU 2222给定 n 个长度不超过 50 的由小写英文字母组成的单词准备查询，以及一篇长为 m 的文章，问：文中出现了多少个待查询的单词。多组数据。解题思路模板题代码示例 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484">
+<meta name="keywords" content="AC自动机,状态压缩">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AC自动机题集">
+<meta property="og:url" content="http://valenshi.top/2019/10/06/ac-problems/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="Keywords Search题意描述原题来自：HDU 2222给定 n 个长度不超过 50 的由小写英文字母组成的单词准备查询，以及一篇长为 m 的文章，问：文中出现了多少个待查询的单词。多组数据。解题思路模板题代码示例 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-06T03:22:54.780Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AC自动机题集">
+<meta name="twitter:description" content="Keywords Search题意描述原题来自：HDU 2222给定 n 个长度不超过 50 的由小写英文字母组成的单词准备查询，以及一篇长为 m 的文章，问：文中出现了多少个待查询的单词。多组数据。解题思路模板题代码示例 1234567891011121314151617181920212223242526272829303132333435363738394041424344454647484">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/10/06/ac-problems/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>AC自动机题集 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/06/ac-problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">AC自动机题集
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-06 11:21:35 / 修改时间：11:22:54" itemprop="dateCreated datePublished" datetime="2019-10-06T11:21:35+08:00">2019-10-06</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="Keywords-Search"><a href="#Keywords-Search" class="headerlink" title="Keywords Search"></a>Keywords Search</h4><p><strong>题意描述</strong><br>原题来自：HDU 2222<br>给定 n 个长度不超过 50 的由小写英文字母组成的单词准备查询，以及一篇长为 m 的文章，问：文中出现了多少个待查询的单词。多组数据。<br><strong>解题思路</strong><br>模板题<br><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e4</span>+<span class="number">10</span>;	<span class="comment">//模式串个数 </span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e6</span>+<span class="number">10</span>;	<span class="comment">//文本串长度 </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> str[N][<span class="number">50</span>],s[M];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = <span class="number">50</span>*N;	<span class="comment">//trie节点数 </span></span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">30</span>],End[SZ],tot ;</span><br><span class="line"><span class="keyword">int</span> fail[SZ];			<span class="comment">//失配指针,类似于nex</span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(trie,<span class="number">0</span>,<span class="keyword">sizeof</span> trie);</span><br><span class="line">	<span class="built_in">memset</span>(End,<span class="number">0</span>,<span class="keyword">sizeof</span> End); tot = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">	<span class="comment">/* 向trie树中插入字符串s */</span> </span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'a'</span>;</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">	End[p]++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">/*利用bfs更新fail数组*/</span> </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++) trie[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop();</span><br><span class="line">	<span class="comment">//	printf("%d\n",q.size());</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				q.push(trie[p][i]);</span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">			&#125; </span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ask</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="comment">/* 统计匹配成功的模式串个数并累加到ans上 */</span> </span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'a'</span>;</span><br><span class="line">		<span class="keyword">int</span> k = trie[p][ch];</span><br><span class="line">		<span class="keyword">while</span>(k &gt; <span class="number">1</span>)&#123;</span><br><span class="line">			ans += End[k]; End[k] = <span class="number">0</span>;</span><br><span class="line">			k = fail[k];</span><br><span class="line">		&#125;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> t,n;	<span class="comment">//数组组数, 模式串个数 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) Insert(str[i]);</span><br><span class="line">	getFail(); ans = <span class="number">0</span>;</span><br><span class="line">	ask(s);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t);</span><br><span class="line">	<span class="keyword">while</span>(t--)&#123;</span><br><span class="line">		init();		<span class="comment">//多组数据不要忘了初始化！ </span></span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%s"</span>,str[i]);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="玄武密码"><a href="#玄武密码" class="headerlink" title="玄武密码"></a>玄武密码</h4><p><strong>题意描述</strong></p>
+<p>原题来自：JSOI 2012<br>在美丽的玄武湖畔，鸡鸣寺边，鸡笼山前，有一块富饶而秀美的土地，人们唤作进香河。相传一日，一缕紫气从天而至，只一瞬间便消失在了进香河中。老人们说，这是玄武神灵将天书藏匿在此。很多年后，人们终于在进香河地区发现了带有玄武密码的文字。更加神奇的是，这份带有玄武密码的文字，与玄武湖南岸台城的结构有微妙的关联。于是，漫长的破译工作开始了。<br>经过分析，我们可以用东南西北四个方向来描述台城城砖的摆放，不妨用一个长度为 N 的序列来描述，序列中的元素分别是 E，S，W，N，代表了东南西北四向，我们称之为母串。而神秘的玄武密码是由四象的图案描述而成的 M 段文字。<br>现在，考古工作者遇到了一个难题。对于每一段文字，其前缀在母串上的最大匹配长度是多少呢？</p>
+<p><strong>解题思路</strong><br>求每个子串在母串上的最大匹配长度。如果挨个用子串来匹配母串，复杂度太高，所以要用AC自动机，以母串来匹配子串。<br>将母串在建立好的AC自动机上进行匹配，那么其所能到达的节点，就是可以和母串匹配的长度，所以我们每到一个节点，就对其进行标记，顺便也对其fail指针所指向的节点标记，那么最后一个被标记的节点，就是该子串所能匹配的最大长度。</p>
+<p>那么我们如何找到最后一个被标记的节点呢？通过par数组，par[x]存放x的父亲节点的编号，如此就可以从后向前遍历了（下述代码中是nex数组）。</p>
+<p>所以具体步骤有三步：</p>
+<ul>
+<li>根据所有子串建立AC自动机，同时更新par数组(代码中是nex数组)</li>
+<li>利用母串对自动机上节点进行标记</li>
+<li>利用par数组自底向上查找最后一个被标记的节点，该节点到根节点的路径长度就是与母串最大匹配，为此我们还需要记录每个字串结束时的节点编号End[id]，以及长度Len[id]</li>
+</ul>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e7</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">char</span> s[N],str[M][<span class="number">110</span>];</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = M*<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">5</span>], tot = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> fail[SZ],vis[SZ],End[SZ],nex[SZ];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getIdx</span><span class="params">(<span class="keyword">char</span> ch)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(ch == <span class="string">'E'</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(ch == <span class="string">'S'</span>) <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span>(ch == <span class="string">'W'</span>) <span class="keyword">return</span> <span class="number">3</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = getIdx(s[i]);</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot,nex[tot] = p;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">4</span>;i++) trie[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">4</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span> &#123;</span><br><span class="line">				q.push(trie[p][i]);</span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Mark</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = getIdx(s[i]);</span><br><span class="line">		<span class="keyword">int</span> k = trie[p][ch];</span><br><span class="line">		<span class="keyword">while</span>(k &gt; <span class="number">1</span>)&#123;</span><br><span class="line">			<span class="keyword">if</span>(vis[k]) <span class="keyword">break</span>;</span><br><span class="line">			vis[k] = <span class="number">1</span>; k = fail[k];</span><br><span class="line">		&#125;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">search</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(str[x]);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = End[x];i &gt; <span class="number">1</span>;i = nex[i],len--) <span class="keyword">if</span>(vis[i]) <span class="keyword">break</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,len);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++) End[i] = Insert(str[i]);</span><br><span class="line">	getFail();</span><br><span class="line">	Mark(s);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++) search(i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++) <span class="built_in">scanf</span>(<span class="string">"%s"</span>,str[i]);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Censoring"><a href="#Censoring" class="headerlink" title="Censoring"></a>Censoring</h4><p><strong>题意简述</strong><br>原题来自：USACO 2015 Feb. Gold<br>有一个长度不超过 105 的字符串 S。Farmer John 希望在 S 中删掉 n 个屏蔽词（一个屏蔽词可能出现多次），这些词记为 t1∼tn。FJ 在 S 中从头开始寻找屏蔽词，一旦找到一个屏蔽词，FJ 就删除它，然后又从头开始寻找（而不是接着往下找）。<br>FJ 会重复这一过程，直到 S 中没有屏蔽词为止。注意删除一个单词后可能会导致 S 中出现另一个屏蔽词。<br>这 n 个屏蔽词不会出现一个单词是另一个单词子串的情况，这意味着每个屏蔽词在 S 中出现的开始位置是互不相同的，请帮助 FJ 完成这些操作并输出最后的 S。<br><strong>解题思路</strong><br>可以用KM+栈来解决，这里用AC自动机解决。<br>很容易想到的一个思路就是，建立好AC自动机后，从根节点开始匹配，如果匹配到叶子节点，即有End标记的节点，就说明当前字串是屏蔽词，删掉它，假设该子串长为 len ，那就将指针 p 回退到 len 步之前，继续匹配。<br>如此一来我们需要记录每个时刻的p指针，以及母串中保留的字符，用栈就可以很好的维护。如果屏蔽词匹配成功，长度为 len，那么母串中保留的字符从栈顶弹出 len 个，同时保存 p 的栈也弹出 len 个元素，栈顶元素就是 len 步之前的指针。</p>
+<p><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">char</span> str[N], s[N];</span><br><span class="line"><span class="keyword">int</span> n, fail[SZ];</span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">30</span>],tot = <span class="number">1</span>,End[SZ];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'a'</span>;</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">	End[p] = len;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++) trie[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				q.push(trie[p][i]); </span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">char</span> path[N];</span><br><span class="line"><span class="keyword">int</span> top = <span class="number">0</span>,Stack[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	getFail();	<span class="comment">//为什么非要更新Fail数组呢 </span></span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(str);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>,p = <span class="number">1</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = str[i]-<span class="string">'a'</span>;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">		Stack[++top] = p; path[top] = str[i];</span><br><span class="line">		<span class="keyword">if</span>(End[p]) top -= End[p], p = Stack[top];</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= top;i++) <span class="built_in">putchar</span>(path[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,s); Insert(s);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="单词"><a href="#单词" class="headerlink" title="单词"></a>单词</h4><p><strong>题意简述</strong><br>原题来自：TJOI 2013<br>某人读论文，一篇论文是由许多单词组成。但他发现一个单词会在论文中出现很多次，现在想知道每个单词分别在论文中出现多少次。<br><strong>解题思路</strong><br>这个文章是由这 n 个单词组成的，现在问每个单词出现多少次。直接用母串在fail树上匹配统计相同前缀个数是不对的，因为这样可能出现两个子串的重叠。根据AC自动机的特点啊，如果有个节点 x 的 fail 指针指向 y，那么说明 y 是 x 的前缀，即 y 是 x 的子串，那么自然有多少个 fail 指针指向 y，y就出现了多少次，而这个次数就是我们要求的单词出现的次数。</p>
+<p>那么首先要记录AC自动机上每个节点出现的次数，因为单词可能出现重复。然后要记录结束时该子串对应的节点编号，End[id] = p；由于我们 fail 指针是从上到下更新的，而我们要统计次数需要从下到上转移，于是利用栈来存储 fail 指针转移时的节点编号，而后再更新 num 数组即可。<br><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">220</span>;</span><br><span class="line"><span class="built_in">string</span> str[N], s;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">30</span>],End[SZ],tot = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> num[SZ];<span class="comment">// num[x] 为经过节点x的数量 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span>&amp; s,<span class="keyword">const</span> <span class="keyword">int</span>&amp; id)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = s.length(), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'a'</span>;</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">		num[p]++;</span><br><span class="line">	&#125;</span><br><span class="line">	End[id] = p; </span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="keyword">int</span> fail[SZ];</span><br><span class="line"><span class="keyword">int</span> Stack[SZ], top = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++) trie[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop(); </span><br><span class="line">		Stack[++top] = p;	<span class="comment">//倒序记录编号 </span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				q.push(trie[p][i]);</span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) Insert(str[i],i);</span><br><span class="line">	getFail();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = top;i &gt; <span class="number">0</span>;--i)&#123;</span><br><span class="line">		num[fail[Stack[i]]] += num[Stack[i]];</span><br><span class="line">	&#125; </span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">cout</span> &lt;&lt; num[End[i]] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin);</span></span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">cin</span> &gt;&gt; str[i];</span><br><span class="line">	solve(); </span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="最短母串"><a href="#最短母串" class="headerlink" title="最短母串"></a>最短母串</h4><p><strong>题意描述</strong><br>原题来自：HNOI 2006<br>给定 n 个字符串 S1,S2,⋯,Sn，要求找到一个最短的字符串 T，使得这 n 个字符串都是 T 的子串。<br><strong>解题思路</strong><br>根据经验容易想到，母串要走完AC自动机上所有 有结束标记（End标记）的节点，而本题的答案就是找到最短的&amp;字典序最小的母串。<br>那提到结束标记 End，就应该想到 End 标记的转移，我们在求fail数组时顺便转移。如果每个结束标记都用不同id标识，那么母串只要能包含所有不同的结束标记即可。</p>
+<p>既然只有最多12个子串，那么可以考虑用状态压缩节省空间。我们用 bfs 来求最短&amp;字典序最小母串。<br>由于母串最长600，而AC自动机上节点个数最多600，但是每个节点状态有1&lt;&lt;12种，因此 <code>vis[606][(1&lt;&lt;12)+1]</code> 用于表示该节点的对应状态是否被访问过； path[(1&lt;&lt;12)+1]用于存放由上一个状态转移而来需要添加的字符；s[606]自然就是存放最终母串。<br>当然还需要一些辅助数组，par[ ip ]记录 ip 的上一个状态的编号，用于查找路径；当然理论上讲path也算辅助数组。<br>接下来我们就可以通过bfs来实现不同状态间的转移了，实质上是bfs+状态压缩，实现起来还是有些难度的。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">60</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = <span class="number">600</span>+<span class="number">10</span>;<span class="comment">//一定要想好大小啊 </span></span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> n, fail[SZ];</span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">30</span>], End[<span class="number">30</span>], tot = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">bool</span> vis[<span class="number">605</span>][(<span class="number">1</span>&lt;&lt;<span class="number">12</span>)+<span class="number">1</span>]; </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s,<span class="keyword">int</span> id)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'A'</span>;</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot;</span><br><span class="line">		p = trie[p][ch]; </span><br><span class="line">	&#125;</span><br><span class="line">	End[p] |= <span class="number">1</span>&lt;&lt;id;<span class="comment">//状压常用 </span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++) trie[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				q.push(trie[p][i]);</span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">				End[trie[p][i]] |= End[fail[trie[p][i]]];<span class="comment">//常用技巧 </span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*用来bfs计算最短母串*/</span></span><br><span class="line"><span class="keyword">char</span> path[<span class="number">606</span>*(<span class="number">1</span>&lt;&lt;<span class="number">12</span>)] ,s[<span class="number">606</span>];</span><br><span class="line"><span class="keyword">int</span> par[<span class="number">606</span>*(<span class="number">1</span>&lt;&lt;<span class="number">12</span>)],len = <span class="number">0</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	<span class="comment">/*分别是节点编号,当前状态,当前字符位置 */</span> </span><br><span class="line">	<span class="keyword">int</span> p,now,ip;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">queue</span>&lt;Node&gt; q2; </span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">bfs</span><span class="params">()</span></span>&#123;</span><br><span class="line">	q2.push(Node&#123;<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>&#125;);</span><br><span class="line">	<span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q2.empty())&#123;</span><br><span class="line">		Node x = q2.front(); q2.pop();</span><br><span class="line">		<span class="keyword">int</span> p = x.p,now = x.now,ip = x.ip;</span><br><span class="line">		<span class="keyword">if</span>(now == (<span class="number">1</span>&lt;&lt;n)<span class="number">-1</span>)&#123;</span><br><span class="line">		<span class="comment">/*所有子串都包含了,可以输出答案了*/</span> </span><br><span class="line">			<span class="keyword">for</span>(;ip;ip = par[ip]) s[len++] = path[ip];</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>,nex;i &lt; <span class="number">26</span>;i++)</span><br><span class="line">			<span class="keyword">if</span>(!vis[trie[p][i]][nex = now|End[trie[p][i]]])&#123;</span><br><span class="line">				<span class="comment">/*当前节点的第i个字符的 nex 状态未被访问过,访问并压入队列*/</span> </span><br><span class="line">			vis[trie[p][i]][nex] = <span class="number">1</span>;</span><br><span class="line">			path[++cnt] = i+<span class="string">'A'</span>, par[cnt] = ip;</span><br><span class="line">			<span class="comment">/*压入下一个节点的编号,状态,字符结束位置*/</span> </span><br><span class="line">			q2.push(Node&#123;trie[p][i],nex,cnt&#125;);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	getFail(); bfs();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = len<span class="number">-1</span>;i &gt;= <span class="number">0</span>;i--) <span class="built_in">putchar</span>(s[i]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str); Insert(str,i<span class="number">-1</span>); </span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="POI-2000-病毒"><a href="#POI-2000-病毒" class="headerlink" title="POI 2000 病毒"></a>POI 2000 病毒</h4><p><strong>题意简述</strong></p>
+<p>二进制病毒审查委员会最近发现了如下的规律：某些确定的二进制串是病毒的代码。如果某段代码中不存在任何一段病毒代码，那么我们就称这段代码是安全的。现在委员会已经找出了所有的病毒代码段，试问，是否存在一个无限长的安全的二进制代码。<br>示例：例如如果 {011,11,00000} 为病毒代码段，那么一个可能的无限长安全代码就是 010101⋯。如果 {01,11,000000} 为病毒代码段，那么就不存在一个无限长的安全代码。<br>请写一个程序，读入病毒代码，判断是否存在一个无限长的安全代码，将结果输出。</p>
+<p><strong>解题思路</strong><br>本题要求找出一个无限长的安全的代码，无限长，当且仅当我们有一个安全的子串可以循环使用时才能构成。我们将AC自动机看作树，从根出发，那么叶子节点，即有End标记的节点是不能走的，因为该路径构成了病毒。同样的道理，如果当前节点fail指针所指向的节点有End标记，那么当前节点也不能走，因为它的子串是病毒串，所以我们在更新fail指针时顺便转移End标记（常用技巧）。<br>所以如果有一条路径，它上面的所有节点都没有End标记，且该路径构成环，那么它就可以构成一个无限长的安全字符串。</p>
+<p>于是我们就只需要在AC自动机上通过dfs来找是否存在满足条件的环即可，而用拓扑排序不太好写。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2100</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="built_in">string</span> str[N];</span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">3</span>],End[SZ],fail[SZ],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="built_in">string</span> &amp;s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = s.length(), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'0'</span>;</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">	End[p]++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="keyword">bool</span> f[SZ];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	trie[<span class="number">0</span>][<span class="number">0</span>] = trie[<span class="number">0</span>][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">2</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				q.push(trie[p][i]);</span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">				End[trie[p][i]] |= End[trie[fail[p]][i]];<span class="comment">//转移标记</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">bool</span> flag = <span class="literal">false</span>;</span><br><span class="line"><span class="keyword">int</span> vis[SZ],ins[SZ];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">	vis[p] = ins[p] = <span class="number">1</span>;    <span class="comment">//ins判断环,vis访问标记</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">2</span>;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> k = trie[p][i];</span><br><span class="line">		<span class="keyword">if</span>(ins[k]) flag = <span class="literal">true</span>;<span class="comment">//构成环了,这里也可以return</span></span><br><span class="line">		<span class="keyword">if</span>(!End[k] &amp;&amp; !vis[k]) dfs(k);<span class="comment">//下一个满足条件的节点,递归访问它</span></span><br><span class="line">	&#125;</span><br><span class="line">	ins[p] = <span class="number">0</span>;<span class="comment">//释放p节点的标记</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) Insert(str[i]);</span><br><span class="line">	getFail();</span><br><span class="line">	dfs(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">if</span>(flag) <span class="built_in">cout</span> &lt;&lt; <span class="string">"TAK"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="built_in">cout</span> &lt;&lt; <span class="string">"NIE"</span> &lt;&lt; <span class="built_in">endl</span>; </span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//freopen("123.txt","r",stdin);</span></span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">cin</span> &gt;&gt; str[i];</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="文本生成器"><a href="#文本生成器" class="headerlink" title="文本生成器"></a>文本生成器</h4><p><strong>题意简述</strong></p>
+<p>原题来自：JSOI 2007JSOI<br>交给队员 ZYX 一个任务，编制一个称之为「文本生成器」的电脑软件：该软件的使用者是一些低幼人群，他们现在使用的是 GW 文本生成器 v6 版。该软件可以随机生成一些文章――总是生成一篇长度固定且完全随机的文章——也就是说，生成的文章中每个字节都是完全随机的。<br>如果一篇文章中至少包含使用者们了解的一个单词，那么我们说这篇文章是可读的（我们称文章 a 包含单词 b，当且仅当单词 b 是文章 a 的子串）。但是，即使按照这样的标准，使用者现在使用的 GW 文本生成器 v6 版所生成的文章也是几乎完全不可读的。<br>ZYX 需要指出 GW 文本生成器 v6 生成的所有文本中可读文本的数量，以便能够成功获得 v7 更新版。你能帮助他吗？</p>
+<p><strong>解题思路</strong><br>首先易得所有不同的文本总数为$26^m$种，我们有两种容易想到的思路来求解，一个是利用容斥原理直接计算可读的文章总数，另一种是想办法计算不可读的文章数，再用不同的文章总数减去它。第一种思路很难实现，主要来看第二种思路如何实现。<br>类似上一题，如果一个文章是不可读的，那么从根出发，它不能经过有End标记的节点，也不能经过“fail指针指向的节点有End标记”的节点。所以不可读的文章总数就等于长度为m的<strong>合法路径</strong>数。所谓的合法路径就是上面提到的，路径上所有节点都没有End标记，且其fail指针指向的节点也没End标记。<br>我们通过动态规划来求<strong>方案总数</strong>，设f(i,j)表示从根节点出发，走了 i 步到达节点 j 时的合法方案总数，那么显然 f(0 , 1) = 1，因为节点 1 是AC自动机的根节点。<br>状态转移方程请结合代码理解。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> P = <span class="number">1e4</span>+<span class="number">7</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SZ = <span class="number">6000</span>*<span class="number">30</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">65</span>;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">char</span> str[N][<span class="number">110</span>];</span><br><span class="line"><span class="keyword">int</span> trie[SZ][<span class="number">30</span>],End[SZ],fail[SZ],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Insert</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> len = <span class="built_in">strlen</span>(s), p = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> ch = s[i]-<span class="string">'A'</span>;</span><br><span class="line">		<span class="keyword">if</span>(!trie[p][ch]) trie[p][ch] = ++tot;</span><br><span class="line">		p = trie[p][ch];</span><br><span class="line">	&#125;</span><br><span class="line">	End[p]++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getFail</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++) trie[<span class="number">0</span>][i] = <span class="number">1</span>;</span><br><span class="line">	q.push(<span class="number">1</span>); fail[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> p = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">26</span>;i++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(!trie[p][i]) trie[p][i] = trie[fail[p]][i];</span><br><span class="line">			<span class="keyword">else</span>&#123;</span><br><span class="line">				q.push(trie[p][i]);</span><br><span class="line">				fail[trie[p][i]] = trie[fail[p]][i];</span><br><span class="line">				End[trie[p][i]] |= End[trie[fail[p]][i]];<span class="comment">//标记转移 </span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> f[<span class="number">110</span>][SZ] ,ans ;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">	f[<span class="number">0</span>][<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= tot;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(End[j]) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>;k &lt; <span class="number">26</span>;k++)&#123;</span><br><span class="line">		<span class="comment">/*f[i][trie[j][k]]的方案总数显然等于它所有父亲的方案总数的和*/</span></span><br><span class="line">				f[i][trie[j][k]] = (f[i][trie[j][k]]+f[i<span class="number">-1</span>][j])%P;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>,tmp = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= tot;i++) </span><br><span class="line">		<span class="keyword">if</span>(!End[i]) res = (res+f[m][i])%P;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= m;i++) tmp = tmp*<span class="number">26</span>%P;</span><br><span class="line">	ans = (tmp-res+P)%P;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) Insert(str[i]);</span><br><span class="line">	getFail();</span><br><span class="line">	getAns();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%s"</span>,str[i]);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/AC自动机/" rel="tag"># AC自动机</a>
+            
+              <a href="/tags/状态压缩/" rel="tag"># 状态压缩</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/02/acji/" rel="next" title="AC自动机模板">
+                  <i class="fa fa-chevron-left"></i> AC自动机模板
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">60</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Keywords-Search"><span class="nav-number">1.</span> <span class="nav-text">Keywords Search</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#玄武密码"><span class="nav-number">2.</span> <span class="nav-text">玄武密码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Censoring"><span class="nav-number">3.</span> <span class="nav-text">Censoring</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单词"><span class="nav-number">4.</span> <span class="nav-text">单词</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最短母串"><span class="nav-number">5.</span> <span class="nav-text">最短母串</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#POI-2000-病毒"><span class="nav-number">6.</span> <span class="nav-text">POI 2000 病毒</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#文本生成器"><span class="nav-number">7.</span> <span class="nav-text">文本生成器</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
