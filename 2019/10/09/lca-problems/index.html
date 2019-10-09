@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="树上倍增法可以用于求LCA，当然在其它场合也有应用，在很多时候看似不是树形的问题，我们也可以通过转化成树形结构，然后在树中进行操作，这种操作可以是求二者之间的最近状态，或者是二者之间的距离，如最后一题。另外关于树的题型，最好还是根据样例画图思考，往往可以比空想获得更多思路。 点的距离题意简述给定一棵 n 个点的树，Q 个询问，每次询问点 x 到点 y 两点之间的距离。解题思路模板题，用树上倍增法，">
+<meta name="keywords" content="lca,树上倍增">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树上倍增LCA题集">
+<meta property="og:url" content="http://valenshi.top/2019/10/09/lca-problems/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="树上倍增法可以用于求LCA，当然在其它场合也有应用，在很多时候看似不是树形的问题，我们也可以通过转化成树形结构，然后在树中进行操作，这种操作可以是求二者之间的最近状态，或者是二者之间的距离，如最后一题。另外关于树的题型，最好还是根据样例画图思考，往往可以比空想获得更多思路。 点的距离题意简述给定一棵 n 个点的树，Q 个询问，每次询问点 x 到点 y 两点之间的距离。解题思路模板题，用树上倍增法，">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://valenshi.top/2019/10/09/lca-problems/1.png">
+<meta property="og:updated_time" content="2019-10-09T12:16:10.691Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树上倍增LCA题集">
+<meta name="twitter:description" content="树上倍增法可以用于求LCA，当然在其它场合也有应用，在很多时候看似不是树形的问题，我们也可以通过转化成树形结构，然后在树中进行操作，这种操作可以是求二者之间的最近状态，或者是二者之间的距离，如最后一题。另外关于树的题型，最好还是根据样例画图思考，往往可以比空想获得更多思路。 点的距离题意简述给定一棵 n 个点的树，Q 个询问，每次询问点 x 到点 y 两点之间的距离。解题思路模板题，用树上倍增法，">
+<meta name="twitter:image" content="http://valenshi.top/2019/10/09/lca-problems/1.png">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/10/09/lca-problems/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>树上倍增LCA题集 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/09/lca-problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">树上倍增LCA题集
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-09 20:04:00 / 修改时间：20:16:10" itemprop="dateCreated datePublished" datetime="2019-10-09T20:04:00+08:00">2019-10-09</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>树上倍增法可以用于求LCA，当然在其它场合也有应用，在很多时候看似不是树形的问题，我们也可以通过转化成树形结构，然后在树中进行操作，这种操作可以是求二者之间的最近状态，或者是二者之间的距离，如最后一题。<br>另外关于树的题型，最好还是根据样例画图思考，往往可以比空想获得更多思路。</p>
+<h4 id="点的距离"><a href="#点的距离" class="headerlink" title="点的距离"></a>点的距离</h4><p><strong>题意简述</strong><br>给定一棵 n 个点的树，Q 个询问，每次询问点 x 到点 y 两点之间的距离。<br><strong>解题思路</strong><br>模板题，用树上倍增法，初始化时间为O(NlogN)，查询时间O(logN)。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,q;</span><br><span class="line"><span class="comment">//anc[x][i]表示x往上走2^i步的祖先编号 </span></span><br><span class="line"><span class="keyword">int</span> anc[N][<span class="number">25</span>], deep[N],dis[N];</span><br><span class="line"><span class="keyword">int</span> root = <span class="number">1</span>;	<span class="comment">//这棵树的根,无特殊说明可以为1 </span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++)</span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i] , z = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == root) <span class="keyword">continue</span>;</span><br><span class="line">		deep[y] = deep[x]+<span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + z;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x; dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Lca</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(deep[u] &lt; deep[v]) swap(u,v);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(deep[anc[u][i]] &gt;= deep[v]) u = anc[u][i];</span><br><span class="line">	<span class="keyword">if</span>(u == v) <span class="keyword">return</span> u;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(anc[u][i] != anc[v][i])&#123;</span><br><span class="line">			u = anc[u][i]; v= anc[v][i];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[u][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*logN时间内返回x与y之间的距离,注意是否会爆int*/</span> </span><br><span class="line">	<span class="keyword">return</span> dis[x] + dis[y] - <span class="number">2</span>*dis[Lca(x,y)];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y); addEdge(y,x);<span class="comment">//双向边 </span></span><br><span class="line">	&#125;</span><br><span class="line">	deep[<span class="number">0</span>] = <span class="number">-1</span>; dfs(root);<span class="comment">//完成预处理 </span></span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;q);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= q;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ask(x,y));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="暗的锁链"><a href="#暗的锁链" class="headerlink" title="暗的锁链*"></a>暗的锁链*</h4><p><strong>题意简述</strong><br>原题来自：POJ 3417</p>
+<p>Dark 是一张无向图，图中有 N 个节点和两类边，一类边被称为主要边，而另一类被称为附加边。Dark 有 N–1 条主要边，并且 Dark 的任意两个节点之间都存在一条只由主要边构成的路径。另外，Dark 还有 M 条附加边。</p>
+<p>你的任务是把 Dark 斩为不连通的两部分。一开始 Dark 的附加边都处于无敌状态，你只能选择一条主要边切断。一旦你切断了一条主要边，Dark 就会进入防御模式，主要边会变为无敌的而附加边可以被切断。但是你的能力只能再切断 Dark 的一条附加边。</p>
+<p>现在你想要知道，一共有多少种方案可以击败 Dark。注意，就算你第一步切断主要边之后就已经把 Dark 斩为两截，你也需要切断一条附加边才算击败了 Dark。</p>
+<p><strong>解题思路</strong><br>这是一道需要观察和转化题意的问题。<br>在树上如果有一条附加边，就形成了一个环，可知每个环内最多有一条附加边。如果一条主要边在环中，则称该主要边被<strong>覆盖</strong> ，它在几个环内，就被覆盖了几次。可知一个主要边最多被覆盖2次。<br>如果一条主要边被覆盖了 2 次，那么我们无论怎么切都切不断 Dark，因为切断了主要边后，还是一个环，而切断一个环需要切断两条边。如果一条主要边被覆盖了 1 次，那么我们切断该主要边后，再切断它的附加边即可，即只有一种方案。如果一条主要边被覆盖0次，那么我们切完该主要边后，可以任意切一条附加边，共 m 中方案（m 是附加边的条数）。综上所述，我们只需要求出每条主要边被附加边覆盖次数即可，我们设 f[x] 为 x 到其父节点的主要边被覆盖的次数。</p>
+<p>我们可以利用<strong>树上差分</strong>来求 f 数组，树上差分的思想就不额外介绍了，具体做法是如果有一条附加边(x, y)，那么f[x]++ ,f[y]++，同时 f[ Lca(x, y) ] -= 2，这样当我们添加完附加边后，将 f 数组从叶子节点向上累加，即可更新完毕 f 数组。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x];head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m,f[N];</span><br><span class="line"><span class="keyword">int</span> dis[N],deep[N],anc[N][<span class="number">24</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++) </span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i], z = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == <span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">		deep[y] = deep[x] + <span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + z;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x; dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Lca</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(deep[x] &lt; deep[y]) swap(x,y);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(deep[anc[x][i]] &gt;= deep[y]) x = anc[x][i];</span><br><span class="line">	<span class="keyword">if</span>(x == y) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(anc[x][i] != anc[y][i])&#123;</span><br><span class="line">			x = anc[x][i]; y = anc[y][i];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[x][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> vis[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs2</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	vis[x] = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(vis[y]) <span class="keyword">continue</span>;</span><br><span class="line">		f[x] += dfs2(y);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f[x];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y); addEdge(y,x);</span><br><span class="line">	&#125;</span><br><span class="line">	dfs(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		f[x]++; f[y]++; f[Lca(x,y)] -= <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	dfs2(<span class="number">1</span>); <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">if</span>(!f[i]) ans += m;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(f[i] == <span class="number">1</span>) ans++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="异象石"><a href="#异象石" class="headerlink" title="异象石*"></a>异象石*</h4><p><strong>题意简述</strong><br>原题来自：Contest Hunter Round #56</p>
+<p>在 Adera 的异时空中有一张地图。这张地图上有 N 个点，有 N−1 条双向边把它们连通起来。起初地图上没有任何异象石，在接下来的 M 个时刻中，每个时刻会发生以下三种类型的事件之一：</p>
+<p>地图的某个点上出现了异象石（已经出现的不会再次出现）；</p>
+<p>地图某个点上的异象石被摧毁（不会摧毁没有异象石的点）；</p>
+<p>向玩家询问使所有异象石所在的点连通的边集的总长度最小是多少。</p>
+<p>请你作为玩家回答这些问题。下图是一个例子，灰色节点表示出现了异象石，加粗的边表示被选为连通异象石的边集。</p>
+<p><strong>解题思路</strong><br>我也不太能理解这题的思路是怎么发现的。<br>很自然的想法就是求所有 k 个异象石两两之间的距离和，然后 / (k-1) 即为答案，但显然会超时。<br>正解是利用一个结论，该结论题解没给出证明，搞懂了再补上。<br>对这颗树先进行dfs遍历，给每个节点打上一个时间戳，设节点 x 的时间戳为 dfn[x]；设已存在的异象石中，dfn序是 x 前驱的节点编号为 pre，后继节点编号为 nex，那么在 x 处插入异象石后， ans += Dis(pre , x) + Dis(x, nex) - Dis(pre, nex)。<br>删除一个异象石同理，减去就好。<br>证明暂时没有，另外这个要做法记住，是用来求树上多个节点之间的最短总路径用的。</p>
+<p>还要注意set的用法，如果set为空，那么begin() = end()，此时如果用指向end()的迭代器自增或自减都是不合法的。</p>
+<p><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x];head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m,f[N];</span><br><span class="line"><span class="keyword">int</span> dis[N],deep[N],anc[N][<span class="number">24</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++) </span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i], z = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == <span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">		deep[y] = deep[x] + <span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + z;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x; dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Lca</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(deep[x] &lt; deep[y]) swap(x,y);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(deep[anc[x][i]] &gt;= deep[y]) x = anc[x][i];</span><br><span class="line">	<span class="keyword">if</span>(x == y) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(anc[x][i] != anc[y][i])&#123;</span><br><span class="line">			x = anc[x][i]; y = anc[y][i];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[x][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> vis[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dfs2</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	vis[x] = <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(vis[y]) <span class="keyword">continue</span>;</span><br><span class="line">		f[x] += dfs2(y);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> f[x];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y); addEdge(y,x);</span><br><span class="line">	&#125;</span><br><span class="line">	dfs(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		f[x]++; f[y]++; f[Lca(x,y)] -= <span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	dfs2(<span class="number">1</span>); <span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">if</span>(!f[i]) ans += m;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(f[i] == <span class="number">1</span>) ans++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="次小生成树"><a href="#次小生成树" class="headerlink" title="次小生成树*"></a>次小生成树*</h4><p>这是阳哥哥负责的题型，我就不越界了。</p>
+<h4 id="Dis"><a href="#Dis" class="headerlink" title="Dis"></a>Dis</h4><p><strong>题意简述</strong><br>给出 n 个点的一棵树，多次询问两点之间的最短距离。<br>注意：边是双向的。<br><strong>解题思路</strong><br>这个就是标准的模板题了，和第一题一样，注意一下细节即可。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],edge[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x];</span><br><span class="line">	edge[tot] = z; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,q;</span><br><span class="line"><span class="keyword">int</span> anc[N][<span class="number">25</span>], deep[N],dis[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++)</span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i] , z = edge[i];</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == <span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">		deep[y] = deep[x]+<span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + z;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x; dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Lca</span><span class="params">(<span class="keyword">int</span> u,<span class="keyword">int</span> v)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(deep[u] &lt; deep[v]) swap(u,v);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(deep[anc[u][i]] &gt;= deep[v]) u = anc[u][i];</span><br><span class="line">	<span class="keyword">if</span>(u == v) <span class="keyword">return</span> u;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(anc[u][i] != anc[v][i])&#123;</span><br><span class="line">			u = anc[u][i]; v= anc[v][i];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[u][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> dis[x] + dis[y] - <span class="number">2</span>*dis[Lca(x,y)];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;q);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;x,&amp;y,&amp;z);</span><br><span class="line">		addEdge(x,y,z); addEdge(y,x,z);</span><br><span class="line">	&#125;</span><br><span class="line">	dfs(<span class="number">1</span>);<span class="comment">//完成预处理</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= q;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ask(x,y));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="祖孙询问"><a href="#祖孙询问" class="headerlink" title="祖孙询问"></a>祖孙询问</h4><p><strong>题意简述</strong><br>已知一棵 n 个节点的有根树。有 m 个询问，每个询问给出了一对节点的编号 x 和 y，询问 x 与 y 的祖孙关系。<br><strong>解题思路</strong><br>简单的模板题，需要注意的是如果 x == y，那么是属于<strong>其它情况</strong>哦。<br>另外还需要注意一下，deep[0] = -1，否则会和根节点数值相等而出错。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],edge[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> anc[N][<span class="number">25</span>], dis[N],deep[N];</span><br><span class="line"><span class="keyword">int</span> root;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++)</span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == root) <span class="keyword">continue</span>;</span><br><span class="line">		deep[y] = deep[x]+<span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + <span class="number">1</span>;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x; dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Lca</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(deep[x] &lt; deep[y]) swap(x,y);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(deep[anc[x][i]] &gt;= deep[y]) x = anc[x][i];</span><br><span class="line">	<span class="keyword">if</span>(x == y) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(anc[x][i] != anc[y][i])&#123;</span><br><span class="line">			x = anc[x][i]; y = anc[y][i];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[x][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		<span class="keyword">if</span>(y == <span class="number">-1</span>) root = x;</span><br><span class="line">		<span class="keyword">else</span> addEdge(x,y,<span class="number">1</span>), addEdge(y,x,<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">/* 因为deep[root] = 0,如果deep[0] = 0,则会认为 0 号节点也是根 */</span></span><br><span class="line">	deep[<span class="number">0</span>] = <span class="number">-1</span>; dfs(root);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		<span class="keyword">int</span> par = Lca(x,y);</span><br><span class="line">		<span class="keyword">if</span>(x == y) <span class="built_in">puts</span>(<span class="string">"0"</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(par == x) <span class="built_in">puts</span>(<span class="string">"1"</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(par == y) <span class="built_in">puts</span>(<span class="string">"2"</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">"0"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="聚会"><a href="#聚会" class="headerlink" title="聚会*"></a>聚会*</h4><p><strong>题意简述</strong><br>原题来自：AHOI 2008</p>
+<p>Y 岛风景美丽宜人，气候温和，物产丰富。Y 岛上有 N 个城市，有 N−1 条城市间的道路连接着它们。每一条道路都连接某两个城市。幸运的是，小可可通过这些道路可以走遍 Y 岛的所有城市。神奇的是，乘车经过每条道路所需要的费用都是一样的。</p>
+<p>小可可，小卡卡和小 YY 经常想聚会，每次聚会，他们都会选择一个城市，使得三个人到达这个城市的总费用最小。</p>
+<p>由于他们计划中还会有很多次聚会，每次都选择一个地点是很烦人的事情，所以他们决定把这件事情交给你来完成。他们会提供给你地图以及若干次聚会前他们所处的位置，希望你为他们的每一次聚会选择一个合适的地点。</p>
+<p><strong>解题思路</strong><br>在一棵树上求三个点 (x, y ,z) 之间的最短路径，我们求出dis[x, y] + dis[x , z] + dis[y , z]，画图就会发现每一段路径都被重复计算了 2 次，于是我们再将答案 / 2就得到了三个点之间的路径。<br>假设这个聚会点为 p ，那么显然 p 是三条路径的交汇点，否则路径和肯定不会是最短。下一步的目标就是求出这个交汇点的坐标。</p>
+<p>如果我们以某个点为根，为每个节点更新深度deep（就像我们在求LCA时一样），那么显然 p 点就是 Lca[x, y] , Lca[x , z] , Lca[y , z] 三者中deep最大（最深）的点，这也可以通过画图观察出来，也很容易证明。</p>
+<p>于是我们就可以利用树上倍增法求出Lca，在O(NlogN)时间内解决该题，但是常数不太优秀，极限数据还是会被卡掉，如果想满分需要用树链剖分，不过该思路已经可以通过一本通oj上的数据了。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">5e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],edge[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y, edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x] , head[x] = tot;</span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getInt</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> c = getchar();</span><br><span class="line">	<span class="keyword">while</span>(c != <span class="string">'-'</span> &amp;&amp; (c &lt; <span class="string">'0'</span> || c &gt; <span class="string">'9'</span>)) c = getchar();</span><br><span class="line">	<span class="keyword">if</span>(c == <span class="string">'-'</span>) neg = <span class="literal">true</span>,c = getchar();</span><br><span class="line">	<span class="keyword">while</span>(c &gt;= <span class="string">'0'</span> &amp;&amp; c &lt;= <span class="string">'9'</span>) </span><br><span class="line">		res = res*<span class="number">10</span>+c-<span class="string">'0'</span>, c = getchar();</span><br><span class="line">	<span class="keyword">return</span> neg?-res:res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> root = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> deep[N],anc[N][<span class="number">24</span>],dis[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++)</span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == root) <span class="keyword">continue</span>;</span><br><span class="line">		deep[y] = deep[x] + <span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + <span class="number">1</span>;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x; dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Lca</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(deep[x] &lt; deep[y]) swap(x,y);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(deep[anc[x][i]] &gt;= deep[y]) x = anc[x][i];</span><br><span class="line">	<span class="keyword">if</span>(x == y) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(anc[x][i] != anc[y][i])&#123;</span><br><span class="line">			x = anc[x][i]; y = anc[y][i];</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[x][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Dis</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> dis[x] + dis[y] - <span class="number">2</span>*dis[Lca(x,y)];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(!x) <span class="keyword">return</span>;</span><br><span class="line">	print(x/<span class="number">10</span>);</span><br><span class="line">	<span class="built_in">putchar</span>(x%<span class="number">10</span>+<span class="string">'0'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	n = getInt(); m = getInt();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt; n;i++)&#123;</span><br><span class="line">		x = getInt(); y = getInt();</span><br><span class="line">		addEdge(x,y,<span class="number">1</span>); addEdge(y,x,<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	deep[<span class="number">0</span>] = <span class="number">-1</span>; dfs(root);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt;= m;i++)&#123;</span><br><span class="line">		x = getInt(); y = getInt(); z = getInt();</span><br><span class="line">		<span class="keyword">int</span> par = Lca(x,y); </span><br><span class="line">		<span class="keyword">int</span> p2 = Lca(x,z) , p3 = Lca(y,z);</span><br><span class="line">		<span class="keyword">if</span>(deep[par] &lt; deep[p2]) par = p2;</span><br><span class="line">		<span class="keyword">if</span>(deep[par] &lt; deep[p3]) par = p3;</span><br><span class="line">		<span class="keyword">int</span> res = Dis(x,y) + Dis(x,z) + Dis(y,z) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">		print(par); <span class="built_in">putchar</span>(<span class="string">' '</span>); print(res); <span class="built_in">puts</span>(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="跳跳棋"><a href="#跳跳棋" class="headerlink" title="跳跳棋**"></a>跳跳棋**</h4><p><strong>题意简述</strong><br>原题来自：BZOJ 2144</p>
+<p>跳跳棋是在一条数轴上进行的。棋子只能摆在整点上。每个点不能摆超过一个棋子。我们用跳跳棋来做一个简单的游戏：棋盘上有三颗棋子，分别在 a,b,c 这三个位置。我们要通过最少的跳动把他们的位置移动成 x,y,z（注意：棋子是没有区别的）。</p>
+<p>跳动的规则很简单，任意选一颗棋子，对一颗中轴棋子跳动。跳动后两颗棋子距离不变。一次只允许跳过一颗棋子。</p>
+<p>写一个程序，首先判断是否可以完成任务。如果可以，输出最少需要的跳动次数。<br><img src="/2019/10/09/lca-problems/1.png" alt="1"><br><strong>解题思路</strong><br>这题有好几个难点，思路也不是那么容易想到。</p>
+<p>首先比较容易想到的是，有哪些点是可以达到的；设a,b,c升序，l1 = b-a, l2 = c-b，那么(l1, l2)可以转移到 (l1, l2-l1) 和 (l1-l2 , l2)。<br>那么每次转移了多少长度，向哪个方向转移的我们都知道了，自然就可以得到点的转移。就比如 (l1 , l2)  —&gt; (l1 , l2 - l1) ，就对应着(a ,b ,c)—&gt;(b, 2b-a, c)。</p>
+<p>既然我们知道点如何转移，那么问题就变成了判断 (a , b, c) 和 (x , y , z) 是否可以转移到同一个状态。</p>
+<p>我们上面只讨论了两端节点向中间跳（对应着合法长度的相减，a跳到b、c中间，c跳到a、b中间），没考虑中间节点向两边跳（a关于c跳，或c关于a跳，或b关于a、c跳，对应着合法长度的相加），实际上两者都成立，比如(l1 , l2)—&gt;(l1, l1+l2)对应着(a ,b ,c) —&gt; (b , a , c) ，但是如果我们将其中两点之间的距离不断变大，会终止于正无穷，但如果不断缩小，就会终止于某一个非负整数；基于此我们只考虑“两边的点向中间跳”这种情况，这对应着开始介绍的两个减法转移。</p>
+<p>到此就有些明朗了，每个状态看作一个节点，转移一次就看作向上走一步，最终一定会终止于某一个状态，这个状态就可以看作根节点；我们将(a ,b ,c) 与 (x, y , z)同时“向上”转移，如果它们终止于同一个状态，就说明它们可以互相抵达，否则则不能。</p>
+<p>接下来就是要判断最小的步数，即(a ,b ,c) 到 (x , y , z) 的最少转移次数。这就相当于求二者的LCA，因为它们有共同的“根节点”，并且有着到根节点的唯一路径，所以可以将它们的转移看作一棵树，边权为1，求着两个状态之间的距离。</p>
+<p>由于我们利用的是合法长度的转移来对应着点的状态的转移，即(l1, l2) —&gt; (l1 , l2-l1)或(l1-l2, l2)。这和更相减损术 gcd(a, b) = gcd(a, b-a) = gcd(a-b, a)相同，而欧几里得又告诉我们 gcd(a ,b) = gcd(b ,a%b)，于是本来 O(N) 的减法变成了 O(log N)的除法（取模）。</p>
+<p>我们可以在O(logN)的时间内转移到任意一个父状态，但是我们不知道该向上转移几步才是最少步数，于是我们要先将二者的<strong>深度</strong>调到相同，然后同时向上走 k 步，这可以用倍增实现，也可以用二分搜索实现。求深度我们可以在求第一问时顺便求解，同时深度也是最长路径，用于二分。</p>
+<p><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">int</span> a[<span class="number">5</span>],b[<span class="number">5</span>];</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> x,y,z;</span><br><span class="line">	Node()&#123;&#125;</span><br><span class="line">	Node(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z):x(x),y(y),z(z)&#123;&#125;</span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span> != (<span class="keyword">const</span> Node&amp; B) <span class="keyword">const</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> !(x == B.x &amp;&amp; y == B.y &amp;&amp; z == B.z);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">int</span> deep;</span><br><span class="line"><span class="function">Node <span class="title">jump</span><span class="params">(Node h, <span class="keyword">int</span> step)</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回从位置h向上跳step步后的状态,顺便记录一下当前深度(距根距离)*/</span></span><br><span class="line">	Node res = h;</span><br><span class="line">	<span class="keyword">int</span> t1 = h.y-h.x, t2 = h.z - h.y;</span><br><span class="line">	<span class="keyword">if</span>(t1 == t2) <span class="keyword">return</span> res; </span><br><span class="line">	<span class="keyword">if</span>(t1 &lt; t2)&#123;</span><br><span class="line">		<span class="keyword">int</span> t = min(step,(t2<span class="number">-1</span>)/t1);<span class="comment">//用除法优化 </span></span><br><span class="line">		step -= t; deep += t;	<span class="comment">//记录一下深度 </span></span><br><span class="line">		res.y += t*t1; res.x += t*t1;</span><br><span class="line">	&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">		<span class="keyword">int</span> t = min(step,(t1<span class="number">-1</span>)/t2);</span><br><span class="line">		step -= t; deep += t;</span><br><span class="line">		res.y -= t*t2; res.z -= t*t2;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(step) <span class="keyword">return</span> jump(res,step);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> x,Node h1,Node h2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> !(jump(h1,x) != jump(h2,x));</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">3</span>;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,a+i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">3</span>;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,b+i);</span><br><span class="line">	sort(a+<span class="number">1</span>,a+<span class="number">4</span>); sort(b+<span class="number">1</span>,b+<span class="number">4</span>);</span><br><span class="line">	Node h1(a[1],a[2],a[3]) , h2(b[1],b[2],b[3]);</span><br><span class="line">	Node aa = jump(h1,INF); <span class="keyword">int</span> d1 = deep; deep = <span class="number">0</span>;</span><br><span class="line">	Node bb = jump(h2,INF); <span class="keyword">int</span> d2 = deep; deep = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(aa != bb)&#123;</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">"NO"</span>); <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">"YES"</span>);</span><br><span class="line">	<span class="comment">/*计算步数：先调整到同一深度,再二分一起跳*/</span></span><br><span class="line">	<span class="keyword">if</span>(d1 &lt; d2) swap(d1,d2),swap(h1,h2);</span><br><span class="line">	h1 = jump(h1,d1-d2);</span><br><span class="line">	<span class="keyword">int</span> l = <span class="number">0</span>, r = d1;</span><br><span class="line">	<span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(check(mid,h1,h2)) r = mid<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">else</span> l = mid+<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,<span class="number">2</span>*l+d1-d2);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/lca/" rel="tag"># lca</a>
+            
+              <a href="/tags/树上倍增/" rel="tag"># 树上倍增</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/09/MSTs/" rel="next" title="最小生成树相关问题">
+                  <i class="fa fa-chevron-left"></i> 最小生成树相关问题
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">65</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#点的距离"><span class="nav-number">1.</span> <span class="nav-text">点的距离</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#暗的锁链"><span class="nav-number">2.</span> <span class="nav-text">暗的锁链*</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#异象石"><span class="nav-number">3.</span> <span class="nav-text">异象石*</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#次小生成树"><span class="nav-number">4.</span> <span class="nav-text">次小生成树*</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dis"><span class="nav-number">5.</span> <span class="nav-text">Dis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#祖孙询问"><span class="nav-number">6.</span> <span class="nav-text">祖孙询问</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#聚会"><span class="nav-number">7.</span> <span class="nav-text">聚会*</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#跳跳棋"><span class="nav-number">8.</span> <span class="nav-text">跳跳棋**</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
