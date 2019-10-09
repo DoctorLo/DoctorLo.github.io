@@ -55,20 +55,20 @@
   };
 </script>
 
-  <meta name="description" content="需要掌握的知识：  原码、反码、补码 按位或 按位与 异或 非 移位运算 lowbit的实现 运算符优先级原码、反码、补码原码： 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。 1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，即（0 2^2）+（1 2^1）+（0* 2^0）=2（‘^’表示幂运算符）所以1010">
+  <meta name="description" content="摘要：在对最小生成树算法有一定理解后，我们对典型的最小生成树题型应该不难解决，但是对于由最小生成树模型变形而来的几种模型，我们仍需做一次总结与记录。首先我们需要提出最小生成树几个性质，便于推导算法；然后我们将介绍6种最小生成树相关问题模型，并讨论一般解法与更优解法；其中有的解法显而易见，接受起来也很简单，但有的解法却需要从理论上逻辑严密的进行推导，构造算法并证明算法的正确性，这部分难度稍大。这6个">
 <meta name="keywords" content="数据结构与算法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="位运算">
-<meta property="og:url" content="http://valenshi.top/2019/08/16/bit-cal/index.html">
+<meta property="og:title" content="最小生成树相关问题">
+<meta property="og:url" content="http://valenshi.top/2019/10/09/MSTs/index.html">
 <meta property="og:site_name" content="ValenShi&#39;s Blog">
-<meta property="og:description" content="需要掌握的知识：  原码、反码、补码 按位或 按位与 异或 非 移位运算 lowbit的实现 运算符优先级原码、反码、补码原码： 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。 1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，即（0 2^2）+（1 2^1）+（0* 2^0）=2（‘^’表示幂运算符）所以1010">
+<meta property="og:description" content="摘要：在对最小生成树算法有一定理解后，我们对典型的最小生成树题型应该不难解决，但是对于由最小生成树模型变形而来的几种模型，我们仍需做一次总结与记录。首先我们需要提出最小生成树几个性质，便于推导算法；然后我们将介绍6种最小生成树相关问题模型，并讨论一般解法与更优解法；其中有的解法显而易见，接受起来也很简单，但有的解法却需要从理论上逻辑严密的进行推导，构造算法并证明算法的正确性，这部分难度稍大。这6个">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-16T13:53:55.632Z">
+<meta property="og:updated_time" content="2019-10-09T10:48:57.678Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="位运算">
-<meta name="twitter:description" content="需要掌握的知识：  原码、反码、补码 按位或 按位与 异或 非 移位运算 lowbit的实现 运算符优先级原码、反码、补码原码： 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。 1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，即（0 2^2）+（1 2^1）+（0* 2^0）=2（‘^’表示幂运算符）所以1010">
+<meta name="twitter:title" content="最小生成树相关问题">
+<meta name="twitter:description" content="摘要：在对最小生成树算法有一定理解后，我们对典型的最小生成树题型应该不难解决，但是对于由最小生成树模型变形而来的几种模型，我们仍需做一次总结与记录。首先我们需要提出最小生成树几个性质，便于推导算法；然后我们将介绍6种最小生成树相关问题模型，并讨论一般解法与更优解法；其中有的解法显而易见，接受起来也很简单，但有的解法却需要从理论上逻辑严密的进行推导，构造算法并证明算法的正确性，这部分难度稍大。这6个">
   <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
-  <link rel="canonical" href="http://valenshi.top/2019/08/16/bit-cal/">
+  <link rel="canonical" href="http://valenshi.top/2019/10/09/MSTs/">
 
 
 <script id="page-configurations">
@@ -82,7 +82,7 @@
   };
 </script>
 
-  <title>位运算 | ValenShi's Blog</title>
+  <title>最小生成树相关问题 | ValenShi's Blog</title>
   
 
 
@@ -257,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/16/bit-cal/">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/09/MSTs/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -271,7 +271,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">位运算
+          <h1 class="post-title" itemprop="name headline">最小生成树相关问题
 
             
           </h1>
@@ -288,7 +288,7 @@
                 
               
 
-              <time title="创建时间：2019-08-16 21:53:04 / 修改时间：21:53:55" itemprop="dateCreated datePublished" datetime="2019-08-16T21:53:04+08:00">2019-08-16</time>
+              <time title="创建时间：2019-10-09 18:47:52 / 修改时间：18:48:57" itemprop="dateCreated datePublished" datetime="2019-10-09T18:47:52+08:00">2019-10-09</time>
             </span>
           
             
@@ -320,35 +320,52 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><strong>需要掌握的知识：</strong></p>
-<ul>
-<li>原码、反码、补码</li>
-<li>按位或</li>
-<li>按位与</li>
-<li>异或</li>
-<li>非</li>
-<li>移位运算</li>
-<li>lowbit的实现</li>
-<li>运算符优先级<h5 id="原码、反码、补码"><a href="#原码、反码、补码" class="headerlink" title="原码、反码、补码"></a>原码、反码、补码</h5><strong>原码：</strong> 是最简单的机器数表示法。用最高位表示符号位，‘1’表示负号，‘0’表示正号。其他位存放该数的二进制的绝对值。<blockquote>
-<p>1010  ： 最高位为‘1’,表示这是一个负数，其他三位为‘010’，<br>即（0<em> 2^2）+（1</em> 2^1）+（0* 2^0）=2（‘^’表示幂运算符）<br>所以1010表示十进制数（-2）。</p>
-</blockquote>
-</li>
+        <p><strong>摘要：</strong><br>在对最小生成树算法有一定理解后，我们对典型的最小生成树题型应该不难解决，但是对于由最小生成树模型变形而来的几种模型，我们仍需做一次总结与记录。<br>首先我们需要提出最小生成树几个性质，便于推导算法；然后我们将介绍6种最小生成树相关问题模型，并讨论一般解法与更优解法；其中有的解法显而易见，接受起来也很简单，但有的解法却需要从理论上逻辑严密的进行推导，构造算法并证明算法的正确性，这部分难度稍大。<br>这6个相关问题分别是：增量最小生成树，最小瓶颈生成树，最小瓶颈路，每对节点的最小瓶颈路，次小生成树，最小有向生成树。</p>
+<h4 id="图论中的2个性质："><a href="#图论中的2个性质：" class="headerlink" title="图论中的2个性质："></a>图论中的2个性质：</h4><ul>
+<li><strong>切割性质：</strong> 假定所有边权均不相同。设S为既非空集也非全集的V的子集，边e是满足一个端点在S内，另一个端点不在S内的所有边中权值最小的一个，则图G的所有生成树均包含e。</li>
+<li><strong>回路性质：</strong> 假定所有边权值均不相同。设C是图G中任意回路，边e是C上权值最大的边，则图G的所有生成树均不包含e。</li>
 </ul>
-<p><strong>面临问题：</strong> 原码下，正数相加所得结果正确，但是正数和负数相加出错。</p>
-<hr>
-<p><strong>反码：</strong> 正数的反码还是等于原码，负数的反码就是他的原码除符号位外，按位取反。</p>
+<p>在此不给出证明。</p>
+<h4 id="增量最小生成树"><a href="#增量最小生成树" class="headerlink" title="增量最小生成树"></a>增量最小生成树</h4><p><strong>问题描述：</strong><br>从包含n个点的空图开始，依次加入m条带权边。每加入一条边，输出当前图中的最小生成树权值（如果当前图不连通，则输出无解）。<br><strong>解题思路：</strong><br>如果每次重新求完整的最小生成树问题，总时间复杂度高达O(m^2 log n)。根据回路的性质，可以得到如下改进算法：</p>
 <blockquote>
-<p>3是正数，反码与原码相同，则可以表示为0011<br>-3的原码是1011，符号位保持不变，低三位（011）按位取反得（100）<br>所以-3的反码为1100</p>
+<p>每次求出新的最小生成树后，把其它的边删除。由于每次只需计算一个n条边（原生成树有 n - 1条，新加入一条）的图的最小生成树，Kruskal算法的时间复杂度降为O(n log n)，总时间复杂度为O(nm log n)。</p>
 </blockquote>
-<p><strong>面临问题：</strong> 正数相加所得结果正确，正负相加所得结果正确，负负相加结果出错。</p>
-<hr>
-<p><strong>补码：</strong> 正数的补码等于他的原码，负数的补码等于反码+1。</p>
-<p>上述给出的是补码的求法，补码的真正定义是什么？为什么要这样定义？</p>
-<p>采用补码的表示方式的<strong>好处</strong>，一是可以将减法转化为加法运算，简化运算复杂度；二是可以让符号位作为数值直接参与运算，所得结果仍然是正确的，即符号位无需单独处理。</p>
-<h5 id="按位或、与、异或、非"><a href="#按位或、与、异或、非" class="headerlink" title="按位或、与、异或、非"></a>按位或、与、异或、非</h5><p>在c语言中，是将一个十进制整数（一般情况下）转化为二进制位，然后再对二进制数的每一位对应进行或、与、异或、非操作。</p>
-<h5 id="位移运算"><a href="#位移运算" class="headerlink" title="位移运算"></a>位移运算</h5><p>位移运算分为左移和算数右移，其中<strong>左移</strong>是指在二进制表示下把所有位数字同时向左移动一位，高位越界后舍弃，低位以0补充。其中越界是指，int型变量一般仅有32位，如果左移后超过了32位则舍弃超过的部分。<br><strong>算数右移</strong>是指在二进制补码表示下把数字同时向右移动，高位以符号位填充，低位越界后舍弃。算数右移等于除以2向下取整，（-5）&gt;&gt;1 = -3 , 3 &gt;&gt; 1 = 2。<br>可以发现算数右移并不等同于c语言中的整数/2，值得一提的是c语言中的整数/2是“除以2向0取整”。<br><strong>逻辑右移</strong>是在补码表示下把所有数字同时右移，高位以0补充，低位越界后舍弃，但是C++没有规定实现方式，一般编译器都会实现算数右移。</p>
-<h5 id="lowbit的实现"><a href="#lowbit的实现" class="headerlink" title="lowbit的实现"></a>lowbit的实现</h5><p><strong>定义：</strong> lowbit( n )是取出非负整数 n 在二进制表示下最低位的 1 以及它后面的0所构成的十进制数值。<br><strong>实现：</strong><br>若 n &gt; 0，且第 k 位是1，第 0 ~ k-1 位都是0。<br>先将n按位取反，那么第 k 位变成了0，第 0 ~k 位变成了1。<br>再令n = n+1，那么显然通过一系列进位，第 0~k-1 位都变成了0，而第 k 位又变成了1。<br>我们注意到，最初的 n ，与最终的n只有第 0~k 位相同，更高的位都恰好相反（举个例子推导试试），于是将它们按位与就得到了 0~k 位的数值，这个值就是我们所求的答案。</p>
-<h5 id="运算符优先级"><a href="#运算符优先级" class="headerlink" title="运算符优先级"></a>运算符优先级</h5><p>不确定就加括号！！位移运算最好加括号！<br><a href="https://baike.baidu.com/item/%E8%BF%90%E7%AE%97%E7%AC%A6%E4%BC%98%E5%85%88%E7%BA%A7/4752611?fr=aladdin" target="_blank" rel="noopener">百度百科，运算符优先级表</a></p>
+<p>这个算法可以进一步改进:</p>
+<blockquote>
+<p>加入一条边e = (u, v)之后，图中恰好包含一个环。根据回路性质，删除该回路上权值最大的边即可，因此只需在加边之前的MST上找到u到v的唯一路径上的权值最大的边，再和e比较，删除权值较大的一条。由于路径唯一，可以用DFS或BFS找到这条u到v的路径，总时间复杂度为O(nm)。</p>
+</blockquote>
+<h4 id="最小瓶颈生成树"><a href="#最小瓶颈生成树" class="headerlink" title="最小瓶颈生成树"></a>最小瓶颈生成树</h4><p><strong>问题描述：</strong><br>给出加权无向图，求一棵生成树，使得最大边权值尽量小。</p>
+<p><strong>解题思路：</strong><br>由于只关心最大边权值，我们可以从一个空图开始，按照权值从小到大的顺序依次加入各条边，则图第一次连通时，该图的最小生成树就是原图的最小瓶颈生成树。可以发现，原图的最小生成树就是一棵最小瓶颈生成树（但不是每棵最小瓶颈生成树都是最小生成树）。</p>
+<h4 id="最小瓶颈路"><a href="#最小瓶颈路" class="headerlink" title="最小瓶颈路"></a>最小瓶颈路</h4><p><strong>问题描述：</strong><br>给定加权无向图的两个节点u和v，求出从u到v的一条路径，使得路径上最长边尽量短。</p>
+<p><strong>解题思路：</strong><br>这个问题可以用二分法+BFS解决，但我们有更好的算法。先求出这个图的最小生成树，则起点和终点在树上的唯一路径就是我们要找的路径，这条路径上的最长边就是问题的答案。</p>
+<h4 id="每对结点间的最小瓶颈路"><a href="#每对结点间的最小瓶颈路" class="headerlink" title="每对结点间的最小瓶颈路"></a>每对结点间的最小瓶颈路</h4><p><strong>问题描述：</strong><br>给出加权无向图，求每两个节点u和v之间的最小瓶颈路的最大边长f(u,v)。</p>
+<p><strong>解题思路：</strong></p>
+<blockquote>
+<p>先求最小生成树。接下来，用DFS把最小生成树变成有根树，同时计算f(u,v)，当新访问一个节点u时，考虑所有已经访问过的老节点x，更新f(x,u) = max(f(x,v) , w(u,v))，其中v是u的父节点。每个f(u,v)只需经过常数时间计算，因此是时间复杂度为O(n^2)。</p>
+</blockquote>
+<h4 id="次小生成树"><a href="#次小生成树" class="headerlink" title="次小生成树"></a>次小生成树</h4><p><strong>问题描述：</strong><br>把所有生成树按照权值之和从大到小的顺序排列，求排在第二位的生成树。注意，如果最小生成树不唯一，次小生成树的权值与最小生成树相同。</p>
+<p><strong>解题思路：</strong> </p>
+<blockquote>
+<p>次小生成树不会与最小生成树完全相同，因此可以枚举最小生成树中不在次小生成树中出现的边。注意最小生成树只有n-1条边，所以只需枚举n-1次。每次在剩下的边里求一次最小生成树，则这n-1棵“缺一条边的图”的最小生成树中权最小的就是原图的次小生成树。</p>
+</blockquote>
+<p>还有一种更好的方法：</p>
+<blockquote>
+<p>枚举要加入哪条新边。在最小生成树上加一条边u-v之后，图上会出现一条回路，因此删除的边必须在最小生成树上u到v的路径上，且是这条路径上的最长边。可以证明，次小生成树一定可以由最小生成树加一条边再删一条边得到（称为边交换），因此只需按照“每对节点之间的最小瓶颈路”的方法求出每对节点u和v在最小生成树中唯一路径的最大边权maxcost[u][v]，则剩下的部分只需要O(m)时间（枚举所有m-n+1条边进行交换，每次花O(1)时间求出新生成树的权值）。总时间复杂度为O(n^2)。</p>
+</blockquote>
+<h4 id="最小有向生成树"><a href="#最小有向生成树" class="headerlink" title="最小有向生成树"></a>最小有向生成树</h4><p><strong>问题描述：</strong><br>给定一个有向带权图G和其中一个节点u，找出一个以u为根节点，权和最小的有向生成树。有向生成树（directed spanning tree）也叫树形图（arborescence），是指一个类似树的有向图，满足以下条件：</p>
+<ul>
+<li>恰好有一个入度为0的点，称为根节点</li>
+<li>其它节点的入度均为1</li>
+<li>可以从根节点到达其它所有节点</li>
+</ul>
+<p>不难发现，如果树形图的节点数为n，它的边数一定为n-1，且树形图中不存在有向环。</p>
+<p><strong>解题思路：</strong><br>固定根的最小树形图可以用朱-刘算法解决。</p>
+<blockquote>
+<p>首先是预处理，删除自环并判断根节点是否可以到达其它所有节点。如果不是，输出无解并终止程序。<br>接下来是算法的主过程：<br>首先，给所有非根节点选择一条权最小的入边。如果选出来的n-1条边不构成圈，则可以证明这些边就形成了一个最小树形图，否则把每个圈各收缩成一个点，继续上述过程。<br>缩圈之后，圈上所有边都消失了，因此在最终答案里需要加上这些边权之和。但这样做有个问题：假设在算法的某次迭代中，把圈C收缩为人工节点v，则在下一次迭代中，给v选择的入弧将与在圈C中的入弧发生冲突。（假设X在圈中已经有了入弧Y-&gt;X）因此如果收缩之后又选了一个入弧Z-&gt;X，必须把弧Y-&gt;X从最小树形图中删除。这等价于把弧Z-&gt;X的权值减少了Y-&gt;X的权值。</p>
+</blockquote>
+<h5 id="参考书目"><a href="#参考书目" class="headerlink" title="参考书目"></a>参考书目</h5><ul>
+<li>刘汝佳，算法竞赛入门经典训练指南，北京：清华大学出版社，2012，343-344</li>
+</ul>
 
     </div>
 
@@ -374,8 +391,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/08/16/st2/" rel="next" title="二维st表">
-                  <i class="fa fa-chevron-left"></i> 二维st表
+                <a href="/2019/10/07/segmentTree-problems/" rel="next" title="线段树题集">
+                  <i class="fa fa-chevron-left"></i> 线段树题集
                 </a>
               
             </div>
@@ -383,10 +400,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/08/16/inv/" rel="prev" title="逆元模板">
-                  逆元模板 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -582,7 +595,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-5"><a class="nav-link" href="#原码、反码、补码"><span class="nav-number">1.</span> <span class="nav-text">原码、反码、补码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#按位或、与、异或、非"><span class="nav-number">2.</span> <span class="nav-text">按位或、与、异或、非</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#位移运算"><span class="nav-number">3.</span> <span class="nav-text">位移运算</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#lowbit的实现"><span class="nav-number">4.</span> <span class="nav-text">lowbit的实现</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#运算符优先级"><span class="nav-number">5.</span> <span class="nav-text">运算符优先级</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#图论中的2个性质："><span class="nav-number">1.</span> <span class="nav-text">图论中的2个性质：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#增量最小生成树"><span class="nav-number">2.</span> <span class="nav-text">增量最小生成树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最小瓶颈生成树"><span class="nav-number">3.</span> <span class="nav-text">最小瓶颈生成树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最小瓶颈路"><span class="nav-number">4.</span> <span class="nav-text">最小瓶颈路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#每对结点间的最小瓶颈路"><span class="nav-number">5.</span> <span class="nav-text">每对结点间的最小瓶颈路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#次小生成树"><span class="nav-number">6.</span> <span class="nav-text">次小生成树</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最小有向生成树"><span class="nav-number">7.</span> <span class="nav-text">最小有向生成树</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#参考书目"><span class="nav-number">7.1.</span> <span class="nav-text">参考书目</span></a></li></ol></li></ol></div>
             
 
           </div>
