@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要树链剖分是用来维护静态树上路径信息的数据结构，静态即树的形态不能改变（增删点或者换根，改变了构造）。其思想是将树上的路径分为重路径和轻边，然后为每个节点分配一个编号，重路径上节点的编号是连续的；接着对这些编号建立一棵线段树，这样就可以将重路径当作区间来维护了；利用了“每个点到根的路径上都有不超过O(logN)条轻边和O(logN)条重路径”结论来保证时间复杂度。 算法简介树链剖分通常用于解决一">
+<meta name="keywords" content="算法模板,数据结构与算法,树链剖分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="树链剖分笔记">
+<meta property="og:url" content="http://valenshi.top/2019/10/10/lct/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要树链剖分是用来维护静态树上路径信息的数据结构，静态即树的形态不能改变（增删点或者换根，改变了构造）。其思想是将树上的路径分为重路径和轻边，然后为每个节点分配一个编号，重路径上节点的编号是连续的；接着对这些编号建立一棵线段树，这样就可以将重路径当作区间来维护了；利用了“每个点到根的路径上都有不超过O(logN)条轻边和O(logN)条重路径”结论来保证时间复杂度。 算法简介树链剖分通常用于解决一">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://valenshi.top/2019/10/10/lct/1.png">
+<meta property="og:updated_time" content="2019-10-10T05:33:01.713Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="树链剖分笔记">
+<meta name="twitter:description" content="摘要树链剖分是用来维护静态树上路径信息的数据结构，静态即树的形态不能改变（增删点或者换根，改变了构造）。其思想是将树上的路径分为重路径和轻边，然后为每个节点分配一个编号，重路径上节点的编号是连续的；接着对这些编号建立一棵线段树，这样就可以将重路径当作区间来维护了；利用了“每个点到根的路径上都有不超过O(logN)条轻边和O(logN)条重路径”结论来保证时间复杂度。 算法简介树链剖分通常用于解决一">
+<meta name="twitter:image" content="http://valenshi.top/2019/10/10/lct/1.png">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/10/10/lct/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>树链剖分笔记 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/10/lct/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">树链剖分笔记
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-10 13:03:03 / 修改时间：13:33:01" itemprop="dateCreated datePublished" datetime="2019-10-10T13:03:03+08:00">2019-10-10</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>树链剖分是用来维护静态树上路径信息的数据结构，静态即树的形态不能改变（增删点或者换根，改变了构造）。<br>其思想是将树上的路径分为重路径和轻边，然后为每个节点分配一个编号，重路径上节点的编号是连续的；接着对这些编号建立一棵线段树，这样就可以将重路径当作区间来维护了；利用了“每个点到根的路径上都有不超过O(logN)条轻边和O(logN)条重路径”结论来保证时间复杂度。</p>
+<h4 id="算法简介"><a href="#算法简介" class="headerlink" title="算法简介"></a>算法简介</h4><p>树链剖分通常用于解决一类维护静态树上路径信息的问题，例如，给定一棵点带权的树，接下来每次操作会修改某条路径上所有点的权值（修改为同一个值或是加上同一个值等），以及询问某条路径上所有点的权值和。</p>
+<p>当这棵树是一条链时，这个问题实际上就是一个序列上区间修改、区间询问的问题，可以用线段树等数据结构解决。</p>
+<p>对于其他情况，由于树的形态是不变的，因此树链剖分的策略是将这些点按某种方式组织起来，剖分成若干条链，每条链就相当于一个序列。这样，操作的路径可以拆分为某几条链，也就是若干个完整序列或是某个序列上的一段区间，此时可利用线段树等处理序列上区间操作的数据结构解决问题。</p>
+<p>树链剖分的核心是如何恰当的将树剖分为若干条链。当链的划分方式确定后，我们只要将它们看作是一个个序列，将所有序列按顺序拼接起来，每条链就成了一段区间，而序列上的区间问题是我们所熟悉和擅长的。</p>
+<h4 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h4><h5 id="划分轻重边"><a href="#划分轻重边" class="headerlink" title="划分轻重边"></a>划分轻重边</h5><p>下面以点带权的树为例，结合路径权值修改、路径询问权值和问题，介绍常用的剖分方法，该方法是轻、重边剖分。<br>我们将树中的边分为两种：轻边 和 重边。如图1所示，图中红色的边是重边，其余的是轻边。</p>
+<p><img src="/2019/10/10/lct/1.png" alt="1"></p>
+<p><center>图1：节点数字代表子树大小（size）</center><br>我们可以以任意点为根，然后记sz( u )为以u为根的子树的节点个数，令 v 为 u 所有儿子中sz 值最大的一个，则(u,v)是重边，v 称为 u 的重儿子。u 到其余儿子的边为轻边。</p>
+<h5 id="轻重边的性质"><a href="#轻重边的性质" class="headerlink" title="轻重边的性质"></a>轻重边的性质</h5><p>轻重边有如下几个性质：</p>
+<ol>
+<li>如果(u , v)为轻边，则sz( v ) &lt;= sz( u )/2。</li>
+<li>从根到某一点v的路径上的轻边个数不多于O(logN)。</li>
+<li>我们称某条路径为重路径（链），当且仅当它全部由重边组成（特殊地，一个点也算一条重路径）。那么对于每个点到根的路径上都有不超过O(logN)条轻边和O(logN)条重路径。</li>
+</ol>
+<p>同时我们也容易发现，一个点在且只在一条重路径上，而每条重路径一定是一条从根节点方向向叶节点方向延申的深度递增的路径（因为一个非叶节点有且只有一个重儿子）。</p>
+<h5 id="如何处理树上的路径"><a href="#如何处理树上的路径" class="headerlink" title="如何处理树上的路径"></a>如何处理树上的路径</h5><p>对树进行轻、重边剖分后，操作所要处理的路径（u , v），我们可以分别处理u，v两个点到其最近公共祖先的路径。根据性质3，路径可以分解为最多O(logN)条的重路径和最多O(logN)的轻边，那么现在我们<strong>只考虑如何维护这两种对象。</strong></p>
+<p>对于重路径，它们此时相当于一个序列，因此我们只需要用线段树维护。而对于轻边，我们可以直接跳过，访问下一条重路径，因为轻边的两端点一定在某两条重路径上。这两种操作的时间复杂度分别为$O(log^2N)$和O(logN)，因此总的时间复杂度为$O(log^2N)$。</p>
+<h5 id="剖分方法"><a href="#剖分方法" class="headerlink" title="剖分方法"></a>剖分方法</h5><p>轻、重边剖分的过程可以用两次dfs实现，有时为了防止递归过深而导致栈溢出，也可以用bfs实现。<br><strong>剖分过程中主要计算如下7个值：</strong><br>par[x] : x在树中的父亲。<br>deep[x]：x在树中的深度。<br>siz[x]：x的子树节点数（子树大小）。<br>son[x]：x的重儿子，即u-&gt;son[u]为重边。<br>top[x]：x所在重路径的顶部节点（深度最小）。<br>seg[x]：x所在线段树中的位置（下标）。<br>rev[x]：线段树中第x个位置对应的树中节点编号，即rev[seg[x] ] = x。</p>
+<p>第一遍 dfs 时可以计算前 4 个值，第二遍 dfs 可以计算后 3 个值。而计算 seg 时，同一条重路径上的点需要按顺序排在连续的一段位置，也就是一段区间。</p>
+<p>将一条路径(u ,v)拆分为若干条重路径的过程，实际上就是一个寻找最近公共祖先的过程。考虑“暴力”的做法，我们会选择u，v中深度较大的点向上走一步，直到u = v。现在有了重路径，由于我们记录了重路径的顶部节点top[x]，还记录了每个点在序列中的位置，因此我们不需要一步步走。假定top[u]和top[v]不同，那么它们的最近公共祖先可能在其中一条重路径上，也可能在其他的重路径上，因为LCA显然不可能在top深度较大的那条重路径上，所以我们先处理top深度较大的。假设u是深度较大的，则可以直接条到par[top[u]]处，且跳过的这一段，在线段树中是一段区间，若我们按照深度从小到大来存储点，则这段区间为：[seg[top[x]] , seg[x]]。当u，v的top相同时，说明它们走到了同一条重路径上，这时它们之间的路径也是序列上的一段区间，且u，v中深度较小的那点是原路径的LCA。</p>
+<p>这样我们就可以将给出的任意路径拆分成若干条重路径，也就是若干个区间，并用线段树等数据结构处理操作。</p>
+<h4 id="例题模板"><a href="#例题模板" class="headerlink" title="例题模板"></a>例题模板</h4><p>原题来自：ZJOI 2008</p>
+<p>一树上有 n 个节点，编号分别为 1 到 n，每个节点都有一个权值 w。我们将以下面的形式来要求你对这棵树完成一些操作：<br>1.CHANGE u t ：把节点 u 权值改为 t；<br>2.QMAX u v ：询问点 u 到点 v 路径上的节点的最大权值；<br>3.QSUM u v ：询问点 u 到点 v 路径上的节点的权值和。<br>注意：从点 u 到点 v 路径上的节点包括 u 和 v 本身。</p>
+<p>模板使用说明：</p>
+<ul>
+<li>将树拆分成若干条链，为树上每个点分配一个编号，同一条链上的编号连续，然后在这些编号上建立线段树维护。seg[x]是树上的节点x在线段树的下标，rev[y]是线段树下标为 y 节点在树中的编号。</li>
+<li>树的节点编号要从1开始，不能从0。</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> ll INF = <span class="number">1e18</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">3e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2</span>*N;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],edge[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">    ver[++tot] = y, edge[tot] = z;</span><br><span class="line">    nex[tot] = head[x], head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,q,a[N];</span><br><span class="line"><span class="comment">/*父亲,深度,子树大小,重儿子,重路径顶部节点,</span></span><br><span class="line"><span class="comment">    树中节点在线段树中下标,线段树中节点对应树中位置*/</span></span><br><span class="line"><span class="keyword">int</span> par[N],deep[N],size[N],son[N],top[N],seg[N],rev[N];</span><br><span class="line"><span class="keyword">int</span> vis[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs1</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> fa)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*利用深搜更新par,size,deep,son数组*/</span></span><br><span class="line">    vis[x] = <span class="literal">true</span>; size[x] = <span class="number">1</span>;</span><br><span class="line">    par[x] = fa; deep[x] = deep[fa]+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">        <span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">        <span class="keyword">if</span>(y == fa || vis[y]) <span class="keyword">continue</span>;</span><br><span class="line">        dfs1(y,x);</span><br><span class="line">        size[x] += size[y]; <span class="comment">//累加子树大小</span></span><br><span class="line">        <span class="keyword">if</span>(size[y] &gt; size[son[x]]) son[x] = y;<span class="comment">//求重儿子</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs2</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> fa)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(son[x])&#123; <span class="comment">//先走重儿子,使得重路径在线段树中连续</span></span><br><span class="line">        seg[son[x]] = ++seg[<span class="number">0</span>];<span class="comment">//0位置用不到,利用来计数</span></span><br><span class="line">        top[son[x]] = top[x];</span><br><span class="line">        rev[seg[<span class="number">0</span>]] = son[x];</span><br><span class="line">        dfs2(son[x],x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i;i = nex[i])&#123;</span><br><span class="line">        <span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">        <span class="keyword">if</span>(top[y]) <span class="keyword">continue</span>;</span><br><span class="line">        <span class="comment">/*若y没有被遍历过,即y不是x的重儿子或者父亲*/</span></span><br><span class="line">        seg[y] = ++seg[<span class="number">0</span>]; rev[seg[<span class="number">0</span>]] = y;</span><br><span class="line">        top[y] = y; dfs2(y,x);</span><br><span class="line">        <span class="comment">/*如果x--&gt;y是轻边,那么y就是其所在重路径顶部节点*/</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">SegmentTree</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> l,r;</span><br><span class="line">    ll mx, sum;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> l(x) t[x].l</span></span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> r(x) t[x].r</span></span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> mx(x) t[x].mx</span></span><br><span class="line">    <span class="meta">#<span class="meta-keyword">define</span> sum(x) t[x].sum</span></span><br><span class="line">&#125;t[N*<span class="number">4</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BuildTree</span><span class="params">(<span class="keyword">int</span> rt,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    l(rt) = l, r(rt) = r;</span><br><span class="line">    <span class="keyword">if</span>(l == r)&#123;</span><br><span class="line">        mx(rt) = sum(rt) = a[rev[l]]; <span class="comment">//线段树上l节点对应着树上rev[l]点</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    BuildTree(rt*<span class="number">2</span>,l,mid); BuildTree(rt*<span class="number">2</span>+<span class="number">1</span>,mid+<span class="number">1</span>,r);</span><br><span class="line">    mx(rt) = max(mx(rt&lt;&lt;<span class="number">1</span>),mx(rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>));</span><br><span class="line">    sum(rt) = sum(rt&lt;&lt;<span class="number">1</span>) + sum(rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">preHandle</span><span class="params">()</span></span>&#123;</span><br><span class="line">    dfs1(<span class="number">1</span>,<span class="number">0</span>); <span class="comment">//我们以1号节点为根</span></span><br><span class="line">    <span class="comment">/*根节点所在重路径的顶部节点也是根节点,赋初值*/</span></span><br><span class="line">    seg[<span class="number">0</span>] = seg[<span class="number">1</span>] = top[<span class="number">1</span>] = rev[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    dfs2(<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line">    BuildTree(<span class="number">1</span>,<span class="number">1</span>,seg[<span class="number">0</span>]);</span><br><span class="line">&#125;</span><br><span class="line">ll tmx,tsum;<span class="comment">//利用全局变量同时统计2个答案</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">query</span><span class="params">(<span class="keyword">int</span> rt,<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*将以rt为根的区间内属于[l,r]部分的和累加到tsum上,并更新tmx*/</span></span><br><span class="line">    <span class="keyword">if</span>(l &lt;= l(rt) &amp;&amp; r(rt) &lt;= r)&#123;</span><br><span class="line">        tsum += sum(rt); tmx = max(tmx,mx(rt));</span><br><span class="line">        <span class="keyword">return</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l(rt)+r(rt)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(l &lt;= mid) query(rt&lt;&lt;<span class="number">1</span>,l,r);</span><br><span class="line">    <span class="keyword">if</span>(r &gt; mid) query(rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>,l,r);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*返回x与y之间路径上权值最大点的权值*/</span></span><br><span class="line">    <span class="keyword">int</span> fx = top[x] , fy = top[y];</span><br><span class="line">    <span class="keyword">while</span>(fx != fy)&#123;<span class="comment">//先将x和y条整到同一个重链上</span></span><br><span class="line">        <span class="keyword">if</span>(deep[fx] &lt; deep[fy]) swap(x,y),swap(fx,fy);</span><br><span class="line">        query(<span class="number">1</span>,seg[fx],seg[x]);</span><br><span class="line">        x = par[fx]; fx = top[x];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(deep[x] &gt; deep[y]) swap(x,y);<span class="comment">//路径浅的编号小</span></span><br><span class="line">    query(<span class="number">1</span>,seg[x],seg[y]); <span class="comment">//再更新一次</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">change</span><span class="params">(<span class="keyword">int</span> rt,<span class="keyword">int</span> x,<span class="keyword">int</span> val)</span></span>&#123;</span><br><span class="line">    <span class="comment">/*把线段树节点x的权值改为val*/</span></span><br><span class="line">    <span class="keyword">if</span>(l(rt) == r(rt))&#123;</span><br><span class="line">        mx(rt) = sum(rt) = val;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">int</span> mid = l(rt) + r(rt) &gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(x &gt; mid) change(rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>,x,val);</span><br><span class="line">    <span class="keyword">else</span> change(rt&lt;&lt;<span class="number">1</span>,x,val);</span><br><span class="line">    mx(rt) = max(mx(rt&lt;&lt;<span class="number">1</span>),mx(rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>));</span><br><span class="line">    sum(rt) = sum(rt&lt;&lt;<span class="number">1</span>) + sum(rt&lt;&lt;<span class="number">1</span>|<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">ifdef</span> LOCAL</span></span><br><span class="line">        freopen(<span class="string">"123.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">        freopen(<span class="string">"222.txt"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">    <span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt; n;i++)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">        addEdge(x,y,<span class="number">1</span>); addEdge(y,x,<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,a+i);</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;q);</span><br><span class="line">    preHandle();<span class="comment">//树链剖分预处理</span></span><br><span class="line">    <span class="keyword">char</span> op[<span class="number">20</span>];</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= q;i++)&#123;</span><br><span class="line">        <span class="built_in">scanf</span>(<span class="string">"%s%d%d"</span>,op,&amp;x,&amp;y);</span><br><span class="line">        <span class="keyword">if</span>(op[<span class="number">0</span>] == <span class="string">'C'</span>) change(<span class="number">1</span>,seg[x],y);</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            tmx = -INF; tsum = <span class="number">0</span>;</span><br><span class="line">            ask(x,y);<span class="comment">//同时更新最大值与路径和</span></span><br><span class="line">            <span class="keyword">if</span>(op[<span class="number">1</span>] == <span class="string">'M'</span>) <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,tmx);</span><br><span class="line">            <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,tsum);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+              <a href="/tags/树链剖分/" rel="tag"># 树链剖分</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/09/lca-problems/" rel="next" title="树上倍增LCA题集">
+                  <i class="fa fa-chevron-left"></i> 树上倍增LCA题集
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">66</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法简介"><span class="nav-number">2.</span> <span class="nav-text">算法简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#算法流程"><span class="nav-number">3.</span> <span class="nav-text">算法流程</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#划分轻重边"><span class="nav-number">3.1.</span> <span class="nav-text">划分轻重边</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#轻重边的性质"><span class="nav-number">3.2.</span> <span class="nav-text">轻重边的性质</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#如何处理树上的路径"><span class="nav-number">3.3.</span> <span class="nav-text">如何处理树上的路径</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#剖分方法"><span class="nav-number">3.4.</span> <span class="nav-text">剖分方法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#例题模板"><span class="nav-number">4.</span> <span class="nav-text">例题模板</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
