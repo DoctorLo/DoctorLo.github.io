@@ -63,7 +63,7 @@
 <meta property="og:site_name" content="ValenShi&#39;s Blog">
 <meta property="og:description" content="摘要本文是关于后缀数组的一个拓展，问题模型来自于最长公共前缀（Longest Common Prefix Array）问题，我们为解决该模型，在后缀数组的基础上设计了一个精巧的数组——高度数组（lcp），同时由于该数组在处理各类字符串相关问题时有着较好的用途，因此值得掌握。 本文将直接从高度数组讲起，假设读者具有后缀数组的基础知识。首先本文会介绍高度数组的定义以及用途，接着讲解如何在O(N)时间内">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-20T12:40:53.742Z">
+<meta property="og:updated_time" content="2019-10-13T02:21:17.919Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="高度数组与最长公共前缀">
 <meta name="twitter:description" content="摘要本文是关于后缀数组的一个拓展，问题模型来自于最长公共前缀（Longest Common Prefix Array）问题，我们为解决该模型，在后缀数组的基础上设计了一个精巧的数组——高度数组（lcp），同时由于该数组在处理各类字符串相关问题时有着较好的用途，因此值得掌握。 本文将直接从高度数组讲起，假设读者具有后缀数组的基础知识。首先本文会介绍高度数组的定义以及用途，接着讲解如何在O(N)时间内">
@@ -299,7 +299,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-20 20:40:53" itemprop="dateModified" datetime="2019-08-20T20:40:53+08:00">2019-08-20</time>
+                <time title="修改时间：2019-10-13 10:21:17" itemprop="dateModified" datetime="2019-10-13T10:21:17+08:00">2019-10-13</time>
               </span>
             
           
@@ -695,6 +695,55 @@
 
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
   
 
   
