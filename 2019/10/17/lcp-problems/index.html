@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="sa[i]：排名为i的后缀起始位置是多少。rank[i]：从 i 位置起始的后缀在所有后缀中字典序排序后序号，与sa互逆。lcp[i]：S[sa[i] ,…] 与 S[sa[i+1] , …]的最长公共前缀。 Musical Theme测试地址题意简述给n个数组成的串，求是否有多个“相似”且不重叠的子串的长度大于等于5，两个子串相似当且仅当长度相等且每一位的数字差都相等。 解题思路本题题意有些难理">
+<meta name="keywords" content="后缀数组">
+<meta property="og:type" content="article">
+<meta property="og:title" content="后缀数组题集">
+<meta property="og:url" content="http://valenshi.top/2019/10/17/lcp-problems/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="sa[i]：排名为i的后缀起始位置是多少。rank[i]：从 i 位置起始的后缀在所有后缀中字典序排序后序号，与sa互逆。lcp[i]：S[sa[i] ,…] 与 S[sa[i+1] , …]的最长公共前缀。 Musical Theme测试地址题意简述给n个数组成的串，求是否有多个“相似”且不重叠的子串的长度大于等于5，两个子串相似当且仅当长度相等且每一位的数字差都相等。 解题思路本题题意有些难理">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-17T05:19:45.526Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="后缀数组题集">
+<meta name="twitter:description" content="sa[i]：排名为i的后缀起始位置是多少。rank[i]：从 i 位置起始的后缀在所有后缀中字典序排序后序号，与sa互逆。lcp[i]：S[sa[i] ,…] 与 S[sa[i+1] , …]的最长公共前缀。 Musical Theme测试地址题意简述给n个数组成的串，求是否有多个“相似”且不重叠的子串的长度大于等于5，两个子串相似当且仅当长度相等且每一位的数字差都相等。 解题思路本题题意有些难理">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/10/17/lcp-problems/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>后缀数组题集 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/17/lcp-problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">后缀数组题集
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-17 13:13:33 / 修改时间：13:19:45" itemprop="dateCreated datePublished" datetime="2019-10-17T13:13:33+08:00">2019-10-17</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>sa[i]：排名为i的后缀起始位置是多少。<br>rank[i]：从 i 位置起始的后缀在所有后缀中字典序排序后序号，与sa互逆。<br>lcp[i]：S[sa[i] ,…] 与 S[sa[i+1] , …]的最长公共前缀。</p>
+<h4 id="Musical-Theme"><a href="#Musical-Theme" class="headerlink" title="Musical Theme"></a>Musical Theme</h4><p><a href="http://poj.org/problem?id=1743" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述</strong><br>给n个数组成的串，求是否有多个“相似”且不重叠的子串的长度大于等于5，两个子串相似当且仅当长度相等且每一位的数字差都相等。</p>
+<p><strong>解题思路</strong><br>本题题意有些难理解。就是利用后缀数组+高度数组解决最长不重复子串问题，解法很套路，就是二分+判断。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//POJ1743</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n,a[N],b[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getInt</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> c = getchar();</span><br><span class="line">	<span class="keyword">while</span> (c!=<span class="string">'-'</span> &amp;&amp; (c&lt;<span class="string">'0'</span> || c&gt;<span class="string">'9'</span>)) c = getchar();</span><br><span class="line">	<span class="keyword">if</span> (c == <span class="string">'-'</span>) neg = <span class="literal">true</span>, c = getchar();</span><br><span class="line">	<span class="keyword">while</span> (c&gt;=<span class="string">'0'</span> &amp;&amp; c&lt;=<span class="string">'9'</span>)</span><br><span class="line">		ans = ans*<span class="number">10</span> + c-<span class="string">'0'</span>, c = getchar();</span><br><span class="line">	<span class="keyword">return</span> neg ? -ans : ans; </span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> sa[N],rk[N],lcp[N],tmp[N];</span><br><span class="line"><span class="keyword">int</span> len,k;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= len?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= len?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">int</span> S[],<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	len = n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= len;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rk[i] = i &lt; len?S[i]:<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+<span class="number">1</span>+len,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= len;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]]+compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= len;i++) rk[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">int</span> S[],<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= len;i++) rk[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j = sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j + h &lt; len &amp;&amp; i + h &lt; len;h++)</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> pre = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">if</span>(lcp[<span class="number">1</span>] &gt;= x) pre = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt; len;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!pre &amp;&amp; lcp[i] &gt;= x) pre = i;</span><br><span class="line">		<span class="keyword">if</span>(lcp[i<span class="number">-1</span>] &gt;= x)<span class="comment">//注意一下到底是i还是i-1</span></span><br><span class="line">			<span class="keyword">if</span>(<span class="built_in">abs</span>(sa[pre] - sa[i]) &gt; x) <span class="keyword">return</span> <span class="literal">true</span>; </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	construct_sa(a,sa);</span><br><span class="line">	construct_lcp(a,sa,lcp);</span><br><span class="line">	<span class="keyword">int</span> l = <span class="number">0</span>,r = n;</span><br><span class="line">	<span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(check(mid)) l = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> r = mid<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(++r &lt; <span class="number">5</span>) r = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,r);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n) &amp;&amp; n)&#123;</span><br><span class="line">		<span class="comment">//注意，该模板必须从下标0开始存！</span></span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++) b[i] = getInt();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; n;i++) a[i] = b[i]-b[i<span class="number">-1</span>]+<span class="number">100</span>;</span><br><span class="line">		a[<span class="number">0</span>] = b[<span class="number">0</span>]+<span class="number">100</span>; solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Milk-Patterns"><a href="#Milk-Patterns" class="headerlink" title="Milk Patterns"></a>Milk Patterns</h4><p><a href="http://poj.org/problem?id=3261" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述</strong><br>求可重叠的，出现k次的最长重复子串。<br><strong>解题思路</strong><br>这个就是可重叠的最长重复子串了，要求求出最长的，重复出现k次以上的子串，通过题意以及样例观察可知，是允许子串重复的。解决方法和上题类似，也是后缀数组+二分。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//POJ3261</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n,k,a[N],kk;</span><br><span class="line"><span class="keyword">int</span> rk[N],sa[N],lcp[N],tmp[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">int</span> S[],<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rk[i] = i &lt; n?S[i]:<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//别把全局变量的k覆盖了！！！</span></span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+<span class="number">1</span>+n,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) </span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">int</span> S[],<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j = sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j+h &lt; n &amp;&amp; i+h &lt; n;h++)</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> cnt = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(lcp[i<span class="number">-1</span>] &gt;= x) cnt++;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="keyword">if</span>(cnt &gt;= kk) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">			cnt = <span class="number">1</span>;</span><br><span class="line">		&#125; </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> cnt &gt;= kk;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	construct_sa(a,sa);</span><br><span class="line">	construct_lcp(a,sa,lcp);</span><br><span class="line">	<span class="keyword">int</span> l = <span class="number">0</span>, r = n;</span><br><span class="line">	<span class="comment">//for(int i = 1;i &lt;= n;i++) printf("%d ",lcp[i]);</span></span><br><span class="line">	<span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(check(mid)) l = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> r = mid<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,r);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;kk) != EOF)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,a+i);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="不同子串的个数"><a href="#不同子串的个数" class="headerlink" title="不同子串的个数"></a>不同子串的个数</h4><p><a href="https://www.luogu.org/problem/P2408" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述</strong><br>给定一个字符串，求其所有子串中，不同的子串数量。</p>
+<p><strong>解题思路</strong><br>利用后缀数组+高度数组求解。已知高度数组lcp，那么首先可以知道第一个sa[1]有n - sa[1]个不同子串；而2~n，每个sa[i] 有 n - sa[i] - lcp[i-1] 个不同子串。累加即可，注意结果可能爆 int。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//P2408不同子串的个数</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="keyword">int</span> sa[N],lcp[N],tmp[N],k,rk[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rk[i] = i &lt; n?S[i]:<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+<span class="number">1</span>+n,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) </span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* S,<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j = sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j+h &lt; n &amp;&amp; i+h &lt; n;h++)</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">ll sum = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc</span><span class="params">()</span></span>&#123;</span><br><span class="line">	sum = n - sa[<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)</span><br><span class="line">		sum += n - sa[i] - lcp[i<span class="number">-1</span>];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	construct_sa(str,sa);</span><br><span class="line">	construct_lcp(str,sa,lcp);</span><br><span class="line">	calc();</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">ifdef</span> LOCAL</span></span><br><span class="line">		freopen(<span class="string">"123.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">		freopen(<span class="string">"222.txt"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="keyword">while</span>(~<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n))&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Substring"><a href="#Substring" class="headerlink" title="Substring"></a>Substring</h4><p><a href="http://acm.hdu.edu.cn/showproblem.php?pid=5769" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述</strong><br>给定一个字符串，求所有不同的，且包含<strong>字符x</strong>的子串数量。</p>
+<p><strong>解题思路</strong><br>和上一题有些类似，但是我们需要确保每一个被统计的子串包含字符x。那么我们可以用一个数组pos[p]来记录 p 后面第一个字符 x 的位置，那么我们从头开始统计时，sa[1]有n - pos[ sa[1] ] 个合法子串，其它位置有 n - max(pos[ sa[i] ] , sa[i] + lcp[i])个合法子串，将它们累加起来即可。<br>这题选G++编译器就超时，选C++就可以通过，猜测可能和STL有关。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Hdu5769,G++超时,C++AC</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> t,n;</span><br><span class="line"><span class="keyword">char</span> str[N],lv[<span class="number">3</span>];</span><br><span class="line"><span class="keyword">int</span> rk[N],sa[N],lcp[N],tmp[N],k;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rk[i] = i &lt; n?S[i]:<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+<span class="number">1</span>+n,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* S,<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j = sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j+h &lt; n &amp;&amp; i+h &lt; n;h++)</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> pos[N];<span class="comment">//pos[x]:x后面第一个lv出现的位置</span></span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> sum = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> idx = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	construct_sa(str,sa);</span><br><span class="line">	construct_lcp(str,sa,lcp);</span><br><span class="line">	pos[n] = n;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = n<span class="number">-1</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(str[i] == lv[<span class="number">0</span>]) pos[i] = i;</span><br><span class="line">		<span class="keyword">else</span> pos[i] = pos[i+<span class="number">1</span>];</span><br><span class="line">	sum = n - pos[sa[<span class="number">1</span>]];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)</span><br><span class="line">		sum += n - max(pos[sa[i]],sa[i]+lcp[i<span class="number">-1</span>]);</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Case #%d: %lld\n"</span>,++idx,sum);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">ifdef</span> LOCAL</span></span><br><span class="line">		freopen(<span class="string">"123.txt"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">		freopen(<span class="string">"222.txt"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;t);</span><br><span class="line">	<span class="keyword">while</span>(t--)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s%s"</span>,lv,str);</span><br><span class="line">		n = <span class="built_in">strlen</span>(str);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Life-Forms"><a href="#Life-Forms" class="headerlink" title="Life Forms"></a>Life Forms</h4><p><a href="http://poj.org/problem?id=3294" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述</strong><br>给定n个字符串，请问它们之间出现次数超过一半的最长公共子串是什么？如果有多个，按字典序输出。</p>
+<p><strong>解题思路</strong><br>利用后缀数组+高度数组求解。我们将n个字符串拼接中一个“母串”，中间用不同的字符间隔；然后对母串求高度数组lcp，我们依旧是用二分搜索判定长度p是否合法，每次判定从前向后用O(N)时间遍历统计一遍即可。当我们得到最长的合法长度 p 后，再利用类似的方法输出所有的子串。</p>
+<p><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="built_in">string</span> str,s;</span><br><span class="line"><span class="keyword">int</span> n,k,len;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> sa[N],rk[N],lcp[N],tmp[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">    <span class="keyword">int</span> ri = i+k &lt;= len?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">int</span> rj = j+k &lt;= len?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="built_in">string</span> S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">    len = S.length();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= len;i++)&#123;</span><br><span class="line">        sa[i] = i;</span><br><span class="line">        rk[i] = i &lt; len ? S[i]:<span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//k一定不能设置成局部变量导致覆盖全局变量！！！</span></span><br><span class="line">    <span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= len;k *= <span class="number">2</span>)&#123;</span><br><span class="line">        sort(sa,sa+len+<span class="number">1</span>,compare_sa);</span><br><span class="line">        tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= len;i++)</span><br><span class="line">            tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= len;i++) rk[i] = tmp[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="built_in">string</span> S,<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">    len = S.length();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= len;i++) rk[sa[i]] = i;</span><br><span class="line">    <span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; len;i++)&#123;</span><br><span class="line">        <span class="keyword">int</span> j = sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">        <span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">        <span class="keyword">for</span>(;j+h &lt; len &amp;&amp; i+h &lt; len;h++)</span><br><span class="line">            <span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">        lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> vis[<span class="number">110</span>],idx[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>; <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);</span><br><span class="line">    vis[idx[sa[<span class="number">1</span>]]] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= len;i++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(lcp[i<span class="number">-1</span>] &lt; p)&#123;</span><br><span class="line">            cnt = <span class="number">1</span>; <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);vis[idx[sa[i]]] = <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(!vis[idx[sa[i]]]) cnt++,vis[idx[sa[i]]] = <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(cnt &gt;= n/<span class="number">2</span>+<span class="number">1</span>) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> p)</span></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> cnt = <span class="number">1</span>; <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);</span><br><span class="line">    vis[idx[sa[<span class="number">1</span>]]] = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= len+<span class="number">1</span>;i++)&#123;  <span class="comment">//lcp[len+1] = 0,作为结束标志</span></span><br><span class="line">        <span class="keyword">if</span>(lcp[i<span class="number">-1</span>] &lt; p)&#123;</span><br><span class="line">            <span class="keyword">if</span>(cnt &gt;= n/<span class="number">2</span>+<span class="number">1</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">int</span> j = sa[i<span class="number">-1</span>];j &lt; sa[i<span class="number">-1</span>]+p;j++) <span class="built_in">cout</span> &lt;&lt; str[j];</span><br><span class="line">                <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            cnt = <span class="number">1</span>; <span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);vis[idx[sa[i]]] = <span class="number">1</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span>(!vis[idx[sa[i]]]) cnt++,vis[idx[sa[i]]] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">    construct_sa(str,sa);</span><br><span class="line">    construct_lcp(str,sa,lcp);</span><br><span class="line">    <span class="comment">/*sa[i]：存放排名第i的后缀的起始位置*/</span></span><br><span class="line">    <span class="keyword">int</span> l = <span class="number">0</span>, r = len;</span><br><span class="line">    <span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">        <span class="keyword">int</span> mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">if</span>(check(mid)) l = mid+<span class="number">1</span>;</span><br><span class="line">        <span class="keyword">else</span> r = mid<span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(r &lt;= <span class="number">0</span>) <span class="built_in">cout</span> &lt;&lt; <span class="string">"?"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">else</span> print(r);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="built_in">cin</span> &gt;&gt; n &amp;&amp; n)&#123;</span><br><span class="line">        <span class="keyword">if</span>(n == <span class="number">1</span>)&#123;</span><br><span class="line">            <span class="built_in">cin</span> &gt;&gt; str; <span class="built_in">cout</span> &lt;&lt; str &lt;&lt; <span class="built_in">endl</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> cnt = <span class="number">2</span>,tot = <span class="number">0</span>; str = <span class="string">""</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">            <span class="built_in">cin</span> &gt;&gt; s; str += s+<span class="keyword">char</span>(++cnt);</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt;= s.length();j++) idx[tot++] = i;</span><br><span class="line">        &#125; </span><br><span class="line">        solve();</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="Maximum-repetition-substring"><a href="#Maximum-repetition-substring" class="headerlink" title="Maximum repetition substring"></a>Maximum repetition substring</h4><p><strong>题意简述</strong><br>求一个字符串中，重复次数最多的连续重复子串是什么（循环次数最多的循环子串）。要求输出字典序最小的。</p>
+<p>例如：ccabababc中，连续循环次数最多的子串是ababab。</p>
+<p><strong>解题思路</strong><br>这题我对照题解写了很久，思想勉强搞懂。<br>先说做法，是枚举长度len（从1到n），然后判断以 len 为循环长度的 连续循环次数 最多的 子串 长度 是多少；假设这个子串长度是 l ，那么它的连续循环次数就是 l/len。<br>我们考虑如何求子串长度 l 。如果有一个字符串的循环节长度为len，那么必然有s[1,n-len] = s[len , n]，因此，如果字符串 s[len, n] 与 s[ 2 <em> len, n] 的公共前缀长度为 lcp，那么 s[len ,n] 的循环节个数为lcp / len + 1（加上的一个是开头为计算在lcp内的循环节 ）。<br>因此我们只需要对s[0] , s[len] ,s[2 </em> len] … , 判断相差 len 的两个相邻后缀的 lcp，就可以计算该子串循环节个数。这是由于如果一个子串的循环节长度为 len，且循环至少两次，那么显然它会包含相邻的两个len，否则就构不成循环了。当然可能起点并不在len的倍数位置上，因此我们还需要向前拓展一下。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">char</span> str[N];</span><br><span class="line"><span class="keyword">int</span> cse = <span class="number">0</span>,n;</span><br><span class="line"><span class="keyword">int</span> k,rk[N],lcp[N],sa[N],tmp[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = j+k &lt;= n?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rk[i] = i &lt; n?S[i]:<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+<span class="number">1</span>+n,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]]+compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* S,<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j = sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j+h &lt; n &amp;&amp; i+h &lt; n;h++)</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> st[N][<span class="number">22</span>],Log[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">st_init</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) st[i][<span class="number">0</span>] = lcp[i];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++) Log[i] = Log[i/<span class="number">2</span>]+<span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;(<span class="number">1</span>&lt;&lt;j) &lt;= n;j++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i + (<span class="number">1</span>&lt;&lt;j<span class="number">-1</span>) &lt;= n;i++)</span><br><span class="line">			st[i][j] = min(st[i][j<span class="number">-1</span>],st[i+(<span class="number">1</span>&lt;&lt;j<span class="number">-1</span>)][j<span class="number">-1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ask</span><span class="params">(<span class="keyword">int</span> l,<span class="keyword">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l &gt; r) swap(l,r); r--;</span><br><span class="line">	<span class="keyword">int</span> kk = Log[r-l+<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">return</span> min(st[l][kk],st[r-(<span class="number">1</span>&lt;&lt;kk)+<span class="number">1</span>][kk]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> mxtc = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">int</span> q[N],cnt = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">calc</span><span class="params">(<span class="keyword">int</span> len)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i+len &lt; n;i += len)&#123;</span><br><span class="line">		<span class="keyword">int</span> l = ask(rk[i],rk[i+len]);</span><br><span class="line">		<span class="keyword">int</span> res = l/len+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> pre = i - (len-l%len);</span><br><span class="line">		<span class="keyword">if</span>(pre &gt;= <span class="number">0</span> &amp;&amp; ask(rk[pre],rk[pre+len]) &gt;= len) res++;</span><br><span class="line">		<span class="keyword">if</span>(mxtc &lt; res) mxtc = res,cnt = <span class="number">0</span>,q[++cnt] = len;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(mxtc == res &amp;&amp; len != q[cnt]) q[++cnt] = len;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">printAns</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= cnt;j++)</span><br><span class="line">			<span class="keyword">if</span>(ask(rk[sa[i]],rk[sa[i]+q[j]]) &gt;= q[j]*(mxtc<span class="number">-1</span>))&#123;</span><br><span class="line">				str[sa[i]+q[j]*mxtc] = <span class="string">'\0'</span>;</span><br><span class="line">				<span class="built_in">puts</span>(str+sa[i]); <span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	construct_sa(str,sa);</span><br><span class="line">	construct_lcp(str,sa,lcp);<span class="comment">//lcp[n]是恒等于0的</span></span><br><span class="line">	<span class="comment">/*下一步求重复次数最多的连续重复子串*/</span></span><br><span class="line">	st_init();</span><br><span class="line">	mxtc = cnt = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) calc(i); </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Case %d: "</span>,++cse);</span><br><span class="line">	printAns();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%s"</span>,str) != EOF)&#123;</span><br><span class="line">		n = <span class="built_in">strlen</span>(str);</span><br><span class="line">		<span class="keyword">if</span>(n == <span class="number">1</span> &amp;&amp; str[<span class="number">0</span>] == <span class="string">'#'</span>) <span class="keyword">break</span>;</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Common-Substrings"><a href="#Common-Substrings" class="headerlink" title="Common Substrings"></a>Common Substrings</h4><p><a href="http://poj.org/problem?id=3415" target="_blank" rel="noopener">测试地址</a><br><strong>题意简述</strong><br>给定2个字符串A和B，以及一个整数k。目标是求出这两个字符串中公共子串的数量，例如A:xx , B:xx，k = 1，那么公共子串数量就是5。<br><strong>解题思路</strong><br>将A和B拼接在一起，中间用一个未出现过的字符间隔，新串S = A+’#’+B；然后对S求高度数组，利用高度数组来求解。<br>对于属于 B 的每一个后缀，统计它与所有属于 A 的后缀的 lcp（最长公共前缀），并统计lcp-m+1，这就是该后缀和 A 的公共子串数量。这样做的复杂度是O(N^2)。</p>
+<p>我们可以利用单调栈来在 O(N) 时间内解决；我们从前向后遍历lcp数组，将属于A的后缀的 lcp 压入栈；由于两个字符串的后缀是取它们中间的最小值，所以我们应该维护单调递减栈，同时需要维护的是 sum，sum代表当前 A 中相同的子串数量，也就是说如果当前后缀属于 B ，则直接加上sum即可。</p>
+<p>由于我们是顺序遍历的，只统计了A对B的贡献，再反过来统计一次B对A的贡献即可。<br><strong>代码示例</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">char</span> A[N],B[N];</span><br><span class="line"><span class="keyword">int</span> rk[N],tmp[N],lcp[N],sa[N],k;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">compare_sa</span><span class="params">(<span class="keyword">int</span> i,<span class="keyword">int</span> j)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(rk[i] != rk[j]) <span class="keyword">return</span> rk[i] &lt; rk[j];</span><br><span class="line">	<span class="keyword">int</span> ri = i+k &lt;= n?rk[i+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">int</span> rj = i+k &lt;= n?rk[j+k]:<span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">return</span> ri &lt; rj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_sa</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* S,<span class="keyword">int</span> sa[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		sa[i] = i;</span><br><span class="line">		rk[i] = i &lt; n?S[i]:<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(k = <span class="number">1</span>;k &lt;= n;k *= <span class="number">2</span>)&#123;</span><br><span class="line">		sort(sa,sa+<span class="number">1</span>+n,compare_sa);</span><br><span class="line">		tmp[sa[<span class="number">0</span>]] = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">			tmp[sa[i]] = tmp[sa[i<span class="number">-1</span>]] + compare_sa(sa[i<span class="number">-1</span>],sa[i]);</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[i] = tmp[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">construct_lcp</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *S,<span class="keyword">int</span> sa[],<span class="keyword">int</span> lcp[])</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) rk[sa[i]] = i;</span><br><span class="line">	<span class="keyword">int</span> h = <span class="number">0</span>; lcp[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="keyword">int</span> j =sa[rk[i]<span class="number">-1</span>];</span><br><span class="line">		<span class="keyword">if</span>(h &gt; <span class="number">0</span>) h--;</span><br><span class="line">		<span class="keyword">for</span>(;j+h &lt; n &amp;&amp; i+h &lt; n;h++)</span><br><span class="line">			<span class="keyword">if</span>(S[j+h] != S[i+h]) <span class="keyword">break</span>;</span><br><span class="line">		lcp[rk[i]<span class="number">-1</span>] = h;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> idx[N];<span class="comment">//初始化为0</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	ll h,cnt;</span><br><span class="line">&#125;Stack[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	construct_sa(A,sa);</span><br><span class="line">	construct_lcp(A,sa,lcp);</span><br><span class="line">	ll ans = <span class="number">0</span>,sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> top = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		ll cnt = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span>(top &amp;&amp; Stack[top].h &gt;= lcp[i<span class="number">-1</span>])&#123;</span><br><span class="line">			cnt += Stack[top].cnt;</span><br><span class="line">			sum -= Stack[top].cnt * (Stack[top].h-m+<span class="number">1</span>);</span><br><span class="line">			top--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(lcp[i<span class="number">-1</span>] &gt;= m)&#123;</span><br><span class="line">			cnt += idx[sa[i<span class="number">-1</span>]] == <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">if</span>(cnt) Stack[++top] = Node&#123;lcp[i<span class="number">-1</span>],cnt&#125;;</span><br><span class="line">			sum += (lcp[i<span class="number">-1</span>]-m+<span class="number">1</span>)*cnt;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(idx[sa[i]] == <span class="number">1</span>) ans += sum;</span><br><span class="line">	&#125;</span><br><span class="line">	top = <span class="number">0</span>; sum = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">2</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		ll cnt = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">while</span>(top &amp;&amp; Stack[top].h &gt;= lcp[i<span class="number">-1</span>])&#123;</span><br><span class="line">			cnt += Stack[top].cnt;</span><br><span class="line">			sum -= Stack[top].cnt * (Stack[top].h-m+<span class="number">1</span>);</span><br><span class="line">			top--;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(lcp[i<span class="number">-1</span>] &gt;= m)&#123;</span><br><span class="line">			cnt += idx[sa[i<span class="number">-1</span>]] == <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">if</span>(cnt) Stack[++top] = Node&#123;lcp[i<span class="number">-1</span>],cnt&#125;;</span><br><span class="line">			sum += (lcp[i<span class="number">-1</span>]-m+<span class="number">1</span>)*cnt;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(!idx[sa[i]]) ans += sum;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;m) != EOF &amp;&amp; m)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,A);</span><br><span class="line">		<span class="built_in">memset</span>(idx,<span class="number">0</span>,<span class="keyword">sizeof</span> idx);</span><br><span class="line">		n = <span class="built_in">strlen</span>(A); </span><br><span class="line">		idx[n] = <span class="number">2</span>; A[n++] = <span class="string">'#'</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; n;i++) idx[i] = <span class="number">1</span>;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s"</span>,A+n);</span><br><span class="line">		n = <span class="built_in">strlen</span>(A);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/后缀数组/" rel="tag"># 后缀数组</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/17/lcp-use/" rel="next" title="后缀数组的常见应用">
+                  <i class="fa fa-chevron-left"></i> 后缀数组的常见应用
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">69</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Musical-Theme"><span class="nav-number">1.</span> <span class="nav-text">Musical Theme</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Milk-Patterns"><span class="nav-number">2.</span> <span class="nav-text">Milk Patterns</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#不同子串的个数"><span class="nav-number">3.</span> <span class="nav-text">不同子串的个数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Substring"><span class="nav-number">4.</span> <span class="nav-text">Substring</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Life-Forms"><span class="nav-number">5.</span> <span class="nav-text">Life Forms</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Maximum-repetition-substring"><span class="nav-number">6.</span> <span class="nav-text">Maximum repetition substring</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Common-Substrings"><span class="nav-number">7.</span> <span class="nav-text">Common Substrings</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
