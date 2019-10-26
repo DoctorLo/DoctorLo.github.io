@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要单调栈和单调队列都可以看作是一种对栈和队列的特殊用法，即要求栈或队列中的元素具有单调性，递增或递减。那么很显然这种数据结构就是基于栈和队列实现的，即它既保留了栈的先进后出（队列就是保留先进先出），又具有单调性。而我们在某些时候正需要其这种性质，我们在讲解了单调栈和单调队列的定义、特性、构造方法后，会各给出一道例题来体现它们的用法。 单调栈单调栈的概念单调栈是一种特殊的栈，栈内的所有元素都保持着">
+<meta name="keywords" content="单调栈,单调队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="单调栈与单调队列">
+<meta property="og:url" content="http://valenshi.top/2019/10/17/ddz/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要单调栈和单调队列都可以看作是一种对栈和队列的特殊用法，即要求栈或队列中的元素具有单调性，递增或递减。那么很显然这种数据结构就是基于栈和队列实现的，即它既保留了栈的先进后出（队列就是保留先进先出），又具有单调性。而我们在某些时候正需要其这种性质，我们在讲解了单调栈和单调队列的定义、特性、构造方法后，会各给出一道例题来体现它们的用法。 单调栈单调栈的概念单调栈是一种特殊的栈，栈内的所有元素都保持着">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-17T05:42:57.769Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="单调栈与单调队列">
+<meta name="twitter:description" content="摘要单调栈和单调队列都可以看作是一种对栈和队列的特殊用法，即要求栈或队列中的元素具有单调性，递增或递减。那么很显然这种数据结构就是基于栈和队列实现的，即它既保留了栈的先进后出（队列就是保留先进先出），又具有单调性。而我们在某些时候正需要其这种性质，我们在讲解了单调栈和单调队列的定义、特性、构造方法后，会各给出一道例题来体现它们的用法。 单调栈单调栈的概念单调栈是一种特殊的栈，栈内的所有元素都保持着">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/10/17/ddz/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>单调栈与单调队列 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/10/17/ddz/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">单调栈与单调队列
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-17 13:42:19 / 修改时间：13:42:57" itemprop="dateCreated datePublished" datetime="2019-10-17T13:42:19+08:00">2019-10-17</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>单调栈和单调队列都可以看作是一种对栈和队列的特殊用法，即要求栈或队列中的元素具有单调性，递增或递减。那么很显然这种数据结构就是基于栈和队列实现的，即它既保留了栈的先进后出（队列就是保留先进先出），又具有单调性。而我们在某些时候正需要其这种性质，我们在讲解了单调栈和单调队列的定义、特性、构造方法后，会各给出一道例题来体现它们的用法。</p>
+<h4 id="单调栈"><a href="#单调栈" class="headerlink" title="单调栈"></a>单调栈</h4><h5 id="单调栈的概念"><a href="#单调栈的概念" class="headerlink" title="单调栈的概念"></a>单调栈的概念</h5><p>单调栈是一种特殊的栈，栈内的所有元素都保持着单调性，即单调递增或单调递减。</p>
+<h5 id="单调栈的性质"><a href="#单调栈的性质" class="headerlink" title="单调栈的性质"></a>单调栈的性质</h5><ul>
+<li>单调性。若是单调递增栈，则从栈顶到栈底的元素是严格递增的。若是单调递减栈，则从栈顶到栈底的元素是严格递减的。</li>
+<li>靠近栈底的元素先进栈，越靠后的元素越后进栈。</li>
+</ul>
+<p>单调栈和普通的栈一样，都只能在栈顶操作，压入或弹出。而我们需要通过一些约束来使得栈内元素具有单调性，从而构成单调栈。</p>
+<h5 id="构造单调栈"><a href="#构造单调栈" class="headerlink" title="构造单调栈"></a>构造单调栈</h5><p>以单调递增栈为例：对于当前元素e，若e大于栈顶元素，则进栈，否则弹出栈顶元素，再次进行比较，重复直至栈顶元素小于e或栈为空为止，此时将e压入栈。<br>对于弹出的元素，我们并不需要重新压回，因为一般情况下它们都属于被“淘汰”的元素，后面压入的元素一般又“新鲜”又“美味”，即时间上和数值上都比其优秀。</p>
+<h5 id="例题HDU1506"><a href="#例题HDU1506" class="headerlink" title="例题HDU1506"></a>例题HDU1506</h5><p>先思考一个问题，如果题目中的矩形的高度都是单调递增的，如何得到最优解？显然有一个贪心的策略，就是以每一个矩形的高度作为最终大矩形的高度，看最宽能是多少，然后统计最优解。<br>但如果进来的下一矩形比上一个低，它其实相当于限制了之前矩形的高度，那么之前矩形比这个矩形高出的高度在以后的统计中就没有丝毫用处了，如果我们在这个时候把以之前矩形的高度作为最终高度的答案统计掉，那么反正以后的统计和上一个矩形没有关系，还不如把他删除。<br>这样，我们实际上就得到了单调栈的模型，只需要维护一个单调栈，在维护单调性的弹出操作时统计宽度，更新答案即可在O(n) 时间内得到最优解。<br>为了方便把最后剩下的，以及单调递增的矩形也统计进去，我们假设a[n+1]的位置有一个高度为0的矩形，最后将它加入单调栈时他会将所有矩形都弹出，那么答案也就完成最后的更新了。</p>
+<h5 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h5><p>见附录部分code-1</p>
+<h4 id="单调队列"><a href="#单调队列" class="headerlink" title="单调队列"></a>单调队列</h4><h5 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h5><p>单调队列的概念和单调栈类似，只是把先进后出改成先进先出就可以了。其具有先进先出的特性并且队列中元素具有单调性。<br>单调是一种思想，当我们解决问题的时候发现有许多冗杂无用的状态时，我们可以采用单调思想，用单调队列或类似于单调队列的方法去除冗杂状态，保存我们想要的状态。</p>
+<h5 id="单调队列的性质"><a href="#单调队列的性质" class="headerlink" title="单调队列的性质"></a>单调队列的性质</h5><ul>
+<li>单调队列的最优选择在队首。</li>
+<li>队列元素具有单调性。</li>
+<li>去除冗余状态（无用状态）。</li>
+<li>维护区间最值。</li>
+</ul>
+<h5 id="单调队列的构造方法"><a href="#单调队列的构造方法" class="headerlink" title="单调队列的构造方法"></a>单调队列的构造方法</h5><ul>
+<li>维护队首（对于上题就是如果队首已经是当前元素的m个之前，则队首就应该被删了,head++）</li>
+<li>在队尾插入（每插入一个就要从队尾开始往前去除冗杂状态，保持单调性）</li>
+</ul>
+<p>假如对于序列A：a1,  a2 , … an 建立一个单调递减栈维护长度为m的字段最大值，那么对于当前元素e，若队首元素小于e，那么其位置上不占优势（要被踢出长度为m的字段），而且其数值上也不占优势（比新来的e要小），所以其就要被舍弃。重复这一操作，直至队首元素大于元素e，那么说明其还有用，就保留。<br>举个应用例子：</p>
+<p>数列为：6 4 10 10 8 6 4 2 12 14<br>N=10,K=3;<br>那么我们构造一个长度为3的单调递减队列：<br>首先，那6和它的位置0放入队列中，我们用(6,0)表示，每一步插入元素时队列中的元素如下<br>插入6：(6,0);<br>插入4：(6,0),(4,1);<br>插入10：(10,2);<br>插入第二个10，保留后面那个：(10,3);<br>插入8：(10,3),(8,4);<br>插入6：(10,3),(8,4),(6,5);<br>插入4，之前的10已经超出范围所以排掉：(8,4),(6,5),(4,6);<br>插入2，同理：(6,5),(4,6),(2,7);<br>插入12：(12,8);<br>插入14：(14,9);<br>那么f(i)就是第i步时队列当中的首元素：6,6,10,10,10,10,8,6,12,14同理，最小值也可以用单调队列来做。</p>
+<h5 id="例题Poj-2823"><a href="#例题Poj-2823" class="headerlink" title="例题Poj 2823"></a>例题Poj 2823</h5><p>给定一个数列，从左至右输出每个长度为m的数列段内的最小数和最大数。数列长度：$N&lt;=10^6，m&lt;=N$<br><strong>解题思路：</strong><br>我们知道，暴力枚举的过程中，有一个地方是重复比较了，就是在找当前的f(i)的时候，i的前面其它m-1个数在算f(i-1)的时候我们就比较过了。当你一个个往下找时，每一次都是少一个然后多一个，如果少的不是最大值，然后再问新加进来的，看起来很省时间对吧，那么如果少了的是最大值呢？第二个最大值是什么？？那么我们能不能保存上一次的结果呢？当然主要是i的前k-1个数中的最大值了。答案是可以，这就要用到单调队列。</p>
+<h5 id="代码示例-1"><a href="#代码示例-1" class="headerlink" title="代码示例"></a>代码示例</h5><p>见附录部分code-2</p>
+<h4 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h4><h5 id="code-1：-HDU1506"><a href="#code-1：-HDU1506" class="headerlink" title="code-1： HDU1506"></a>code-1： HDU1506</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> a[N],n,Stack[N],w[N];</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line">ll ans = <span class="number">0</span>;</span><br><span class="line"><span class="function">ll <span class="title">max</span><span class="params">(ll a,ll b)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> a &gt; b?a:b;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(Stack,<span class="number">0</span>,<span class="keyword">sizeof</span> Stack);</span><br><span class="line">	<span class="keyword">int</span> top = <span class="number">0</span>;ans = <span class="number">0</span>;a[n+<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n+<span class="number">1</span>;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(Stack[top] &lt; a[i])&#123;</span><br><span class="line">			Stack[++top] = a[i];</span><br><span class="line">			w[top] = <span class="number">1</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			ll sumw = <span class="number">0</span>;</span><br><span class="line">			<span class="keyword">while</span>(Stack[top] &gt; a[i])&#123;</span><br><span class="line">				sumw += w[top];</span><br><span class="line">				ans = max(ans,sumw*Stack[top]);</span><br><span class="line">				top--;</span><br><span class="line">			&#125;</span><br><span class="line">			Stack[++top] = a[i];w[top] = sumw + <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n) &amp;&amp; n)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,a+i);</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="code-2-Poj2823"><a href="#code-2-Poj2823" class="headerlink" title="code-2 Poj2823"></a>code-2 Poj2823</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x,y;</span><br><span class="line">&#125;v[<span class="number">1010000</span>]; <span class="comment">//x表示值，y表示位置 可以理解为下标</span></span><br><span class="line"><span class="keyword">int</span> a[<span class="number">1010000</span>],n,m,mx[<span class="number">1010000</span>],mn[<span class="number">1010000</span>];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getmin</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i,head=<span class="number">1</span>,tail=<span class="number">0</span>;<span class="comment">// 默认起始位置为1 因为插入是v[++tail]故初始化为0</span></span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;m;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>(head&lt;=tail &amp;&amp; v[tail].x&gt;=a[i]) tail--;</span><br><span class="line">        v[++tail].x=a[i],v[tail].y=i;</span><br><span class="line">                <span class="comment">// 根据题目 前m-1个先直接进入队列</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>(head&lt;=tail &amp;&amp; v[tail].x&gt;=a[i]) tail--;</span><br><span class="line">        v[++tail].x=a[i],v[tail].y=i;</span><br><span class="line">        <span class="keyword">while</span>(v[head].y&lt;i-m+<span class="number">1</span>) head++;</span><br><span class="line">        mn[i-m+<span class="number">1</span>]=v[head].x;</span><br><span class="line">               <span class="comment">// 道理同上，当然了 要把已经超出范围的从head开始排出</span></span><br><span class="line">               <span class="comment">//  然后每个队首则是目前m个数的最小值</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">getmax</span><span class="params">()</span> <span class="comment">//最大值同最小值的道理，只不过是维护的是递减队列</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i,head=<span class="number">1</span>,tail=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;m;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>(head&lt;=tail &amp;&amp; v[tail].x&lt;=a[i]) tail--;</span><br><span class="line">        v[++tail].x=a[i],v[tail].y=i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(;i&lt;=n;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">while</span>(head&lt;=tail &amp;&amp; v[tail].x&lt;=a[i]) tail--;</span><br><span class="line">        v[++tail].x=a[i],v[tail].y=i;</span><br><span class="line">        <span class="keyword">while</span>(v[head].y&lt;i-m+<span class="number">1</span>) head++;</span><br><span class="line">        mx[i-m+<span class="number">1</span>]=v[head].x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> i,j;</span><br><span class="line">    <span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n;i++)<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;a[i]);</span><br><span class="line">    getmin();</span><br><span class="line">    getmax();</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n-m+<span class="number">1</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">1</span>)<span class="built_in">printf</span>(<span class="string">"%d"</span>,mn[i]);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">" %d"</span>,mn[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n-m+<span class="number">1</span>;i++)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span>(i==<span class="number">1</span>)<span class="built_in">printf</span>(<span class="string">"%d"</span>,mx[i]);</span><br><span class="line">        <span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">" %d"</span>,mx[i]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\n"</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/单调栈/" rel="tag"># 单调栈</a>
+            
+              <a href="/tags/单调队列/" rel="tag"># 单调队列</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/10/17/lcp-problems/" rel="next" title="后缀数组题集">
+                  <i class="fa fa-chevron-left"></i> 后缀数组题集
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2019/10/26/vim-use/" rel="prev" title="Ubuntu下vim简单入门">
+                  Ubuntu下vim简单入门 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单调栈"><span class="nav-number">2.</span> <span class="nav-text">单调栈</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#单调栈的概念"><span class="nav-number">2.1.</span> <span class="nav-text">单调栈的概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#单调栈的性质"><span class="nav-number">2.2.</span> <span class="nav-text">单调栈的性质</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#构造单调栈"><span class="nav-number">2.3.</span> <span class="nav-text">构造单调栈</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#例题HDU1506"><span class="nav-number">2.4.</span> <span class="nav-text">例题HDU1506</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代码示例"><span class="nav-number">2.5.</span> <span class="nav-text">代码示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单调队列"><span class="nav-number">3.</span> <span class="nav-text">单调队列</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#概念"><span class="nav-number">3.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#单调队列的性质"><span class="nav-number">3.2.</span> <span class="nav-text">单调队列的性质</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#单调队列的构造方法"><span class="nav-number">3.3.</span> <span class="nav-text">单调队列的构造方法</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#例题Poj-2823"><span class="nav-number">3.4.</span> <span class="nav-text">例题Poj 2823</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#代码示例-1"><span class="nav-number">3.5.</span> <span class="nav-text">代码示例</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#附录"><span class="nav-number">4.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#code-1：-HDU1506"><span class="nav-number">4.1.</span> <span class="nav-text">code-1： HDU1506</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#code-2-Poj2823"><span class="nav-number">4.2.</span> <span class="nav-text">code-2 Poj2823</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
