@@ -6,10 +6,35 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://valenshi.top/"/>
-  <updated>2019-10-26T02:36:02.627Z</updated>
+  <updated>2019-11-13T12:16:54.000Z</updated>
   <id>http://valenshi.top/</id>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>伙伴算法</title>
+    <link href="http://valenshi.top/2019/11/13/buddy-system/"/>
+    <id>http://valenshi.top/2019/11/13/buddy-system/</id>
+    <published>2019-11-13T12:13:59.000Z</published>
+    <updated>2019-11-13T12:16:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="伙伴系统（Buddy-System）"><a href="#伙伴系统（Buddy-System）" class="headerlink" title="伙伴系统（Buddy System）"></a>伙伴系统（Buddy System）</h4><p><strong>伙伴系统的特点</strong></p><ul><li>整个可分配的分区大小为 $2^u$。</li><li>需要的分区大小为 $2^{u-1} &lt; s &lt;= 2^u$时，把整个块分配给该进程。</li></ul><p><strong>分配分区的过程：</strong><br>如果 $s &lt;= 2^{i-1}$，则将大小为$2^i$的当前空闲分区划分为两个大小为$2^{i-1}$的空闲分区<br>重复划分过程，直至$2^{i-1} &lt; s &lt;= 2^i$，并把一个空闲分区分配给该进程。</p><h4 id="伙伴系统的实现"><a href="#伙伴系统的实现" class="headerlink" title="伙伴系统的实现"></a>伙伴系统的实现</h4><p><strong>数据结构：</strong></p><ul><li>空闲块按照大小和起始地址组成二维数组。</li><li>初始状态：只有一个大小为$2^u$的空闲块。</li></ul><p><strong>分配过程：</strong></p><ul><li>由大到小在空闲块数组中找到最小的可用空闲块。</li><li>如果空闲块过大，对可用的空闲块进行二等分，直到得到合适的可用的空闲块。</li></ul><p><strong>分配样例图示：</strong><br><img src="/2019/11/13/buddy-system/1.png" alt="1"></p><p><strong>释放过程：</strong></p><ul><li>把释放的空闲块放入空闲数组</li><li>合并满足合并条件的空闲块</li></ul><p><strong>合并条件：</strong></p><ul><li>大小相同，例如都是$2^i$</li><li>地址相邻</li><li>低地址空闲块起始地址为$2^{i+1}$的位数</li></ul><h4 id="伙伴算法的优缺点"><a href="#伙伴算法的优缺点" class="headerlink" title="伙伴算法的优缺点"></a>伙伴算法的优缺点</h4><p><strong>优点：</strong></p><ul><li>较好的解决外部碎片问题</li><li>当需要分配若干个内存页面时，用于DMA的内存页面必须连续，伙伴算法很好的满足了这个要求</li><li>只要请求的块不超过512个页面（2k），内核就尽量分配连续的页面。</li><li>针对大内存分配设计</li></ul><p><strong>缺点：</strong></p><ul><li>合并的要求过于严格，只能是满足伙伴关系的块才能合并</li><li>碎片问题：一个连续的内存中仅仅一个页面被占用，导致整个内存区都不具备合并条件</li><li>浪费问题：伙伴算法只能分配2的幂次方内存区，当需要的内存为$2^i+1$ K 时，例如需要 9K 时，就需要分配16K的内存空间，剩下的 7K 浪费了。</li><li>算法的效率问题：伙伴算法中涉及了比较多的计算还有链表和位图的操作，开销比较大，如果每次合并$2^n$大小的块为$2^{n+1}$的小，那么大小为$2^n$的块会减少，如果随后系统又需要$2^n$大小的块，就又要拆分，这样的立即合并和拆分过程无效率。</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h4 id=&quot;伙伴系统（Buddy-System）&quot;&gt;&lt;a href=&quot;#伙伴系统（Buddy-System）&quot; class=&quot;headerlink&quot; title=&quot;伙伴系统（Buddy System）&quot;&gt;&lt;/a&gt;伙伴系统（Buddy System）&lt;/h4&gt;&lt;p&gt;&lt;stron
+      
+    
+    </summary>
+    
+      <category term="计算机操作系统" scheme="http://valenshi.top/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+      <category term="内存分配" scheme="http://valenshi.top/tags/%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
+    
+  </entry>
   
   <entry>
     <title>Ubuntu下vim简单入门</title>
@@ -515,32 +540,6 @@
       <category term="算法模板" scheme="http://valenshi.top/tags/%E7%AE%97%E6%B3%95%E6%A8%A1%E6%9D%BF/"/>
     
       <category term="数据结构与算法" scheme="http://valenshi.top/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Fish eating fruits</title>
-    <link href="http://valenshi.top/2019/09/22/fish-eating-fruit/"/>
-    <id>http://valenshi.top/2019/09/22/fish-eating-fruit/</id>
-    <published>2019-09-22T06:57:11.000Z</published>
-    <updated>2019-09-22T07:00:18.062Z</updated>
-    
-    <content type="html"><![CDATA[<p><a href>测试地址</a><br><strong>题意简述：</strong><br>树上任意两点之间的路径按照模 3 为 012 分类，将两点间距离加和，乘 2 即为答案。 </p><p><strong>解题思路：</strong><br>可以采用树上dp解决，也可以点分治，这里先给出一种树上dp做法：<br><code>dp[i][k]</code> 表示距 i 模 3 为 k 的节点距离和。<br><code>tc[i][k]</code> 表示距 i 模 3 为 k 的节点数目。<br><code>ans[k]</code>  表示所有路径中模 3 为 k 的路径的总长度。<br>目标答案是<code>ans[k]</code> 。<br>初始状态 <code>tc[i][0] = 1</code> 。</p><p>如果每次只考虑所有经过根 x 的路径，并且路径上的一个端点在x的一个子树上，另一个端点在另一个子树上（其他所有情况都可以在x的祖先或者子节点被考虑到，所以这样可以包含所有情况）。<br>假设当前枚举到x的子节点y，之前遍历的子节点已经使得dp和tc数组更新完成，那么我们要计算的路径起点在y，终点在之前遍历过的所有子节点中。<br><strong>分类讨论答案贡献：</strong></p><ol><li>边 x-y 对答案的贡献：设 j，k属于{0,1,2}，x 到 y 的边权为 z ，那么z对答案的贡献为<code>tc[x][j] * tc[y][k] * z</code>。</li><li>终点是 y 的所有路径长度的贡献：<code>dp[y][k] * tc[x][j] * z</code>。</li><li>起点是 x 的所有路径长度的贡献：<code>dp[x][j] * tc[y][k] * z</code>。</li></ol><p><strong>于是状态转移方程：</strong><br><code>dp[x][(j+z)%3] += dp[y][j] + z * tc[y][j]</code><br><code>tc[x][(j+z)%3] += tc[y][j]</code></p><p>当然，在状态转移前也要更新ans数组。<br><strong>代码示例：</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt; </span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> P = <span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> head[N],ver[N],edge[N],nex[N];</span><br><span class="line"><span class="keyword">int</span> tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">ver[++tot] = y; edge[tot] = z;</span><br><span class="line">nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line">ll tc[N][<span class="number">4</span>], dp[N][<span class="number">4</span>], ans[<span class="number">4</span>];</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> fa)</span></span>&#123;</span><br><span class="line"><span class="comment">/* 利用dfs进行状态转移,x为当前子树根节点 */</span> </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i != <span class="number">-1</span>;i = nex[i])&#123;</span><br><span class="line"><span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line"><span class="keyword">if</span>(y == fa) <span class="keyword">continue</span>;<span class="comment">//y是父节点则跳过 </span></span><br><span class="line">dfs(y,x);</span><br><span class="line"><span class="comment">/* 这里统计答案 */</span> </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; <span class="number">3</span>;j++)</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> k = <span class="number">0</span>;k &lt; <span class="number">3</span>;k++)&#123;</span><br><span class="line">ans[(j+k+z)%<span class="number">3</span>] += (dp[x][j]*tc[y][k]%P+dp[y][k]*tc[x][j]%P)%P;</span><br><span class="line">ans[(j+k+z)%<span class="number">3</span>] += z*tc[x][j]%P*tc[y][k]%P;</span><br><span class="line">ans[(j+k+z)%<span class="number">3</span>] %= P;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 在这里转移状态 */</span> </span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; <span class="number">3</span>;j++)&#123;</span><br><span class="line">dp[x][(j+z)%<span class="number">3</span>] = (dp[x][(j+z)%<span class="number">3</span>] + dp[y][j] + z*tc[y][j])%P;</span><br><span class="line">tc[x][(j+z)%<span class="number">3</span>] = (tc[x][(j+z)%<span class="number">3</span>] + tc[y][j])%P;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line"><span class="built_in">memset</span>(dp,<span class="number">0</span>,<span class="keyword">sizeof</span> dp);</span><br><span class="line"><span class="built_in">memset</span>(tc,<span class="number">0</span>,<span class="keyword">sizeof</span> tc);</span><br><span class="line"><span class="built_in">memset</span>(ans,<span class="number">0</span>,<span class="keyword">sizeof</span> ans);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt;= n;i++) tc[i][<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line"><span class="comment">/* 统计答案并输出 */</span> </span><br><span class="line">dfs(<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; <span class="number">2</span>;i++) <span class="built_in">printf</span>(<span class="string">"%lld "</span>,ans[i]*<span class="number">2</span>%P);</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans[<span class="number">2</span>]*<span class="number">2</span>%P);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line"><span class="keyword">while</span>(~<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n))&#123;</span><br><span class="line"><span class="built_in">memset</span>(head,<span class="number">-1</span>,<span class="keyword">sizeof</span> head); tot = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt; n;i++)&#123;</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;x,&amp;y,&amp;z);</span><br><span class="line">addEdge(x+<span class="number">1</span>,y+<span class="number">1</span>,z); addEdge(y+<span class="number">1</span>,x+<span class="number">1</span>,z);</span><br><span class="line">&#125;</span><br><span class="line">solve();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;&lt;a href&gt;测试地址&lt;/a&gt;&lt;br&gt;&lt;strong&gt;题意简述：&lt;/strong&gt;&lt;br&gt;树上任意两点之间的路径按照模 3 为 012 分类，将两点间距离加和，乘 2 即为答案。 &lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;解题思路：&lt;/strong&gt;&lt;br&gt;可以采用树上dp解决，也
-      
-    
-    </summary>
-    
-      <category term="ACM题解" scheme="http://valenshi.top/categories/ACM%E9%A2%98%E8%A7%A3/"/>
-    
-    
-      <category term="树上DP" scheme="http://valenshi.top/tags/%E6%A0%91%E4%B8%8ADP/"/>
     
   </entry>
   
