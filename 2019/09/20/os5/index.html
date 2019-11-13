@@ -64,7 +64,7 @@
 <meta property="og:description" content="计算机体系结构和内存层次 计算机体系结构 内存层次 操作系统的内存管理方式  计算机体系结构基本的分配和释放的管理要求。cpu高速缓存，存储管理单元（MMU），内存最小访问单位8bit；32位的意思是一次可以读写32位；高速缓存用来存放会重复使用的数据，用来提高效率； 内存层次缓存速度最快，首先去缓存找数据，若未命中则去内存中找，若仍未命中则去外存（虚拟内存）中找，这三者速度差别很大。 操作系统的">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://valenshi.top/2019/09/20/os5/1.png">
-<meta property="og:updated_time" content="2019-09-23T12:16:26.853Z">
+<meta property="og:updated_time" content="2019-11-13T05:28:57.908Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="5 连续内存分配">
 <meta name="twitter:description" content="计算机体系结构和内存层次 计算机体系结构 内存层次 操作系统的内存管理方式  计算机体系结构基本的分配和释放的管理要求。cpu高速缓存，存储管理单元（MMU），内存最小访问单位8bit；32位的意思是一次可以读写32位；高速缓存用来存放会重复使用的数据，用来提高效率； 内存层次缓存速度最快，首先去缓存找数据，若未命中则去内存中找，若仍未命中则去外存（虚拟内存）中找，这三者速度差别很大。 操作系统的">
@@ -301,7 +301,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-09-23 20:16:26" itemprop="dateModified" datetime="2019-09-23T20:16:26+08:00">2019-09-23</time>
+                <time title="修改时间：2019-11-13 13:28:57" itemprop="dateModified" datetime="2019-11-13T13:28:57+08:00">2019-11-13</time>
               </span>
             
           
@@ -832,6 +832,55 @@
 
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
   
 
   
