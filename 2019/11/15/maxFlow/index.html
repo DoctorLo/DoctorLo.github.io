@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="摘要正如可以通过将道路交通图模型化为有向图来找到从一个城市到另一个城市之间的最短路，我们也可以将一个有向图看作一个“流网络”，并使用它来回答关于物料流动方面的问题。这种流网络可以用来建模很多实际问题，包括液体在管道中的流动、装配线上的部件的流动、电网中电流的流动和通信网络中信息的流动。本文首先介绍网络流中的相关概念，然后给出最大流问题的一般解法思路，以及优化后的算法。我们应该将主要精力放在思维锻炼">
+<meta name="keywords" content="数据结构与算法,图论,最大流">
+<meta property="og:type" content="article">
+<meta property="og:title" content="最大流笔记">
+<meta property="og:url" content="http://valenshi.top/2019/11/15/maxFlow/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="摘要正如可以通过将道路交通图模型化为有向图来找到从一个城市到另一个城市之间的最短路，我们也可以将一个有向图看作一个“流网络”，并使用它来回答关于物料流动方面的问题。这种流网络可以用来建模很多实际问题，包括液体在管道中的流动、装配线上的部件的流动、电网中电流的流动和通信网络中信息的流动。本文首先介绍网络流中的相关概念，然后给出最大流问题的一般解法思路，以及优化后的算法。我们应该将主要精力放在思维锻炼">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-15T05:21:49.131Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="最大流笔记">
+<meta name="twitter:description" content="摘要正如可以通过将道路交通图模型化为有向图来找到从一个城市到另一个城市之间的最短路，我们也可以将一个有向图看作一个“流网络”，并使用它来回答关于物料流动方面的问题。这种流网络可以用来建模很多实际问题，包括液体在管道中的流动、装配线上的部件的流动、电网中电流的流动和通信网络中信息的流动。本文首先介绍网络流中的相关概念，然后给出最大流问题的一般解法思路，以及优化后的算法。我们应该将主要精力放在思维锻炼">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/11/15/maxFlow/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>最大流笔记 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/11/15/maxFlow/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">最大流笔记
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-15 13:19:48 / 修改时间：13:21:49" itemprop="dateCreated datePublished" datetime="2019-11-15T13:19:48+08:00">2019-11-15</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>正如可以通过将道路交通图模型化为有向图来找到从一个城市到另一个城市之间的最短路，我们也可以将一个有向图看作一个“流网络”，并使用它来回答关于物料流动方面的问题。这种流网络可以用来建模很多实际问题，包括液体在管道中的流动、装配线上的部件的流动、电网中电流的流动和通信网络中信息的流动。<br>本文首先介绍网络流中的相关概念，然后给出最大流问题的一般解法思路，以及优化后的算法。我们应该将主要精力放在思维锻炼和题目分析上，而不要过于执着于那些经典算法的细节优化。本文中整理的算法在算法竞赛中已经够用。</p>
+<h4 id="概念介绍"><a href="#概念介绍" class="headerlink" title="概念介绍"></a>概念介绍</h4><p><strong>流网络：</strong> 流网络 G = (V , E) 是一个有向图，图中每条边 (u , v) 都有一个非负的<strong>容量值c(u , v)</strong> 。而且，如果边集合 E 包含一条边(u , v) ，则图中不存在反向边(v , u)。</p>
+<p><strong>源节点s和汇点t：</strong> 在流网络的所有节点中，我们分辨出两个特殊的节点，分别是源点s和汇点t；源点是所有路径的起点，而汇点是路径的终点。在某些情况下，源点和汇点需要人为指定。</p>
+<p><strong>流网络 G 中的流：</strong> G中流的大小（值）用 f 表示，f(u , v)表示从点 u 到点 v 的流的大小。整张图的流是 $|f| = \sum_{v \epsilon V}f(s, v) - \sum_{v \epsilon V}f(v ,s)$（前后两个 v 含义不同），即从源点 s 流出的流量和，或称为流入汇点 t 的流量和。</p>
+<p><strong>容量限制：</strong> 对于所有的节点$u, v \epsilon V$，要求$0 &lt;= f(u , v) &lt;= c(u , v)$<br><strong>流量守恒：</strong> 对于所有的节点 $u \epsilon V$ - { s , t }，要求流入 u 的流量等于流出 u 的流量，即：</p>
+<script type="math/tex; mode=display">\sum_{v \epsilon V}f(v,u) = \sum_{v \epsilon V}f(u,v)</script><p>（前后两个 v 的含义不同，一个是入边的起点，一个是出边的终点）</p>
+<p><strong>问题模型：</strong> 在最大流问题中，给定一个流网络G 、一个源节点s、一个汇点t，我们希望找到值最大的一个流。</p>
+<h4 id="Edmonds-Karp算法"><a href="#Edmonds-Karp算法" class="headerlink" title="Edmonds-Karp算法"></a>Edmonds-Karp算法</h4><p>若一条从源点 s 到汇点 t 的路径上的各条边的剩余容量都大于 0，则称这条路径为一条增广路径。显然，可以让一股流沿着增广路径从 s 流到 t，使网络的流量增大。Edmonds-Karp算法思想就是不断用BFS寻找增广路，直至网络上不存在增广路为止。<br>该算法的时间复杂度为$O(nm^2)$。然而在实际运用中则远远达不到这个上界，效率较高，一般能够处理 $10^3 - 10^4$规模的网络。</p>
+<p><strong>算法思路：</strong><br>这里介绍的是利用 bfs 寻找增广路的Edmonds-Karp增广路算法。在该算法中，我们不断的寻找增广路，并增加增广路上的流；重复这一步骤直至不存在增广路。<br>在每轮寻找增广路的过程中，Edmonds-Karp算法只考虑图中所有 f(x ,y) &lt; c(x, y)的边，用BFS找到任意一条从 s 到 t 的路径，同时计算出路径上各边的剩余容量的最小值 minf，则网络的流量就可以增加 minf。</p>
+<p>需要注意的是，当一条边的流量 f(x ,y) &gt; 0时，根据斜对称性质，它的反向边流量 f(y ,x) &lt; 0，此时必定有 f(y , x) &lt; c(y ,x)。故Edmonds-Karp算法在BFS时除了原图的边集 E 外，还应考虑遍历 E 中每条边的反向边。<br>具体实现时，本文采用邻接表“成对存储”技巧（即’2’和’3’是一对，’4’和’5’是一对）。每条边只记录剩余容量 c-f 即可，当一条边 (x ,y) 流过大小为 e 的流时，令 (x ,y) 的容量减少 e，(y ,x) 的容量增加 e 。</p>
+<p><strong>代码模板：</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e3</span>+<span class="number">10</span>;	<span class="comment">//最大点数</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e3</span>+<span class="number">10</span>;	<span class="comment">//最大边数</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;	<span class="comment">//int范围内的无穷大</span></span><br><span class="line"><span class="keyword">int</span> head[N], edge[M], ver[M], nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m,s,t;	<span class="comment">// 共n个点,m条边,s是源点,t是汇点</span></span><br><span class="line"><span class="keyword">int</span> pre[N],incf[N];<span class="comment">//增广路上各边的最小剩余容量</span></span><br><span class="line"><span class="keyword">bool</span> vis[N];	<span class="comment">//标记数组</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">bfs</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">memset</span>(vis,<span class="number">0</span>,<span class="keyword">sizeof</span> vis);</span><br><span class="line">	<span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line">	q.push(s); vis[s] = <span class="literal">true</span>;</span><br><span class="line">	incf[s] = INF;</span><br><span class="line">	<span class="keyword">while</span>(!q.empty())&#123;</span><br><span class="line">		<span class="keyword">int</span> x = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i],z = edge[i];</span><br><span class="line">			<span class="keyword">if</span>(!z || vis[y]) <span class="keyword">continue</span>;</span><br><span class="line">			incf[y] = min(incf[x],z);</span><br><span class="line">			pre[y] = i;	<span class="comment">//记录前驱*边*</span></span><br><span class="line">			q.push(y); vis[y] = <span class="literal">true</span>;</span><br><span class="line">			<span class="keyword">if</span>(y == t) <span class="keyword">return</span> <span class="literal">true</span>;<span class="comment">//找到一条增广路</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">EK</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">/*返回最大流的值*/</span></span><br><span class="line">	<span class="keyword">int</span> flow = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(bfs())&#123;</span><br><span class="line">		<span class="keyword">int</span> x = t;</span><br><span class="line">		<span class="keyword">while</span>(x != s)&#123;</span><br><span class="line">			<span class="keyword">int</span> i = pre[x];	<span class="comment">//前驱 *边* </span></span><br><span class="line">			edge[i] -= incf[t];	</span><br><span class="line">			edge[i^<span class="number">1</span>] += incf[t];</span><br><span class="line">			x = ver[i^<span class="number">1</span>];	<span class="comment">//前驱点 = 反向边的终点</span></span><br><span class="line">		&#125;</span><br><span class="line">		flow += incf[t];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> flow;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d%d%d"</span>,&amp;n,&amp;m,&amp;s,&amp;t);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;x,&amp;y,&amp;z);</span><br><span class="line">		addEdge(x,y,z); addEdge(y,x,<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,EK());</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>算法正确性需要用到最小割来证明，详见《挑战程序设计竞赛第二版》P212。</p>
+<h4 id="Dinic算法"><a href="#Dinic算法" class="headerlink" title="Dinic算法"></a>Dinic算法</h4><p> 在任意时刻，网络中所有节点以及剩余容量大于0的边构成的子图被称为残量网络。Edmonds-Karp每轮可能会遍历整个残量网络，但只找出 1 条增广路，还有进一步优化的空间。<br> 在宽度优先遍历时，我们可以计算出<strong>节点的层次d[x]</strong> ，它表示 s 到 x 最少需要经过的边数。在残量网络中，满足d[y] = d[x] + 1 的边(x ,y) 构成的子图被称为<strong>分层图</strong> 。分层图显然是一张有向无环图。</p>
+<p> Dinic 算法不断重复以下步骤，直到残量网络中 s 不能到达 t：</p>
+<ol>
+<li>在残量网络上 BFS 求出节点的层次，构造分层图</li>
+<li>在分层图上 DFS 寻找增广路，在回溯时实时更新剩余容量。另外，每个点可以流向多条出边，同时还加入了若干剪枝，详情参考代码示例。</li>
+</ol>
+<p>Dinic 算法的时间复杂度是$O(n^2m)$。实际运用中远远达不到这个上界，可以说是比较容易实现的效率最高的网络流算法之一，一般能够处理$10^4 - 10^5$规模的网络。特别地，Dinic算法求解二分图最大匹配的时间复杂度为$O(m\sqrt n)$，实际表现则更快。</p>
+<p> <strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;	<span class="comment">//int所能表示的最大范围的一半</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">5</span>*N;</span><br><span class="line"><span class="keyword">int</span> head[N],edge[M],ver[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> d[N];	<span class="comment">//记录节点的层次</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line"><span class="keyword">int</span> n,m,s,t;</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">bfs</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">/*利用bfs来求出节点的层次，构造分层图*/</span></span><br><span class="line">	<span class="built_in">memset</span>(d,<span class="number">0</span>,<span class="keyword">sizeof</span> d);</span><br><span class="line">	<span class="keyword">while</span>(q.size()) q.pop();</span><br><span class="line">	q.push(s); d[s] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(q.size())&#123;</span><br><span class="line">		<span class="keyword">int</span> x = q.front(); q.pop();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i],z = edge[i];</span><br><span class="line">			<span class="keyword">if</span>(!z || d[y]) <span class="keyword">continue</span>;</span><br><span class="line">			q.push(y);</span><br><span class="line">			d[y] = d[x] + <span class="number">1</span>;</span><br><span class="line">			<span class="keyword">if</span>(y == t) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">dinic</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> flow)</span></span>&#123;</span><br><span class="line">	<span class="comment">/* 利用递归在分层图上找增广路,返回本次增广的流量 */</span></span><br><span class="line">	<span class="keyword">if</span>(x == t) <span class="keyword">return</span> flow;</span><br><span class="line">	<span class="keyword">int</span> res = flow, k;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">		<span class="keyword">if</span>(z &amp;&amp; d[y] == d[x]+<span class="number">1</span>)&#123;</span><br><span class="line">			k = dinic(y,min(res,z));	<span class="comment">//递归</span></span><br><span class="line">			<span class="keyword">if</span>(!k) d[y] = <span class="number">0</span>;	<span class="comment">//剪枝,去掉增广完毕的点</span></span><br><span class="line">			edge[i] -= k; edge[i^<span class="number">1</span>] += k;</span><br><span class="line">			res -= k;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> flow - res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d%d%d"</span>,&amp;n,&amp;m,&amp;s,&amp;t);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;x,&amp;y,&amp;z);</span><br><span class="line">		addEdge(x,y,z); addEdge(y,x,<span class="number">0</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">int</span> flow = <span class="number">0</span>,maxflow = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(bfs())</span><br><span class="line">		<span class="keyword">while</span>(flow = dinic(s,INF)) maxflow += flow;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,maxflow);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="ISAP算法"><a href="#ISAP算法" class="headerlink" title="ISAP算法"></a>ISAP算法</h4><p>ISAP算法没有正式的名称，首次出现于 Ahuja和Orlin的经典教材《Network Flows：Theory，Algorithms and Applications》中，作者称它是一种：改进版的SAP（Improved SAP，ISAP）“。</p>
+<p>该算法基于这样一个事实：每次增广后，任意节点到汇点（在残量网络中）的最短距离都不会减小。这样，我们可以用一个函数d(x)来表示残量网络中节点 x 到汇点的距离的下界（在Dinic中是用数组 d[]），然后在增广过程中不断修正这个下界（而不是像Dinic 算法那样多次增广以后才重建层次图），则增广的时候和 Dinic 类似，只允许沿着 d(y) = d(x) + 1 的有向边 (x , y) 走。</p>
+<p>严格的说，算法中的 d 函数是满足如下两个条件的非负函数，即 d(t) = 0；对于残量网络中的任意弧 (x ,y)，d(x) &lt;= d(y) + 1。不难证明，只要满足这两个条件，d(x) 就是 x~t 距离的下界。而且当 d(s) &gt;= n时，残量网络中不存在 s-t 路。</p>
+<p><strong>算法思路</strong><br>和 Dinic 算法类似，找增广路的过程是从 s 开始沿着“允许弧”（即在残量网络中的，满足 d[x] = d[y] + 1 的弧 x —&gt; y）往前走（ISAP 算法中叫Advance）如果走不动了怎么办？在Dinic算法中，直接“往回走一步”即可，因为如果找不到增广路，会重新构造层次图；但在ISAP中，并没有一个“一次性修改所有距离标号”的过程，只能边增广边修改。具体来说，在从结点 x 往回走的时候，把 d(x) 修改为 min{d(y) | (x , y)  是残量网络中的弧 } + 1（ISAP算法叫 Retreat）即可。注意，如果残量网络中从 x 出发没有弧，则设 d(x) = n。<br>ISAP算法看上去不难理解，但是实现起来却有诸多细节。首先，我们需要使用一种“当<br>前弧”的数据结构加速 允许弧 的査找，其次，还需要一个 gap 数组维护每个距离标号<br>结点编号。当把一个结点的距离标号从 x 改成 y 的时候,把 gap[x] 减1,gap[y]加1,然后<br>检查 gap[x] 是否为0。如果是 0 的话,说明 s-t 不连通，算法终止。这就是所谓的 gap 优化。最后，初始距离标号可以统一设为 0 ，也可以用逆向BFS找，单次运行时效率相差不大，但如果是多次求解小规模网络流，加上BFS以后速度往往会有明显提升。</p>
+<p>数据结构方面，只多了两个数组：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> pre[N];        <span class="comment">//可增广路的上一条弧</span></span><br><span class="line"><span class="keyword">int</span> gap[N];       <span class="comment">//距离标号计数</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>代码示例：</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">5</span>*N;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="comment">/*以下6行是数组模拟邻接表部分*/</span></span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],edge[M],nex[M],tot;</span><br><span class="line"><span class="keyword">int</span> cur[N],dis[N],gap[N],pre[N];</span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">	gap[k]:k层有多少个节点</span></span><br><span class="line"><span class="comment">	pre[x]:x点前一条边的编号</span></span><br><span class="line"><span class="comment">	cur[]是临时数组</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y, edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m,s,t;</span><br><span class="line"><span class="keyword">int</span> que[N],front,rear;	<span class="comment">//手工模拟队列，节省部分时间</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">bfs</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">	front = rear = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) </span><br><span class="line">		dis[i] = <span class="number">-1</span>,cur[i] = head[i],gap[i]= <span class="number">0</span>;</span><br><span class="line">	dis[t] = <span class="number">0</span>;  que[rear++] = t;</span><br><span class="line">	<span class="keyword">while</span>(front != rear)&#123;</span><br><span class="line">		<span class="keyword">int</span> x = que[front++];</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i],z = edge[i];</span><br><span class="line">			<span class="keyword">if</span>(dis[y] == <span class="number">-1</span>) </span><br><span class="line">				que[rear++] = y, dis[y] = dis[x] + <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ~dis[t];	<span class="comment">//-1的补码是11111111,按位取反后是0</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">ISAP</span><span class="params">(<span class="keyword">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> k = s, ans = <span class="number">0</span>, i;	<span class="comment">//时刻注意i不能被覆盖！！！</span></span><br><span class="line">	bfs(n);	<span class="comment">//一次bfs从汇点向前更新层次数组dis</span></span><br><span class="line">	<span class="keyword">for</span>(i = <span class="number">1</span>;i &lt;= n;i++) gap[dis[i]]++;</span><br><span class="line">	<span class="keyword">while</span>(dis[s] &lt; n)&#123;</span><br><span class="line">		<span class="keyword">if</span>(k == t)&#123;</span><br><span class="line">			<span class="keyword">int</span> mi = INF, loc = t;</span><br><span class="line">			<span class="keyword">while</span>(loc != s)&#123;</span><br><span class="line">				mi = min(mi,edge[pre[loc]]);</span><br><span class="line">				loc = ver[pre[loc]^<span class="number">1</span>];	<span class="comment">//前一个顶点</span></span><br><span class="line">			&#125;</span><br><span class="line">			loc = t;</span><br><span class="line">			<span class="keyword">while</span>(loc != s)&#123;</span><br><span class="line">				edge[pre[loc]] -= mi;</span><br><span class="line">				edge[pre[loc]^<span class="number">1</span>] += mi;</span><br><span class="line">				loc = ver[pre[loc]^<span class="number">1</span>];</span><br><span class="line">			&#125;</span><br><span class="line">			ans += mi, k = s;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">for</span>(i = cur[k];i;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">			<span class="keyword">if</span>(z &amp;&amp; dis[k] == dis[y]+<span class="number">1</span>)&#123;</span><br><span class="line">				pre[y] = cur[k] = i; k = y;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(i) <span class="keyword">continue</span>;</span><br><span class="line">		<span class="keyword">int</span> m = n;</span><br><span class="line">		<span class="keyword">for</span>(i = head[k];i;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i],z = edge[i];</span><br><span class="line">			<span class="keyword">if</span>(z &amp;&amp; dis[y] &lt; m) m = dis[y], cur[k] = i;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(--gap[dis[k]] == <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">		dis[k] = m+<span class="number">1</span>, ++gap[dis[k]];</span><br><span class="line">		<span class="keyword">if</span>(k != s) k = ver[pre[k]^<span class="number">1</span>];</span><br><span class="line">		</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> ans;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n,m;</span><br><span class="line">	<span class="keyword">while</span>(~<span class="built_in">scanf</span>(<span class="string">"%d%d%d%d"</span>,&amp;n,&amp;m,&amp;s,&amp;t))&#123;</span><br><span class="line">		<span class="built_in">memset</span>(head,<span class="number">0</span> ,<span class="keyword">sizeof</span> head); tot = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y,z;i &lt;= m;i++)&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;x,&amp;y,&amp;z);</span><br><span class="line">			addEdge(x,y,z); addEdge(y,x,<span class="number">0</span>);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ISAP(n));</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li>刘汝佳，算法竞赛入门经典训练指南，北京：清华大学出版社，2012，362-363.</li>
+<li>李煜东，算法竞赛进阶指南，郑州：河南电子音像出版社，2017，410-415.</li>
+<li>秋叶拓哉，挑战程序设计竞赛第2版，北京：人民邮电出版社，2013，209-215.</li>
+<li>Thomas H.Cormen，算法导论（原书第3版），北京：机械工业出版社，2013，414-417.</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/数据结构与算法/" rel="tag"># 数据结构与算法</a>
+            
+              <a href="/tags/图论/" rel="tag"># 图论</a>
+            
+              <a href="/tags/最大流/" rel="tag"># 最大流</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/13/buddy-system/" rel="next" title="伙伴算法">
+                  <i class="fa fa-chevron-left"></i> 伙伴算法
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">73</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#概念介绍"><span class="nav-number">2.</span> <span class="nav-text">概念介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Edmonds-Karp算法"><span class="nav-number">3.</span> <span class="nav-text">Edmonds-Karp算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Dinic算法"><span class="nav-number">4.</span> <span class="nav-text">Dinic算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ISAP算法"><span class="nav-number">5.</span> <span class="nav-text">ISAP算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
