@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[STL之map容器速率测试]]></title>
+    <url>%2F2019%2F11%2F16%2FmapDemo%2F</url>
+    <content type="text"><![CDATA[摘要不止一次在使用 map 时被卡时限，map 是 c++ 的 STL 中一个常用且方便的容器，其是基于树来实现的，它的插入与查找效率实际上更接近O(log N )（N为插入的元素个数）。当然在 c++ 的 STL 中还有用哈希实现的无序关联容器，这里不做讨论。在实际应用中，常常会有人把 map 时间复杂度看作O(1)，确实在大多数时候 map 表现是令人满意的，但在大量使用的时候，map却不尽人意。 我们将测试如下几种情形下使用 map 容器的效率（时间）： 仅插入元素（元素类型为int） 插入以及查找（元素类型为int）测试环境准备 为了给定一个对照的标准，先给出如下数据： 测试机空循环 1e6 次平均花费 0.0641 s 测试机读取 1e6 个int型数据（快读+从文件输入）平均花费 0.2142 s 测试结果仅插入元素本机平均花费时间： 1.1015 s测试代码12345678910const int P = 1e9+7;map&lt;int,int&gt; mp;int main()&#123; int n = 1e6; long long gap = 1; for(int i = 1;i &lt;= n;i++)&#123; mp[i*gap%P] = 1; gap += 1; &#125; return 0;&#125; 插入以及查找元素本机平均花费时间： 1.238 s测试代码123456789101112const int P = 1e9+7;map&lt;int,int&gt; mp;int main()&#123; int n = 1e6; long long gap = 1; for(int i = 1;i &lt;= n;i++)&#123; mp[i*gap%P] = 1; gap += 1; &#125; for(int i = 1;i &lt;= n;i++) if(mp.count(i)); return 0;&#125; 小结总体上测试结果是符合预期的，虽然 STL 容器已经很优化的，但是毕竟还是用树来实现的，达不到 O(1) 的时间复杂度，所以如果是对时限要求很高的话，最好还是采用手动写哈希表。上述设计的实验有很多缺陷，如未对 long long转化、取模 以及其它多余的操作进行排除影响，另外本来还测试了char、string、set等类型的元素，但是要设计一个好的测试代码太麻烦了，就删了，总的结论来说就是 int 是所有测试的数据类型中最慢的一种（甚至慢于 set 和 string ，如果只考虑插入和查找）。最终结论就是如果需要一个 O(1) 时间复杂度的插入和查找（int 类型的元素），那么就用哈希表。]]></content>
+      <tags>
+        <tag>map</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[最大流笔记]]></title>
     <url>%2F2019%2F11%2F15%2FmaxFlow%2F</url>
     <content type="text"><![CDATA[摘要正如可以通过将道路交通图模型化为有向图来找到从一个城市到另一个城市之间的最短路，我们也可以将一个有向图看作一个“流网络”，并使用它来回答关于物料流动方面的问题。这种流网络可以用来建模很多实际问题，包括液体在管道中的流动、装配线上的部件的流动、电网中电流的流动和通信网络中信息的流动。本文首先介绍网络流中的相关概念，然后给出最大流问题的一般解法思路，以及优化后的算法。我们应该将主要精力放在思维锻炼和题目分析上，而不要过于执着于那些经典算法的细节优化。本文中整理的算法在算法竞赛中已经够用。 概念介绍流网络： 流网络 G = (V , E) 是一个有向图，图中每条边 (u , v) 都有一个非负的容量值c(u , v) 。而且，如果边集合 E 包含一条边(u , v) ，则图中不存在反向边(v , u)。 源节点s和汇点t： 在流网络的所有节点中，我们分辨出两个特殊的节点，分别是源点s和汇点t；源点是所有路径的起点，而汇点是路径的终点。在某些情况下，源点和汇点需要人为指定。 流网络 G 中的流： G中流的大小（值）用 f 表示，f(u , v)表示从点 u 到点 v 的流的大小。整张图的流是 $|f| = \sum_{v \epsilon V}f(s, v) - \sum_{v \epsilon V}f(v ,s)$（前后两个 v 含义不同），即从源点 s 流出的流量和，或称为流入汇点 t 的流量和。 容量限制： 对于所有的节点$u, v \epsilon V$，要求$0 &lt;= f(u , v) &lt;= c(u , v)$流量守恒： 对于所有的节点 $u \epsilon V$ - { s , t }，要求流入 u 的流量等于流出 u 的流量，即： \sum_{v \epsilon V}f(v,u) = \sum_{v \epsilon V}f(u,v)（前后两个 v 的含义不同，一个是入边的起点，一个是出边的终点） 问题模型： 在最大流问题中，给定一个流网络G 、一个源节点s、一个汇点t，我们希望找到值最大的一个流。 Edmonds-Karp算法若一条从源点 s 到汇点 t 的路径上的各条边的剩余容量都大于 0，则称这条路径为一条增广路径。显然，可以让一股流沿着增广路径从 s 流到 t，使网络的流量增大。Edmonds-Karp算法思想就是不断用BFS寻找增广路，直至网络上不存在增广路为止。该算法的时间复杂度为$O(nm^2)$。然而在实际运用中则远远达不到这个上界，效率较高，一般能够处理 $10^3 - 10^4$规模的网络。 算法思路：这里介绍的是利用 bfs 寻找增广路的Edmonds-Karp增广路算法。在该算法中，我们不断的寻找增广路，并增加增广路上的流；重复这一步骤直至不存在增广路。在每轮寻找增广路的过程中，Edmonds-Karp算法只考虑图中所有 f(x ,y) &lt; c(x, y)的边，用BFS找到任意一条从 s 到 t 的路径，同时计算出路径上各边的剩余容量的最小值 minf，则网络的流量就可以增加 minf。 需要注意的是，当一条边的流量 f(x ,y) &gt; 0时，根据斜对称性质，它的反向边流量 f(y ,x) &lt; 0，此时必定有 f(y , x) &lt; c(y ,x)。故Edmonds-Karp算法在BFS时除了原图的边集 E 外，还应考虑遍历 E 中每条边的反向边。具体实现时，本文采用邻接表“成对存储”技巧（即’2’和’3’是一对，’4’和’5’是一对）。每条边只记录剩余容量 c-f 即可，当一条边 (x ,y) 流过大小为 e 的流时，令 (x ,y) 的容量减少 e，(y ,x) 的容量增加 e 。 代码模板：12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455#include&lt;bits/stdc++.h&gt;using namespace std;const int N = 1e3+10; //最大点数const int M = 1e3+10; //最大边数const int INF = 0x3f3f3f3f; //int范围内的无穷大int head[N], edge[M], ver[M], nex[M], tot = 1;void addEdge(int x,int y,int z)&#123; ver[++tot] = y; edge[tot] = z; nex[tot] = head[x]; head[x] = tot;&#125;int n,m,s,t; // 共n个点,m条边,s是源点,t是汇点int pre[N],incf[N];//增广路上各边的最小剩余容量bool vis[N]; //标记数组bool bfs()&#123; memset(vis,0,sizeof vis); queue&lt;int&gt; q; q.push(s); vis[s] = true; incf[s] = INF; while(!q.empty())&#123; int x = q.front(); q.pop(); for(int i = head[x];i ;i = nex[i])&#123; int y = ver[i],z = edge[i]; if(!z || vis[y]) continue; incf[y] = min(incf[x],z); pre[y] = i; //记录前驱*边* q.push(y); vis[y] = true; if(y == t) return true;//找到一条增广路 &#125; &#125; return false;&#125;int EK()&#123; /*返回最大流的值*/ int flow = 0; while(bfs())&#123; int x = t; while(x != s)&#123; int i = pre[x]; //前驱 *边* edge[i] -= incf[t]; edge[i^1] += incf[t]; x = ver[i^1]; //前驱点 = 反向边的终点 &#125; flow += incf[t]; &#125; return flow;&#125;int main()&#123; scanf("%d%d%d%d",&amp;n,&amp;m,&amp;s,&amp;t); for(int i = 1,x,y,z;i &lt;= m;i++)&#123; scanf("%d%d%d",&amp;x,&amp;y,&amp;z); addEdge(x,y,z); addEdge(y,x,0); &#125; printf("%d\n",EK()); return 0;&#125; 算法正确性需要用到最小割来证明，详见《挑战程序设计竞赛第二版》P212。 Dinic算法 在任意时刻，网络中所有节点以及剩余容量大于0的边构成的子图被称为残量网络。Edmonds-Karp每轮可能会遍历整个残量网络，但只找出 1 条增广路，还有进一步优化的空间。 在宽度优先遍历时，我们可以计算出节点的层次d[x] ，它表示 s 到 x 最少需要经过的边数。在残量网络中，满足d[y] = d[x] + 1 的边(x ,y) 构成的子图被称为分层图 。分层图显然是一张有向无环图。 Dinic 算法不断重复以下步骤，直到残量网络中 s 不能到达 t： 在残量网络上 BFS 求出节点的层次，构造分层图 在分层图上 DFS 寻找增广路，在回溯时实时更新剩余容量。另外，每个点可以流向多条出边，同时还加入了若干剪枝，详情参考代码示例。 Dinic 算法的时间复杂度是$O(n^2m)$。实际运用中远远达不到这个上界，可以说是比较容易实现的效率最高的网络流算法之一，一般能够处理$10^4 - 10^5$规模的网络。特别地，Dinic算法求解二分图最大匹配的时间复杂度为$O(m\sqrt n)$，实际表现则更快。 代码示例123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657#include&lt;bits/stdc++.h&gt;using namespace std;const int INF = 0x3f3f3f3f; //int所能表示的最大范围的一半const int N = 1e5+10;const int M = 5*N;int head[N],edge[M],ver[M],nex[M], tot = 1;int d[N]; //记录节点的层次void addEdge(int x,int y,int z)&#123; ver[++tot] = y; edge[tot] = z; nex[tot] = head[x]; head[x] = tot;&#125;queue&lt;int&gt; q;int n,m,s,t;bool bfs()&#123; /*利用bfs来求出节点的层次，构造分层图*/ memset(d,0,sizeof d); while(q.size()) q.pop(); q.push(s); d[s] = 1; while(q.size())&#123; int x = q.front(); q.pop(); for(int i = head[x];i ;i = nex[i])&#123; int y = ver[i],z = edge[i]; if(!z || d[y]) continue; q.push(y); d[y] = d[x] + 1; if(y == t) return true; &#125; &#125; return false;&#125;int dinic(int x,int flow)&#123; /* 利用递归在分层图上找增广路,返回本次增广的流量 */ if(x == t) return flow; int res = flow, k; for(int i = head[x];i ;i = nex[i])&#123; int y = ver[i], z = edge[i]; if(z &amp;&amp; d[y] == d[x]+1)&#123; k = dinic(y,min(res,z)); //递归 if(!k) d[y] = 0; //剪枝,去掉增广完毕的点 edge[i] -= k; edge[i^1] += k; res -= k; &#125; &#125; return flow - res;&#125;int main()&#123; scanf("%d%d%d%d",&amp;n,&amp;m,&amp;s,&amp;t); for(int i = 1,x,y,z;i &lt;= m;i++)&#123; scanf("%d%d%d",&amp;x,&amp;y,&amp;z); addEdge(x,y,z); addEdge(y,x,0); &#125; int flow = 0,maxflow = 0; while(bfs()) while(flow = dinic(s,INF)) maxflow += flow; printf("%d\n",maxflow); return 0;&#125; ISAP算法ISAP算法没有正式的名称，首次出现于 Ahuja和Orlin的经典教材《Network Flows：Theory，Algorithms and Applications》中，作者称它是一种：改进版的SAP（Improved SAP，ISAP）“。 该算法基于这样一个事实：每次增广后，任意节点到汇点（在残量网络中）的最短距离都不会减小。这样，我们可以用一个函数d(x)来表示残量网络中节点 x 到汇点的距离的下界（在Dinic中是用数组 d[]），然后在增广过程中不断修正这个下界（而不是像Dinic 算法那样多次增广以后才重建层次图），则增广的时候和 Dinic 类似，只允许沿着 d(y) = d(x) + 1 的有向边 (x , y) 走。 严格的说，算法中的 d 函数是满足如下两个条件的非负函数，即 d(t) = 0；对于残量网络中的任意弧 (x ,y)，d(x) &lt;= d(y) + 1。不难证明，只要满足这两个条件，d(x) 就是 x~t 距离的下界。而且当 d(s) &gt;= n时，残量网络中不存在 s-t 路。 算法思路和 Dinic 算法类似，找增广路的过程是从 s 开始沿着“允许弧”（即在残量网络中的，满足 d[x] = d[y] + 1 的弧 x —&gt; y）往前走（ISAP 算法中叫Advance）如果走不动了怎么办？在Dinic算法中，直接“往回走一步”即可，因为如果找不到增广路，会重新构造层次图；但在ISAP中，并没有一个“一次性修改所有距离标号”的过程，只能边增广边修改。具体来说，在从结点 x 往回走的时候，把 d(x) 修改为 min{d(y) | (x , y) 是残量网络中的弧 } + 1（ISAP算法叫 Retreat）即可。注意，如果残量网络中从 x 出发没有弧，则设 d(x) = n。ISAP算法看上去不难理解，但是实现起来却有诸多细节。首先，我们需要使用一种“当前弧”的数据结构加速 允许弧 的査找，其次，还需要一个 gap 数组维护每个距离标号结点编号。当把一个结点的距离标号从 x 改成 y 的时候,把 gap[x] 减1,gap[y]加1,然后检查 gap[x] 是否为0。如果是 0 的话,说明 s-t 不连通，算法终止。这就是所谓的 gap 优化。最后，初始距离标号可以统一设为 0 ，也可以用逆向BFS找，单次运行时效率相差不大，但如果是多次求解小规模网络流，加上BFS以后速度往往会有明显提升。 数据结构方面，只多了两个数组：12int pre[N]; //可增广路的上一条弧int gap[N]; //距离标号计数 代码示例：12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717273747576777879808182838485#include&lt;bits/stdc++.h&gt;using namespace std;const int N = 1e5+10;const int M = 5*N;const int INF = 0x3f3f3f3f;/*以下6行是数组模拟邻接表部分*/int head[N],ver[M],edge[M],nex[M],tot;int cur[N],dis[N],gap[N],pre[N];/* gap[k]:k层有多少个节点 pre[x]:x点前一条边的编号 cur[]是临时数组*/void addEdge(int x,int y,int z)&#123; ver[++tot] = y, edge[tot] = z; nex[tot] = head[x]; head[x] = tot;&#125;int n,m,s,t;int que[N],front,rear; //手工模拟队列，节省部分时间bool bfs(int n)&#123; front = rear = 0; for(int i = 1;i &lt;= n;i++) dis[i] = -1,cur[i] = head[i],gap[i]= 0; dis[t] = 0; que[rear++] = t; while(front != rear)&#123; int x = que[front++]; for(int i = head[x];i ;i = nex[i])&#123; int y = ver[i],z = edge[i]; if(dis[y] == -1) que[rear++] = y, dis[y] = dis[x] + 1; &#125; &#125; return ~dis[t]; //-1的补码是11111111,按位取反后是0&#125;int ISAP(int n)&#123; int k = s, ans = 0, i; //时刻注意i不能被覆盖！！！ bfs(n); //一次bfs从汇点向前更新层次数组dis for(i = 1;i &lt;= n;i++) gap[dis[i]]++; while(dis[s] &lt; n)&#123; if(k == t)&#123; int mi = INF, loc = t; while(loc != s)&#123; mi = min(mi,edge[pre[loc]]); loc = ver[pre[loc]^1]; //前一个顶点 &#125; loc = t; while(loc != s)&#123; edge[pre[loc]] -= mi; edge[pre[loc]^1] += mi; loc = ver[pre[loc]^1]; &#125; ans += mi, k = s; &#125; for(i = cur[k];i;i = nex[i])&#123; int y = ver[i], z = edge[i]; if(z &amp;&amp; dis[k] == dis[y]+1)&#123; pre[y] = cur[k] = i; k = y; break; &#125; &#125; if(i) continue; int m = n; for(i = head[k];i;i = nex[i])&#123; int y = ver[i],z = edge[i]; if(z &amp;&amp; dis[y] &lt; m) m = dis[y], cur[k] = i; &#125; if(--gap[dis[k]] == 0) break; dis[k] = m+1, ++gap[dis[k]]; if(k != s) k = ver[pre[k]^1]; &#125; return ans;&#125;int main()&#123; int n,m; while(~scanf("%d%d%d%d",&amp;n,&amp;m,&amp;s,&amp;t))&#123; memset(head,0 ,sizeof head); tot = 1; for(int i = 1,x,y,z;i &lt;= m;i++)&#123; scanf("%d%d%d",&amp;x,&amp;y,&amp;z); addEdge(x,y,z); addEdge(y,x,0); &#125; printf("%d\n",ISAP(n)); &#125; return 0;&#125; 参考资料 刘汝佳，算法竞赛入门经典训练指南，北京：清华大学出版社，2012，362-363. 李煜东，算法竞赛进阶指南，郑州：河南电子音像出版社，2017，410-415. 秋叶拓哉，挑战程序设计竞赛第2版，北京：人民邮电出版社，2013，209-215. Thomas H.Cormen，算法导论（原书第3版），北京：机械工业出版社，2013，414-417.]]></content>
@@ -268,8 +276,8 @@
       <tags>
         <tag>博弈论</tag>
         <tag>数论</tag>
-        <tag>拓扑排序</tag>
         <tag>图论</tag>
+        <tag>拓扑排序</tag>
       </tags>
   </entry>
   <entry>
@@ -516,8 +524,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数据结构与算法</tag>
         <tag>数论</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -623,8 +631,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数据结构与算法</tag>
         <tag>数论</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>
@@ -695,8 +703,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数据结构与算法</tag>
         <tag>数论</tag>
+        <tag>数据结构与算法</tag>
       </tags>
   </entry>
   <entry>

@@ -55,20 +55,20 @@
   };
 </script>
 
-  <meta name="description" content="IDA*虽然剪枝在较快找到接近最优解的解时能够有效减少状态数，但是在尚未找到较好的解时，依然会尝试许多不必要的状态。虽然我们在下界比最优解更大时可以剪枝，但是不知道最优解的话就没法做到了。因此，我们可以不直接去求最优解，而是改成通过搜索判断是否有不超过某个x的解。把x从0开始每次增加1，那么首次找到解时的x就是最优解。这样，搜索过程中就不会访问那些下界比最优解更大的状态了。将程序改成判断是否有不超">
-<meta name="keywords" content="算法模板">
+  <meta name="description" content="摘要不止一次在使用 map 时被卡时限，map 是 c++ 的 STL 中一个常用且方便的容器，其是基于树来实现的，它的插入与查找效率实际上更接近O(log N )（N为插入的元素个数）。当然在 c++ 的 STL 中还有用哈希实现的无序关联容器，这里不做讨论。在实际应用中，常常会有人把 map 时间复杂度看作O(1)，确实在大多数时候 map 表现是令人满意的，但在大量使用的时候，map却不尽人">
+<meta name="keywords" content="map">
 <meta property="og:type" content="article">
-<meta property="og:title" content="A* 与 IDA*">
-<meta property="og:url" content="http://valenshi.top/2019/08/11/IDA/index.html">
+<meta property="og:title" content="STL之map容器速率测试">
+<meta property="og:url" content="http://valenshi.top/2019/11/16/mapDemo/index.html">
 <meta property="og:site_name" content="ValenShi&#39;s Blog">
-<meta property="og:description" content="IDA*虽然剪枝在较快找到接近最优解的解时能够有效减少状态数，但是在尚未找到较好的解时，依然会尝试许多不必要的状态。虽然我们在下界比最优解更大时可以剪枝，但是不知道最优解的话就没法做到了。因此，我们可以不直接去求最优解，而是改成通过搜索判断是否有不超过某个x的解。把x从0开始每次增加1，那么首次找到解时的x就是最优解。这样，搜索过程中就不会访问那些下界比最优解更大的状态了。将程序改成判断是否有不超">
+<meta property="og:description" content="摘要不止一次在使用 map 时被卡时限，map 是 c++ 的 STL 中一个常用且方便的容器，其是基于树来实现的，它的插入与查找效率实际上更接近O(log N )（N为插入的元素个数）。当然在 c++ 的 STL 中还有用哈希实现的无序关联容器，这里不做讨论。在实际应用中，常常会有人把 map 时间复杂度看作O(1)，确实在大多数时候 map 表现是令人满意的，但在大量使用的时候，map却不尽人">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-20T12:40:29.055Z">
+<meta property="og:updated_time" content="2019-11-16T03:46:50.788Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="A* 与 IDA*">
-<meta name="twitter:description" content="IDA*虽然剪枝在较快找到接近最优解的解时能够有效减少状态数，但是在尚未找到较好的解时，依然会尝试许多不必要的状态。虽然我们在下界比最优解更大时可以剪枝，但是不知道最优解的话就没法做到了。因此，我们可以不直接去求最优解，而是改成通过搜索判断是否有不超过某个x的解。把x从0开始每次增加1，那么首次找到解时的x就是最优解。这样，搜索过程中就不会访问那些下界比最优解更大的状态了。将程序改成判断是否有不超">
+<meta name="twitter:title" content="STL之map容器速率测试">
+<meta name="twitter:description" content="摘要不止一次在使用 map 时被卡时限，map 是 c++ 的 STL 中一个常用且方便的容器，其是基于树来实现的，它的插入与查找效率实际上更接近O(log N )（N为插入的元素个数）。当然在 c++ 的 STL 中还有用哈希实现的无序关联容器，这里不做讨论。在实际应用中，常常会有人把 map 时间复杂度看作O(1)，确实在大多数时候 map 表现是令人满意的，但在大量使用的时候，map却不尽人">
   <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
-  <link rel="canonical" href="http://valenshi.top/2019/08/11/IDA/">
+  <link rel="canonical" href="http://valenshi.top/2019/11/16/mapDemo/">
 
 
 <script id="page-configurations">
@@ -82,7 +82,7 @@
   };
 </script>
 
-  <title>A* 与 IDA* | ValenShi's Blog</title>
+  <title>STL之map容器速率测试 | ValenShi's Blog</title>
   
 
 
@@ -257,7 +257,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/08/11/IDA/">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/11/16/mapDemo/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -271,7 +271,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">A* 与 IDA*
+          <h1 class="post-title" itemprop="name headline">STL之map容器速率测试
 
             
           </h1>
@@ -288,33 +288,12 @@
                 
               
 
-              <time title="创建时间：2019-08-11 12:55:07" itemprop="dateCreated datePublished" datetime="2019-08-11T12:55:07+08:00">2019-08-11</time>
+              <time title="创建时间：2019-11-16 11:46:09 / 修改时间：11:46:50" itemprop="dateCreated datePublished" datetime="2019-11-16T11:46:09+08:00">2019-11-16</time>
             </span>
           
             
 
             
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-08-20 20:40:29" itemprop="dateModified" datetime="2019-08-20T20:40:29+08:00">2019-08-20</time>
-              </span>
-            
-          
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -328,22 +307,20 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h4 id="IDA"><a href="#IDA" class="headerlink" title="IDA*"></a>IDA*</h4><p>虽然剪枝在较快找到接近最优解的解时能够有效减少状态数，但是在尚未找到较好的解时，依然会尝试许多不必要的状态。虽然我们在下界比最优解更大时可以剪枝，但是不知道最优解的话就没法做到了。因此，我们可以不直接去求最优解，而是改成通过搜索判断是否有不超过某个x的解。把x从0开始每次增加1，那么首次找到解时的x就是最优解。这样，搜索过程中就不会访问那些下界比最优解更大的状态了。<br>将程序改成判断是否有不超过某个x的解，只需要在下界超过x时，停止搜索就好了，代码几乎没有什么变动。<br>考虑平凡下界的情况（即使得所有状态都满足的下界），此时，程序就会像宽度优先搜索一样，按照距离初始状态的远近顺序访问各个状态。这被称为迭代加深搜索（IDDFS，Interative Deepening Depth-First Search）。<br>而像这样通过估算下界提前剪枝优化后的算法则称为IDA* 。它通常可以表述如下：</p>
-<ol>
-<li>给出状态v到目标状态的距离下界的估算函数h（v）。</li>
-<li>令x = 0。</li>
-<li>堆满足d（v） + h（v） &lt;= x的状态进行深度优先搜索，判断是否有不超过x的解（d(v) 表示初始状态到目标状态的距离）。</li>
-<li>如果找到解，则x就是最优解，程序结束。</li>
-<li>否则，将x增加1并回到第3步。</li>
-</ol>
-<p>IDA* 中所访问的状态总是满足d(v) + h(v) &lt;= 最优解，而h(v)的估值越接近到目标状态的实际距离，则搜索所经过的状态数就越少。</p>
-<p>可能会有一个疑问，就是上述x不断+1再判断是否有解的过程和二分搜索很类似，那能否用二分搜索来做呢？不能，因为随着x的增大，搜索状态是指数级上升，所以x要越小越好（即使搜索了x从1~1000，也比搜索一次x = 1100要快）。</p>
-<h4 id="A"><a href="#A" class="headerlink" title="A *"></a>A *</h4><p>正如深度优先算法可以利用下界优化一样，宽度优先搜索和 Dijkstra 算法也可以利用下界优化。只要将优先队列中的键改成 d(v) + h(v) 就可以了，其中 d(v) 是初始状态到状态 v 的距离，h(v) 是到目标状态的距离下界。这种算法称为A *  。</p>
-<p>需要注意的是，与宽度优先搜索和 Dijkstra 算法不同，在选用某些下界进行估算的情况下，优先队列顶端的元素对应的 d(v) 未必已经是初始状态到 v 的最短距离。</p>
-<p>如果对于所有的边（u，v）都有cost(u , v)+h(u) - h(v) &gt;= 0成立，那么第一次取出某个节点时，对应的 d(v) 就一定是最短距离。</p>
-<h4 id="A-与-IDA-的比较"><a href="#A-与-IDA-的比较" class="headerlink" title="A  与 IDA  的比较"></a>A <em> 与 IDA </em> 的比较</h4><p>A <em>  和IDA </em>  分别是针对宽度优先搜索和深度优先搜索的算法。我们可也i很容易地把深度优先搜索改写成IDA <em>  ，同样也可以很容易的把宽度优先搜索或者Dijkstra改写成A </em>  。</p>
-<p>当然，不仅在代码上改写容易，它们也各自继承了一些改写前算法的特点。例如，IDA <em>  基本不怎么花费内存，而A </em> 则要花费关于搜索空间的线性的内存。另一方面，可以通过不同路径达到同一状态时，IDA <em> 可能会重复多次经过某些状态而导致效率一落千丈，而A</em> 通过选取合适的下界则可以保证每个状态至多检查一次。</p>
-<p>通常来说，随着搜索深度的增加，搜索空间的大小呈指数级别增长。所以，虽然IDA * 不断增加递归深度限制的过程重复搜索了很多状态，但总的访问状态数和最后一次访问状态数还是同一数量级的。</p>
+        <h4 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h4><p>不止一次在使用 map 时被卡时限，map 是 c++ 的 STL 中一个常用且方便的容器，其是基于树来实现的，它的插入与查找效率实际上更接近O(log N )（N为插入的元素个数）。当然在 c++ 的 STL 中还有用哈希实现的无序关联容器，这里不做讨论。<br>在实际应用中，常常会有人把 map 时间复杂度看作O(1)，确实在大多数时候 map 表现是令人满意的，但在大量使用的时候，map却不尽人意。</p>
+<p>我们将测试如下几种情形下使用 map 容器的效率（时间）：</p>
+<ul>
+<li>仅插入元素（元素类型为int）</li>
+<li>插入以及查找（元素类型为int）<h4 id="测试环境准备"><a href="#测试环境准备" class="headerlink" title="测试环境准备"></a>测试环境准备</h4></li>
+</ul>
+<p>为了给定一个对照的标准，先给出如下数据：</p>
+<ul>
+<li>测试机空循环 1e6 次平均花费 0.0641 s</li>
+<li>测试机读取 1e6 个int型数据（快读+从文件输入）平均花费 0.2142 s</li>
+</ul>
+<h4 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h4><h5 id="仅插入元素"><a href="#仅插入元素" class="headerlink" title="仅插入元素"></a>仅插入元素</h5><p><strong>本机平均花费时间：</strong> 1.1015 s<br><strong>测试代码</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> P = <span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line"><span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; mp;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="number">1e6</span>;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> gap = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		mp[i*gap%P] = <span class="number">1</span>; gap += <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="插入以及查找元素"><a href="#插入以及查找元素" class="headerlink" title="插入以及查找元素"></a>插入以及查找元素</h5><p><strong>本机平均花费时间：</strong> 1.238 s<br><strong>测试代码</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> P = <span class="number">1e9</span>+<span class="number">7</span>;</span><br><span class="line"><span class="built_in">map</span>&lt;<span class="keyword">int</span>,<span class="keyword">int</span>&gt; mp;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> n = <span class="number">1e6</span>;</span><br><span class="line">	<span class="keyword">long</span> <span class="keyword">long</span> gap = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		mp[i*gap%P] = <span class="number">1</span>; gap += <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">if</span>(mp.count(i));</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>总体上测试结果是符合预期的，虽然 STL 容器已经很优化的，但是毕竟还是用树来实现的，达不到 O(1) 的时间复杂度，所以如果是对时限要求很高的话，最好还是采用手动写哈希表。<br>上述设计的实验有很多缺陷，如未对 long long转化、取模 以及其它多余的操作进行排除影响，另外本来还测试了char、string、set等类型的元素，但是要设计一个好的测试代码太麻烦了，就删了，总的结论来说就是 int 是所有测试的数据类型中最慢的一种（甚至慢于 set 和 string ，如果只考虑插入和查找）。<br>最终结论就是如果需要一个 O(1) 时间复杂度的插入和查找（int 类型的元素），那么就用哈希表。</p>
 
     </div>
 
@@ -359,7 +336,7 @@
           
           <div class="post-tags">
             
-              <a href="/tags/算法模板/" rel="tag"># 算法模板</a>
+              <a href="/tags/map/" rel="tag"># map</a>
             
           </div>
         
@@ -369,8 +346,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/08/11/cartesin/" rel="next" title="笛卡尔树">
-                  <i class="fa fa-chevron-left"></i> 笛卡尔树
+                <a href="/2019/11/15/maxFlow/" rel="next" title="最大流笔记">
+                  <i class="fa fa-chevron-left"></i> 最大流笔记
                 </a>
               
             </div>
@@ -378,10 +355,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/08/11/st/" rel="prev" title="st表（一维）">
-                  st表（一维） <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -597,7 +570,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#IDA"><span class="nav-number">1.</span> <span class="nav-text">IDA*</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A"><span class="nav-number">2.</span> <span class="nav-text">A *</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#A-与-IDA-的比较"><span class="nav-number">3.</span> <span class="nav-text">A  与 IDA  的比较</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试环境准备"><span class="nav-number">2.</span> <span class="nav-text">测试环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试结果"><span class="nav-number">3.</span> <span class="nav-text">测试结果</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#仅插入元素"><span class="nav-number">3.1.</span> <span class="nav-text">仅插入元素</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#插入以及查找元素"><span class="nav-number">3.2.</span> <span class="nav-text">插入以及查找元素</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
             
 
           </div>
@@ -716,55 +689,6 @@
 
   
 
-  
-    
-      <script type="text/x-mathjax-config">
-
-  MathJax.Hub.Config({
-    tex2jax: {
-      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
-      processEscapes: true,
-      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
-    },
-    TeX: {
-      equationNumbers: {
-        autoNumber: 'AMS'
-      }
-    }
-  });
-
-  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
-    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
-      if (data.display) {
-        var next = data.script.nextSibling;
-        while (next && next.nodeName.toLowerCase() === '#text') {
-          next = next.nextSibling;
-        }
-        if (next && next.nodeName.toLowerCase() === 'br') {
-          next.parentNode.removeChild(next);
-        }
-      }
-    });
-  });
-
-  MathJax.Hub.Queue(function() {
-    var all = MathJax.Hub.getAllJax(), i;
-    for (i = 0; i < all.length; i += 1) {
-      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
-      if (element.nodeName.toLowerCase() == 'li') {
-        element = element.parentNode;
-      }
-      element.classList.add('has-jax');
-    }
-  });
-</script>
-<script>
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
-    MathJax.Hub.Typeset();
-  }, window.MathJax);
-</script>
-
-    
   
 
   
