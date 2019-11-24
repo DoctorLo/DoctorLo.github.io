@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[CodeForce#600（Div2）解题报告]]></title>
+    <url>%2F2019%2F11%2F24%2Fcf600%2F</url>
+    <content type="text"><![CDATA[A. Single Push题意简述：给定两个序列 a 和 b，要求从序列 a 中选出连续的一段[l , r] ，对这段上的每个位置+k（k &gt;= 0），试问只操作一次能否使得序列 a 变为序列 b 。解题思路：由于只能操作一次，所以难度大大下降，因此只需要顺序判断 a 是否只有一个区间和 b 不同，且差值全部相同且为负。代码示例： 12345678910111213141516171819202122232425262728293031323334#include&lt;bits/stdc++.h&gt;using namespace std;int t,n;const int N = 1e5+10;int a[N],b[N];int getInt()&#123; int res = 0; bool neg = false; char c = getchar(); while(c != '-' &amp;&amp; (c &lt; '0' || c &gt; '9')) c = getchar(); if(c == '-') neg = true, c = getchar(); while(c &gt;= '0' &amp;&amp; c &lt;= '9') res = res*10 + c-'0',c = getchar(); return neg?-res:res;&#125;bool solve()&#123; for(int i = 1;i &lt;= n;i++) a[i] = a[i]-b[i]; int cnt = 0; for(int i = 1;i &lt;= n;i++)&#123; if(a[i] &gt; 0) return false; if(a[i] &amp;&amp; a[i] != a[i-1]) cnt++; &#125; return cnt &lt;= 1;&#125;int main()&#123; t = getInt(); while(t--)&#123; n = getInt(); for(int i = 1;i &lt;= n;i++) a[i] = getInt(); for(int i = 1;i &lt;= n;i++) b[i] = getInt(); if(solve()) puts("YES"); else puts("NO"); &#125; return 0;&#125; B. Silly Mistake题意简述：定义一个连续的序列是合法的，当且仅当： 有一个正数，就有一个负数，例如有 5 ，就要有 -5； 负数之前必须有它的正数，即 5 只能在 -5 前面； 每个数对仅出现一次，即 5 ，-5，5，-5是不合格法的。 给定一个序列 a，其中ai &lt;= 1e6，请问可以将序列a分为多少个合法的子序列，并输出每个子序列的长度，若不存在划分方法，则输出-1，否则输出任意满足条件的答案。 解题思路：需要在O(N)时间内解决，就是模拟题，只需要每次遍历到一个数就判断当且序列是否合法就行了，若合法就划分，否则或退出输出-1，或继续加入元素。需要注意若用前缀和作为判断条件可能会超 int，需要用longlong，另外对于每个条件分支一定要仔细划分，避免遗漏出错。 代码示例：1234567891011121314151617181920212223242526272829303132333435363738394041424344454647#include&lt;bits/stdc++.h&gt;using namespace std;const int N = 1e6+10;int n;int a[N];int getInt()&#123; int res = 0; bool neg = false; char c = getchar(); while(c != '-' &amp;&amp;(c &lt; '0' || c &gt; '9')) c = getchar(); if(c == '-') neg = true, c = getchar(); while(c &gt;= '0' &amp;&amp; c &lt;= '9') res = res*10+ c-'0', c = getchar(); return neg?-res:res;&#125;int vis[N],d[N],tot = 0;int num[N];__int64 sum[N];bool solve()&#123; if(n&amp;1) return false; for(int i = 1;i &lt;= n;i++) sum[i] = sum[i-1] + a[i]; for(int i = 1,pre = 0;i &lt;= n;i++)&#123; if(a[i] &gt; 0)&#123; if(num[a[i]] != 0 || vis[a[i]] &gt; pre) return false; num[a[i]]++; vis[a[i]] = i; &#125;else&#123; if(num[-a[i]] != 1) return false; num[-a[i]]--; &#125; if(sum[i] == 0) d[++tot] = i-pre,pre = i; else if(sum[i] &lt; 0) return false; &#125; if(!tot || sum[n]) return false; else&#123; printf("%d\n",tot); for(int i = 1;i &lt; tot;i++) printf("%d ",d[i]); printf("%d\n",d[tot]); &#125; return true;&#125;int main()&#123; // freopen("in","r",stdin); // freopen("out","w",stdout); n = getInt(); for(int i = 1;i &lt;= n;i++) a[i] = getInt(); if(!solve()) puts("-1"); return 0;&#125; C. Sweets Eating题意简述：给定一个序列 a，给定 m ，对于 k（k从1到n） ，要求从序列 a 中挑出k个元素，分为若干组，每组最多有m个元素，使得第一组 1，第二组 2，依次类推，使得它们的总和最小。 解题思路：首先对序列 a 排序，易得要想总和最小，应该选出最小的 k 个元素。假设要求的是 f(k) ，那么需要解决的是如何才能快速的从 f(k) 转移到 f(k+1)，如果暴力转移，是 O(k) 复杂度，因为要加上每一组最小的元素放到高一组去。我们可以利用前缀和来优化，具体做法是开一个sum数组，sum[i] 记录 %m 为 i 的元素和，我们从小到大依次将 a 序列中的元素加入，就可以在O(1)转移。 代码示例： 123456789101112131415161718192021222324252627282930313233#include&lt;bits/stdc++.h&gt;using namespace std;const int N = 2e5+10;int n,m;int getInt()&#123; int res = 0; bool neg = false; char c = getchar(); while(c != '-' &amp;&amp; (c &lt; '0' || c &gt; '9')) c = getchar(); if(c == '-') neg = true, c = getchar(); while(c &gt;= '0' &amp;&amp; c &lt;= '9') res = res*10 + c-'0',c = getchar(); return neg?-res:res;&#125;int a[N];typedef __int64 ll;ll sum[N],ans[N];void solve()&#123; sort(a+1,a+1+n); for(int k = 1;k &lt;= n;k++)&#123; ans[k] = ans[k-1] + sum[k%m] + a[k]; sum[k%m] += a[k]; &#125; for(int i = 1;i &lt;= n;i++) printf("%I64d ",ans[i]);&#125;int main()&#123; // freopen("in","r",stdin); // freopen("out","w",stdout); n = getInt(); m = getInt(); for(int i = 1;i &lt;= n;i++) a[i] = getInt(); solve(); return 0;&#125; D. Harmonious Graph题意简述一个有 N 个点的无向图，节点分别标号为1~N。要求如果图中存在 l —&gt; r 的路径，那么对于所有的 m (l &lt; m &lt; r)都满足 l —&gt; m 。给定一张无向图，试问最少添加多少条边才能使得其满足要求。 解题思路思路不难想，因为只要求若(l , r)是连通的，那么对于 l 到 r 内的所有点都应（至多）延伸出一条线构成一个连通分量，易得一张图最多需要 N-2 条边；很容易想到用并查集来做，将相连通的点放在同一个集合，分配一个编号。然后记录每个集合（连通分量）最后一个点的位置 ed ，然后只需要从前往后依次遍历，若当前节点在另一个集合的范围内，则合并两个集合并将 ans++；若当前集合可以更新有边界，则更新。思路是正确的，但是被卡了好多次，错了很多细节，首先就是求集合‘编号’需要调用Find()函数，而不是直接访问par[]数组，par[]数组只是一个辅助数组而已；然后还有就是通过Merge()函数后，集合的编号可能会改变，因此按照集合的编号来存有边界是不合理的，应该再转化为按照位置来存。 代码示例1234567891011121314151617181920212223242526272829303132333435363738394041424344454647#include&lt;bits/stdc++.h&gt;using namespace std;const int N = 2e5+10;const int M = 2e5+10;int par[N];int Find(int x)&#123; if(par[x] == x) return x; return par[x] = Find(par[x]);&#125;bool Merge(int x,int y)&#123; int a = Find(x), b = Find(y); if(a == b) return false; if(a &lt; b) swap(a,b); par[a] = b; return true;&#125;int getInt()&#123; int res = 0; bool neg = false; char c = getchar(); while(c != '-' &amp;&amp; (c &lt; '0' || c &gt; '9')) c = getchar(); if(c == '-') neg = true, c = getchar(); while(c &gt;= '0' &amp;&amp; c &lt;= '9') res = res*10+c-'0', c = getchar(); return res;&#125;int n,m;int vis[N],ed[N],ls[N];int main()&#123; n = getInt(); m = getInt(); for(int i = 1;i &lt;= n;i++) par[i] = i; for(int i = 1,x,y;i &lt;= m;i++)&#123; x = getInt(); y = getInt(); Merge(x,y); &#125; for(int i = n;i &gt; 0;i--) if(!ed[Find(i)]) ed[Find(i)] = i; for(int i = 1;i &lt;= n;i++) ls[i] = ed[Find(i)]; int x = 1,last = ls[x] ,ans = 0; for(int i = 2;i &lt;= n;i++)&#123; if(i &lt; last &amp;&amp; Merge(x,i)) ans++; if(ls[i] &gt; last)&#123; last = ls[i]; x = i; &#125; &#125; printf("%d\n",ans); return 0;&#125;]]></content>
+      <categories>
+        <category>ACM题解</category>
+      </categories>
+      <tags>
+        <tag>并查集</tag>
+        <tag>前缀和</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[STL之map容器速率测试]]></title>
     <url>%2F2019%2F11%2F16%2FmapDemo%2F</url>
     <content type="text"><![CDATA[摘要不止一次在使用 map 时被卡时限，map 是 c++ 的 STL 中一个常用且方便的容器，其是基于树来实现的，它的插入与查找效率实际上更接近O(log N )（N为插入的元素个数）。当然在 c++ 的 STL 中还有用哈希实现的无序关联容器，这里不做讨论。在实际应用中，常常会有人把 map 时间复杂度看作O(1)，确实在大多数时候 map 表现是令人满意的，但在大量使用的时候，map却不尽人意。 我们将测试如下几种情形下使用 map 容器的效率（时间）： 仅插入元素（元素类型为int） 插入以及查找（元素类型为int）测试环境准备 为了给定一个对照的标准，先给出如下数据： 测试机空循环 1e6 次平均花费 0.0641 s 测试机读取 1e6 个int型数据（快读+从文件输入）平均花费 0.2142 s 测试结果仅插入元素本机平均花费时间： 1.1015 s测试代码12345678910const int P = 1e9+7;map&lt;int,int&gt; mp;int main()&#123; int n = 1e6; long long gap = 1; for(int i = 1;i &lt;= n;i++)&#123; mp[i*gap%P] = 1; gap += 1; &#125; return 0;&#125; 插入以及查找元素本机平均花费时间： 1.238 s测试代码123456789101112const int P = 1e9+7;map&lt;int,int&gt; mp;int main()&#123; int n = 1e6; long long gap = 1; for(int i = 1;i &lt;= n;i++)&#123; mp[i*gap%P] = 1; gap += 1; &#125; for(int i = 1;i &lt;= n;i++) if(mp.count(i)); return 0;&#125; 小结总体上测试结果是符合预期的，虽然 STL 容器已经很优化的，但是毕竟还是用树来实现的，达不到 O(1) 的时间复杂度，所以如果是对时限要求很高的话，最好还是采用手动写哈希表。上述设计的实验有很多缺陷，如未对 long long转化、取模 以及其它多余的操作进行排除影响，另外本来还测试了char、string、set等类型的元素，但是要设计一个好的测试代码太麻烦了，就删了，总的结论来说就是 int 是所有测试的数据类型中最慢的一种（甚至慢于 set 和 string ，如果只考虑插入和查找）。最终结论就是如果需要一个 O(1) 时间复杂度的插入和查找（int 类型的元素），那么就用哈希表。]]></content>
@@ -276,8 +288,8 @@
       <tags>
         <tag>博弈论</tag>
         <tag>数论</tag>
-        <tag>图论</tag>
         <tag>拓扑排序</tag>
+        <tag>图论</tag>
       </tags>
   </entry>
   <entry>
@@ -524,8 +536,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数论</tag>
         <tag>数据结构与算法</tag>
+        <tag>数论</tag>
       </tags>
   </entry>
   <entry>
@@ -631,8 +643,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数论</tag>
         <tag>数据结构与算法</tag>
+        <tag>数论</tag>
       </tags>
   </entry>
   <entry>
@@ -703,8 +715,8 @@
       </categories>
       <tags>
         <tag>算法模板</tag>
-        <tag>数论</tag>
         <tag>数据结构与算法</tag>
+        <tag>数论</tag>
       </tags>
   </entry>
   <entry>
