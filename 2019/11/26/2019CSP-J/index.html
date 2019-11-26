@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="A.数字游戏题意描述小 K 同学向小 P 同学发送了一个长度为 8 的 01 字符串来玩数字游戏，小 P 同学想 要知道字符串中究竟有多少个 1。 注意：01 字符串为每一个字符是 0 或者 1 的字符串，如“101”（不含双引号）为一 个长度为 3 的 01 字符串。 解题思路签到题。代码示例12345678910#include&amp;lt;bits/stdc++.h&amp;gt;using namesp">
+<meta name="keywords" content="动态规划,图论,分层图">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2019CSP-J普及组复赛题解">
+<meta property="og:url" content="http://valenshi.top/2019/11/26/2019CSP-J/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="A.数字游戏题意描述小 K 同学向小 P 同学发送了一个长度为 8 的 01 字符串来玩数字游戏，小 P 同学想 要知道字符串中究竟有多少个 1。 注意：01 字符串为每一个字符是 0 或者 1 的字符串，如“101”（不含双引号）为一 个长度为 3 的 01 字符串。 解题思路签到题。代码示例12345678910#include&amp;lt;bits/stdc++.h&amp;gt;using namesp">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-26T12:13:00.868Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2019CSP-J普及组复赛题解">
+<meta name="twitter:description" content="A.数字游戏题意描述小 K 同学向小 P 同学发送了一个长度为 8 的 01 字符串来玩数字游戏，小 P 同学想 要知道字符串中究竟有多少个 1。 注意：01 字符串为每一个字符是 0 或者 1 的字符串，如“101”（不含双引号）为一 个长度为 3 的 01 字符串。 解题思路签到题。代码示例12345678910#include&amp;lt;bits/stdc++.h&amp;gt;using namesp">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/11/26/2019CSP-J/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>2019CSP-J普及组复赛题解 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/11/26/2019CSP-J/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">2019CSP-J普及组复赛题解
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-11-26 20:11:19 / 修改时间：20:13:00" itemprop="dateCreated datePublished" datetime="2019-11-26T20:11:19+08:00">2019-11-26</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="A-数字游戏"><a href="#A-数字游戏" class="headerlink" title="A.数字游戏"></a>A.数字游戏</h4><p><strong>题意描述</strong><br>小 K 同学向小 P 同学发送了一个长度为 8 的 01 字符串来玩数字游戏，小 P 同学想 要知道字符串中究竟有多少个 1。<br> 注意：01 字符串为每一个字符是 0 或者 1 的字符串，如“101”（不含双引号）为一 个长度为 3 的 01 字符串。</p>
+<p><strong>解题思路</strong><br>签到题。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="built_in">string</span> str;</span><br><span class="line"><span class="keyword">int</span> cnt = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; str;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>;str[i];i++) <span class="keyword">if</span>(str[i] == <span class="string">'1'</span>) cnt++;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; cnt &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="B-公车换乘"><a href="#B-公车换乘" class="headerlink" title="B.公车换乘"></a>B.公车换乘</h4><p><strong>题意描述</strong><br>著名旅游城市 B 市为了鼓励大家采用公共交通方式出行，推出了一种地铁换乘公交 车的优惠方案：在搭乘一次地铁后可以获得一张优惠票，有效期为 45 分钟，在有效期内可以 消耗这张优惠票，免费搭乘一次票价不超过地铁票价的公交车。在有效期内指 开始乘公交车的时间与开始乘地铁的时间之差小于等于 45 分钟，即：$t_{bus} - t_{subway} ≤ 45$。<br>搭乘地铁获得的优惠票可以累积，即可以连续搭乘若干次地铁后再连续使用优 惠票搭乘公交车。搭乘公交车时，如果可以使用优惠票一定会使用优惠票；如果有多张优惠票满 足条件，则优先消耗获得最早的优惠票。<br>现在你得到了小轩最近的公共交通出行记录，你能帮他算算他的花费吗？</p>
+<p><strong>解题思路</strong><br>一道模拟题，显而易见需要按照时间升序，因为如果超过45分钟就无效了。基于此应该想到可以利用优先队列（或类似）的数据结构来维护，每次坐公交，在所有价值大于本次票价的优惠券中优先使用过期时间最早的（不用就过期了！），价值最低的优惠券。一旦票过期了，就删掉，但是如果票只是价值不够，那可能后面还会有用，所以还要压回去。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> ty;</span><br><span class="line">	ll t,price;</span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Node&amp; rhs) <span class="keyword">const</span>&#123;</span><br><span class="line">		<span class="keyword">if</span>(t == rhs.t) <span class="keyword">return</span> price &gt; rhs.price;</span><br><span class="line">		<span class="keyword">return</span> t &gt; rhs.t;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;rd[N];</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line">priority_queue&lt;Node&gt; q;</span><br><span class="line"><span class="built_in">stack</span>&lt;Node&gt; s;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	sort(rd+<span class="number">1</span>,rd+<span class="number">1</span>+n);</span><br><span class="line">	ll res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = n;i &gt;= <span class="number">1</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(!rd[i].ty)&#123;</span><br><span class="line">			res += rd[i].price, q.push(rd[i]);</span><br><span class="line">			<span class="keyword">continue</span>; </span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">bool</span> flag = <span class="literal">true</span>;</span><br><span class="line">		<span class="keyword">while</span>(q.size())&#123;</span><br><span class="line">			Node x = q.top(); q.pop();</span><br><span class="line">			<span class="keyword">if</span>(rd[i].t - x.t &gt; <span class="number">45</span>) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>(x.price &lt; rd[i].price)&#123;</span><br><span class="line">				s.push(x); <span class="keyword">continue</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			flag = <span class="literal">false</span>; <span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(flag) res += rd[i].price;</span><br><span class="line">		<span class="keyword">while</span>(s.size()) q.push(s.top()), s.pop(); </span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,res);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;rd[i].ty,&amp;rd[i].price,&amp;rd[i].t);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="C-纪念品"><a href="#C-纪念品" class="headerlink" title="C.纪念品"></a>C.纪念品</h4><p><strong>题意描述</strong><br>小伟突然获得一种超能力，他知道未来 T 天 N 种纪念品每天的价格。某个纪念品 的价格是指购买一个该纪念品所需的金币数量，以及卖出一个该纪念品换回的金币数量。<br> 每天，小伟可以进行以下两种交易<strong>无限次</strong>：<br>任选一个纪念品，若手上有足够金币，以当日价格购买该纪念品；卖出持有的任意一个纪念品，以当日价格换回金币。<br> 每天卖出纪念品换回的金币可以<strong>立即</strong>用于购买纪念品，当日购买的纪念品也可以<strong>当日卖出</strong>换回金币。当然，一直持有纪念品也是可以的。<br>T 天之后，小伟的超能力消失。因此他一定会在第 T 天卖出<strong>所有</strong>纪念品换回金币。<br>小伟现在有 M 枚金币，他想要在超能力消失后拥有尽可能多的金币。 </p>
+<p><strong>解题思路</strong><br>本题思路可以根据数据范围来想。这是一道动态规划题。<br>刚开始想到的是建立一张全图，但是后来发现节点数量不是 N 而是 NT ，并且总价值也不一定只能走一条路。<br>后来发现可以用动态规划解决，首先设 f[x]: 第x天能够赚到最多多少钱。那么显然f[1] = m，并且 f 是递增的。重点在于状态转移，f[ i ] 肯定是由 f[ 1~i-1 ] 推出来的，因为单独一个 f[i-1] 无法表示所有状态。<br>假设当前处于状态 j （j &lt; i），那么将第 j 天物品的价格看作花费，第 i 天的物品价格看作价值，这就是一个完全背包问题，背包容量是当天的金币数 f[j] 。<br>于是我们两层循环O(T^2)来计算 f[i] ，而每次计算需要O(MN) 做完全背包，但是实际测试效率还行，可能是数据太弱了。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e2</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> t,n,m;</span><br><span class="line"><span class="keyword">int</span> val[N][N];</span><br><span class="line"><span class="keyword">int</span> f[N];	<span class="comment">//第 x 天最多有多少钱</span></span><br><span class="line"><span class="keyword">int</span> tmp[M],mx;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	f[<span class="number">1</span>] = m;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> day = <span class="number">2</span>;day &lt;= t;day++)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; day;i++)&#123;</span><br><span class="line">			<span class="built_in">memset</span>(tmp,<span class="number">0</span>,<span class="keyword">sizeof</span> tmp); mx = m;</span><br><span class="line">			<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= n;j++)&#123;</span><br><span class="line">				<span class="keyword">for</span>(<span class="keyword">int</span> v = val[i][j]; v &lt;= f[i];v++)&#123;</span><br><span class="line">					tmp[v] = max(tmp[v-val[i][j]]+val[day][j],tmp[v]);</span><br><span class="line">					mx = max(mx,tmp[v]+f[i]-v);</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			f[day] = max(f[day],mx);</span><br><span class="line">		&#125;</span><br><span class="line">		f[day] = max(f[day],f[day<span class="number">-1</span>]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//for(int i = 1;i &lt;= t;i++) printf("%d\n",f[i]);</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,f[t]);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;t,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= t;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>;j &lt;= n;j++) <span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;val[i][j]);</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="D-加工零件"><a href="#D-加工零件" class="headerlink" title="D.加工零件"></a>D.加工零件</h4><p><strong>题意描述</strong></p>
+<p>凯凯的工厂正在有条不紊地生产一种神奇的零件，神奇的零件的生产过程自然也很 神奇。工厂里有 𝑛 位工人，工人们从 1∼𝑛编号。某些工人之间存在双向的零件传送带。保证每两名工人之间最多只存在一条传送带。<br>如果 𝑥 号工人想生产一个被加工到第 𝐿(𝐿&gt;1) 阶段的零件，则所有与 𝑥 号工人 有传送带直接相连的工人，都需要生产一个被加工到第 𝐿 −1 阶段的零件（但 𝑥 号工 人自己无需生产第 𝐿 −1 阶段的零件）。<br>如果 𝑥 号工人想生产一个被加工到第 1 阶段的零件，则所有与 𝑥 号工人有传送 带直接相连的工人，都需要为 𝑥 号工人提供一个原材料。<br>轩轩是 1 号工人。现在给出 𝑞 张工单，第 𝑖 张工单表示编号为 𝑎𝑖的工人想生产 一个第 𝐿𝑖阶段的零件。轩轩想知道对于每张工单，他是否需要给别人提供原材料。他知道聪明的你一定可以帮他计算出来！</p>
+<p><strong>解题思路</strong><br>经过推导可以发现，如果 a 号节点到 1 号节点（以下只用编号简写）之间存在一条小于 L 的路径，且它们的差为偶数（包括0），那么 1 就要提供原材料。<br>但是问题在于 1 到 a 之间可能不止一条路径，而 L 也不一定是奇或者偶，于是我们需要保存 a 到 1 的<strong>最短奇路径</strong>与<strong>最短偶路径</strong>。<br>在图论中，如果边权为1，那么求奇偶最短路径的好方法就是用分层图来做，具体做法是建立双层图，如果从起点不在同一层，则路径一定是奇，否则一定为偶；这样做的好处是不用额外的辅助代码，只要在建图时多加两条边就行了。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2</span>*N;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">int</span> n,m,q;</span><br><span class="line"><span class="keyword">int</span> head[N],edge[M],ver[M],nex[M] ,tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getInt</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> c = getchar();</span><br><span class="line">	<span class="keyword">while</span>(c != <span class="string">'-'</span> &amp;&amp; (c &lt; <span class="string">'0'</span> || c &gt; <span class="string">'9'</span>)) c = getchar();</span><br><span class="line">	<span class="keyword">if</span>(c == <span class="string">'-'</span>) neg = <span class="literal">true</span>, c = getchar();</span><br><span class="line">	<span class="keyword">while</span>(c &gt;= <span class="string">'0'</span> &amp;&amp; c &lt;= <span class="string">'9'</span>) res = res*<span class="number">10</span>+c-<span class="string">'0'</span>,c = getchar();</span><br><span class="line">	<span class="keyword">return</span> neg?-res:res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; que;</span><br><span class="line"><span class="keyword">int</span> dis[N],vis[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">solve</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> l)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(dis[a] &lt;= l &amp;&amp; !((dis[a]&amp;<span class="number">1</span>) ^ (l&amp;<span class="number">1</span>))) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">if</span>(dis[a+n] &lt;= l &amp;&amp; !((dis[a+n]&amp;<span class="number">1</span>) ^ (l&amp;<span class="number">1</span>))) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SPFA</span><span class="params">(<span class="keyword">int</span> s)</span></span>&#123;</span><br><span class="line">	que.push(s);</span><br><span class="line">	<span class="built_in">memset</span>(dis,<span class="number">0x3f</span>,<span class="keyword">sizeof</span> dis);</span><br><span class="line">	dis[s] = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(que.size())&#123;</span><br><span class="line">		<span class="keyword">int</span> x = que.front(); que.pop();</span><br><span class="line">		vis[x] = <span class="literal">false</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">			<span class="keyword">if</span>(dis[y] &gt; dis[x]+z)&#123;</span><br><span class="line">				dis[y] = dis[x]+z;</span><br><span class="line">				<span class="keyword">if</span>(!vis[y]) que.push(y),vis[y] = <span class="literal">true</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	n = getInt(); m = getInt(); q = getInt();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		x = getInt(); y = getInt();</span><br><span class="line">		addEdge(x,y+n,<span class="number">1</span>); addEdge(y+n,x,<span class="number">1</span>);</span><br><span class="line">		addEdge(x+n,y,<span class="number">1</span>); addEdge(y,x+n,<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	SPFA(<span class="number">1</span>);</span><br><span class="line">	<span class="comment">//for(int i = 1;i &lt;= n&lt;&lt;1;i++) cout &lt;&lt; dis[i] &lt;&lt; endl;</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,a,l;i &lt;= q;i++)&#123;</span><br><span class="line">		a = getInt(); l = getInt();</span><br><span class="line">		<span class="keyword">if</span>(solve(a,l)) <span class="built_in">puts</span>(<span class="string">"Yes"</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">"No"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/动态规划/" rel="tag"># 动态规划</a>
+            
+              <a href="/tags/图论/" rel="tag"># 图论</a>
+            
+              <a href="/tags/分层图/" rel="tag"># 分层图</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/24/cf600/" rel="next" title="CodeForce#600（Div2）解题报告">
+                  <i class="fa fa-chevron-left"></i> CodeForce#600（Div2）解题报告
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">76</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#A-数字游戏"><span class="nav-number">1.</span> <span class="nav-text">A.数字游戏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#B-公车换乘"><span class="nav-number">2.</span> <span class="nav-text">B.公车换乘</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#C-纪念品"><span class="nav-number">3.</span> <span class="nav-text">C.纪念品</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#D-加工零件"><span class="nav-number">4.</span> <span class="nav-text">D.加工零件</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
