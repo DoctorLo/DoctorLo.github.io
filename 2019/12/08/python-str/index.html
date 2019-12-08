@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="前言大多数语言都有字符串（String）这一数据类型，在Python中String类型的关键字为 str ，其属于扁平序列、不可改变序列，因此对其的操作需要一些技巧。本文将以方便算法竞赛的角度来整理Python中 str 类型的使用方法，分别从字符串操作与格式化输出两个角度来整理。 字符串处理标准的序列操作这里的序列类型就不单单是指字符串了，而是指包含字符串的一种类型。序列类型大体可分为容器序列与">
+<meta name="keywords" content="Python字符串">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python之字符串处理与格式输出">
+<meta property="og:url" content="http://valenshi.top/2019/12/08/python-str/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="前言大多数语言都有字符串（String）这一数据类型，在Python中String类型的关键字为 str ，其属于扁平序列、不可改变序列，因此对其的操作需要一些技巧。本文将以方便算法竞赛的角度来整理Python中 str 类型的使用方法，分别从字符串操作与格式化输出两个角度来整理。 字符串处理标准的序列操作这里的序列类型就不单单是指字符串了，而是指包含字符串的一种类型。序列类型大体可分为容器序列与">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-08T06:06:12.096Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python之字符串处理与格式输出">
+<meta name="twitter:description" content="前言大多数语言都有字符串（String）这一数据类型，在Python中String类型的关键字为 str ，其属于扁平序列、不可改变序列，因此对其的操作需要一些技巧。本文将以方便算法竞赛的角度来整理Python中 str 类型的使用方法，分别从字符串操作与格式化输出两个角度来整理。 字符串处理标准的序列操作这里的序列类型就不单单是指字符串了，而是指包含字符串的一种类型。序列类型大体可分为容器序列与">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/12/08/python-str/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Python之字符串处理与格式输出 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/12/08/python-str/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Python之字符串处理与格式输出
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-08 14:04:03 / 修改时间：14:06:12" itemprop="dateCreated datePublished" datetime="2019-12-08T14:04:03+08:00">2019-12-08</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Python学习笔记/" itemprop="url" rel="index"><span itemprop="name">Python学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h4><p>大多数语言都有字符串（String）这一数据类型，在Python中String类型的关键字为 str ，其属于扁平序列、不可改变序列，因此对其的操作需要一些技巧。<br>本文将以方便算法竞赛的角度来整理Python中 str 类型的使用方法，分别从字符串操作与格式化输出两个角度来整理。</p>
+<h4 id="字符串处理"><a href="#字符串处理" class="headerlink" title="字符串处理"></a>字符串处理</h4><h5 id="标准的序列操作"><a href="#标准的序列操作" class="headerlink" title="标准的序列操作"></a>标准的序列操作</h5><p>这里的序列类型就不单单是指字符串了，而是指包含字符串的一种类型。序列类型大体可分为容器序列与扁平序列。<br><strong>容器序列</strong>实际上放的是对象引用，因此可以存放不同类型的数据；<br><strong>扁平序列</strong>存放的是对象的值，是一段连续的内存空间，因此要求对象必须是相同的数据类型才行，如字符、数字、字节。字符串是扁平序列。</p>
+<p>当然，按照<strong>是否可修改</strong>还可以分为可变序列与不可变序列，不可变序列有<code>tuple、str、bytes</code>；可变序列有<code>list、bytearray</code> 等。字符串是不可变序列。</p>
+<p>以上序列都有一些通用的操作，如：索引、切片、加法乘法；当然对于不同的序列这些操作意义也不同。</p>
+<p><strong>索引：</strong> 和类C语言一样，序列中的元素都是有序排列的，拥有自己的编号（从0开始），我们可以通过索引来得到对应位置上的元素。<br>索引也可以是负值，负索引代表从后向前数，如 -3 表示倒数第三个元素，以此类推。</p>
+<p><strong>切片：</strong> Python中有着分片操作符[ : ]，[begin : end]将会返回子序列 [begin,end)，其中end位置上的元素取不到，所以end是个超尾。<br>切片的索引同样支持负值，负索引表示倒数第几个元素，需要注意的是起始下标应在终止下标之前，否则将会返回空。</p>
+<p><strong>代码示例：</strong><br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">"abcdefg"</span></span><br><span class="line">print(s)</span><br><span class="line"><span class="comment">#索引</span></span><br><span class="line">print(s[<span class="number">2</span>])		<span class="comment">#输出索引为2的元素 'c'</span></span><br><span class="line">print(s[<span class="number">-2</span>])	<span class="comment">#输出倒数第2个元素 'f'</span></span><br><span class="line"><span class="comment">#切片</span></span><br><span class="line">print(s[<span class="number">2</span>:<span class="number">6</span>])	<span class="comment">#输出[2,6)位置的子串 "cdef"</span></span><br><span class="line">print(s[<span class="number">-4</span>:<span class="number">-2</span>])	<span class="comment">#输出[倒数第4个元素,倒数第2个元素)子串 "de"</span></span><br></pre></td></tr></table></figure></p>
+<p>字符串的 ‘+’与 ‘ * ‘ 分别是拼接与复制，一试便知，不再赘述。</p>
+<h5 id="修改字符串"><a href="#修改字符串" class="headerlink" title="修改字符串"></a>修改字符串</h5><p>前面说过，python中的str属于不可修改序列，即不可以通过索引赋值的方式来修改元素；也就是说 <code>s[2] = &#39;x&#39;</code> 这样的写法是不允许的。那么如果想修改怎么办呢？这里挑几种方便的写法整理：<br><strong>重新赋值：</strong> 具体思路是，通过将需要修改的目标位置用切片切出来，然后替换再拼接，具体代码如：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">"abcdefg"</span></span><br><span class="line">print(s)</span><br><span class="line">s = s[:<span class="number">4</span>] + <span class="string">"x"</span> + s[<span class="number">5</span>:]</span><br><span class="line">print(s)</span><br></pre></td></tr></table></figure></p>
+<p><strong>使用replace函数：</strong> 可以通过调用字符串方法replace( s , t )将字符串内的所有子串 s 替换为 t 后返回。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s = <span class="string">"abcdefgabc"</span></span><br><span class="line">print(s)</span><br><span class="line"><span class="comment">#将abcdefabc替换为xxxdefxxx</span></span><br><span class="line">s2 = s.replace(<span class="string">"abc"</span>,<span class="string">"xxx"</span>)</span><br><span class="line">print(s2)</span><br></pre></td></tr></table></figure></p>
+<p>还可以通过将字符串转化为列表后修改元素，再用 join 方法转回字符串来达成修改目的，具体选择哪种方法按需求来看。</p>
+<h5 id="ASCII码与字符的转换"><a href="#ASCII码与字符的转换" class="headerlink" title="ASCII码与字符的转换"></a>ASCII码与字符的转换</h5><p>在一些情形下，尤其是算法竞赛中，快速实现字符转ASCII码是十分重要的，在Python中不能直接对字符用加法或减法来实现转换，而是要通过ord() 和 chr() 函数来实现转换：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(ord(<span class="string">'a'</span>))	<span class="comment">#输出字符 a 的ASCII码</span></span><br><span class="line">print(chr(<span class="number">98</span>))	<span class="comment">#输出ASCII码为 98 的字符</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="格式化输出"><a href="#格式化输出" class="headerlink" title="格式化输出"></a>格式化输出</h4><p>对于字符串的输出可以通过调用print()来实现，但是在算法竞赛等一些情况下，这样是不够的，因为我们往往对输出的格式有着严格的要求。</p>
+<h5 id="基本的转换说明符"><a href="#基本的转换说明符" class="headerlink" title="基本的转换说明符"></a>基本的转换说明符</h5><p>% 字符 标记转换说明符的开始，例如<code>print(&quot;Hello, %s &quot; % &quot;egg&quot;)            # Hello, egg</code> ，这段代码将字符串中的 %s 替换成了字符串 “egg” ；这就是字符串格式化操作符 % 的基本使用方式。<br>如果要在格式化字符串里包含%，那么必须使用%%，这样Python就不会将百分号误以为是转换说明符了。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"There is %d people."</span> % <span class="number">32</span>) 	<span class="comment"># There is 32 people.</span></span><br><span class="line">print(<span class="string">"Hello%%, %s "</span> % <span class="string">"egg"</span>)			<span class="comment"># Hello%, egg</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="字段宽度和精度"><a href="#字段宽度和精度" class="headerlink" title="字段宽度和精度"></a>字段宽度和精度</h5><p>指定宽度和精度同C语言类似，都是类似%.3f以及%5d<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"An egg is %.2f yuan"</span> % <span class="number">0.8</span>)	        <span class="comment"># An egg is 0.80 yuan</span></span><br><span class="line">print(<span class="string">"An egg is %5d yuan"</span> % <span class="number">1</span>)		<span class="comment"># An egg is     1 yuan</span></span><br></pre></td></tr></table></figure></p>
+<h5 id="符号、对齐和用0填充"><a href="#符号、对齐和用0填充" class="headerlink" title="符号、对齐和用0填充"></a>符号、对齐和用0填充</h5><p>在字符宽度和精度值之前还可以放一个“标志”，该表示可以是<code>0 + -</code> </p>
+<ul>
+<li>如果是0则表示不足的位置用前导零填充</li>
+<li>‘-‘ 表示左对齐数值</li>
+<li>‘+’ 表示输出符号（不管是正数还是负数）</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">print(<span class="string">"An egg is %05d yuan"</span> % <span class="number">1</span>)	<span class="comment"># An egg is 00001 yuan</span></span><br><span class="line">print(<span class="string">"An egg is %-5d yuan"</span> % <span class="number">1</span>)	<span class="comment"># An egg is 1     yuan</span></span><br><span class="line">print(<span class="string">"An egg is %+d yuan"</span> % <span class="number">1</span>)	<span class="comment">#An egg is +1 yuan</span></span><br></pre></td></tr></table></figure>
+<h5 id="输出不止一个元素"><a href="#输出不止一个元素" class="headerlink" title="输出不止一个元素"></a>输出不止一个元素</h5><p>你可能注意到了上述例子都是只输出一个值，一个元素；在C语言中我们可以通过逗号来分隔需要输出的不同元素，那么在Python中如何办到呢？<br>在Python中，只有元组和字典可以格式化一个以上的值；如果用列表或者其它序列代替元组，那么序列会被解释为一个值。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 利用元组来输出一个以上的值</span></span><br><span class="line">print(<span class="string">"An egg is %d yuan,two eggs are %d yuan."</span>% (<span class="number">1</span>,<span class="number">2</span>)) </span><br><span class="line"><span class="comment"># An egg is 1 yuan,two eggs are 2 yuan.</span></span><br></pre></td></tr></table></figure>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li>Magnus Lie Hetland，Python基础教程第二版·修定版，北京：人民邮电出版社，45-47</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/Python字符串/" rel="tag"># Python字符串</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/11/26/2019CSP-J/" rel="next" title="2019CSP-J普及组复赛题解">
+                  <i class="fa fa-chevron-left"></i> 2019CSP-J普及组复赛题解
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">52</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#字符串处理"><span class="nav-number">2.</span> <span class="nav-text">字符串处理</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#标准的序列操作"><span class="nav-number">2.1.</span> <span class="nav-text">标准的序列操作</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#修改字符串"><span class="nav-number">2.2.</span> <span class="nav-text">修改字符串</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ASCII码与字符的转换"><span class="nav-number">2.3.</span> <span class="nav-text">ASCII码与字符的转换</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#格式化输出"><span class="nav-number">3.</span> <span class="nav-text">格式化输出</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#基本的转换说明符"><span class="nav-number">3.1.</span> <span class="nav-text">基本的转换说明符</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字段宽度和精度"><span class="nav-number">3.2.</span> <span class="nav-text">字段宽度和精度</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#符号、对齐和用0填充"><span class="nav-number">3.3.</span> <span class="nav-text">符号、对齐和用0填充</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#输出不止一个元素"><span class="nav-number">3.4.</span> <span class="nav-text">输出不止一个元素</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
