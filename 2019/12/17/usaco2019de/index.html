@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="1.MooBuzzDescriptionFarmer John 的奶牛们最近成为了一个简单的数字游戏“FizzBuzz”的狂热玩家。这个游戏的规则很简单：奶牛们站成一圈，依次从一开始报数，每头奶牛在轮到她的时候报一个数。如果一头奶牛将要报的数字是 3 的倍数，她应当报“Fizz”来代替这个数。如果一头奶牛将要报的数字是 5 的倍数，她应当报“Buzz”来代替这个数。如果一头奶牛将要报的数字是 15">
+<meta name="keywords" content="lca,树上倍增,二分搜索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="USACO 2019 December Contest, Silver 题解">
+<meta property="og:url" content="http://valenshi.top/2019/12/17/usaco2019de/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="1.MooBuzzDescriptionFarmer John 的奶牛们最近成为了一个简单的数字游戏“FizzBuzz”的狂热玩家。这个游戏的规则很简单：奶牛们站成一圈，依次从一开始报数，每头奶牛在轮到她的时候报一个数。如果一头奶牛将要报的数字是 3 的倍数，她应当报“Fizz”来代替这个数。如果一头奶牛将要报的数字是 5 的倍数，她应当报“Buzz”来代替这个数。如果一头奶牛将要报的数字是 15">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-17T12:09:03.975Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="USACO 2019 December Contest, Silver 题解">
+<meta name="twitter:description" content="1.MooBuzzDescriptionFarmer John 的奶牛们最近成为了一个简单的数字游戏“FizzBuzz”的狂热玩家。这个游戏的规则很简单：奶牛们站成一圈，依次从一开始报数，每头奶牛在轮到她的时候报一个数。如果一头奶牛将要报的数字是 3 的倍数，她应当报“Fizz”来代替这个数。如果一头奶牛将要报的数字是 5 的倍数，她应当报“Buzz”来代替这个数。如果一头奶牛将要报的数字是 15">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2019/12/17/usaco2019de/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>USACO 2019 December Contest, Silver 题解 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2019/12/17/usaco2019de/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">USACO 2019 December Contest, Silver 题解
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2019-12-17 20:07:25 / 修改时间：20:09:03" itemprop="dateCreated datePublished" datetime="2019-12-17T20:07:25+08:00">2019-12-17</time>
+            </span>
+          
+            
+
+            
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="1-MooBuzz"><a href="#1-MooBuzz" class="headerlink" title="1.MooBuzz"></a>1.MooBuzz</h4><h5 id="Description"><a href="#Description" class="headerlink" title="Description"></a>Description</h5><p>Farmer John 的奶牛们最近成为了一个简单的数字游戏“FizzBuzz”的狂热玩家。这个游戏的规则很简单：奶牛们站成一圈，依次从一开始报数，每头奶牛在轮到她的时候报一个数。如果一头奶牛将要报的数字是 3 的倍数，她应当报“Fizz”来代替这个数。如果一头奶牛将要报的数字是 5 的倍数，她应当报“Buzz”来代替这个数。如果一头奶牛将要报的数字是 15 的倍数，她应当报“FizzBuzz”来代替这个数。于是这个游戏的开始部分的记录为：<br>1, 2, Fizz, 4, Buzz, Fizz, 7, 8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, 16</p>
+<p>由于词汇的匮乏，奶牛们玩的 FizzBuzz 中用“Moo”代替了 Fizz、Buzz、FizzBuzz。于是奶牛版的游戏的开始部分的记录为：</p>
+<p>1, 2, Moo, 4, Moo, Moo, 7, 8, Moo, Moo, 11, Moo, 13, 14, Moo, 16</p>
+<p>给定 N（1≤N≤1e9），请求出这个游戏中第 N 个被报的数。</p>
+<h5 id="A-possible-solution"><a href="#A-possible-solution" class="headerlink" title="A possible solution"></a>A possible solution</h5><p>利用容斥原理+二分判断。我们假设 n 个数里共有 cnt 个被跳过的数，那么报的第 n 个数就是 n+cnt ，由于 n 和 cnt 都具有单调性，所以我们可以利用二分判定来解决。<br>其中容斥原理很容易想到，cnt 显然等于 n 内 3 的倍数 + 5 的倍数 +15的倍数，但是15 = 3 * 5，所以15不需要重复统计（已经在 3 的倍数中统计过了）。但是我们重复统计了 3 和 5 的公倍数（统计了 2 次），于是我们就要减去同时是 3 的倍数和 5 的倍数 的 个数即可得到cnt。<br>在O(1)时间内求出cnt后，我们就可以在O(logN)时间内用二分搜索解决此题。</p>
+<h5 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">const</span> ll INF = <span class="number">1e18</span>;</span><br><span class="line"><span class="keyword">int</span> tn;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">check</span><span class="params">(ll n)</span></span>&#123;</span><br><span class="line">	ll a = n/<span class="number">3</span>, b = n/<span class="number">5</span>;</span><br><span class="line">	ll c = n/<span class="number">15</span>;</span><br><span class="line">	ll cnt = a + b - c;</span><br><span class="line">	<span class="keyword">return</span> n-cnt &gt;= tn;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	freopen(<span class="string">"moobuzz.in"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	freopen(<span class="string">"moobuzz.out"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; tn ;</span><br><span class="line">	ll l = <span class="number">1</span>,r = INF;</span><br><span class="line">	<span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">		ll mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(check(mid)) r = mid<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">else</span> l = mid+<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; l &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="2-Meetings"><a href="#2-Meetings" class="headerlink" title="2.Meetings"></a>2.Meetings</h4><h5 id="Description-1"><a href="#Description-1" class="headerlink" title="Description"></a>Description</h5><p>有两个牛棚位于一维数轴上的点 0 和 L 处（1≤L≤1e9）。同时有 N 头奶牛（1≤N≤5e4）位于数轴上不同的位置（将牛棚和奶牛看作点）。每头奶牛 i 初始时位于某个位置 xi，并朝着正向或负向以一个单位每秒的速度移动，用一个等于 1 或 −1 的整数 di 表示。每头奶牛还拥有一个在范围 [1,1e3] 内的重量。所有奶牛始终以恒定的速度移动，直到以下事件之一发生：<br>如果奶牛 i 移动到了一个牛棚，则奶牛 i 停止移动。<br>当奶牛 i 和 j 占据了相同的点的时候，并且这一点不是一个牛棚，则发生了相遇。此时，奶牛 i 被赋予奶牛 j 先前的速度，反之亦然。注意奶牛可能在一个非整数点相遇。<br>令 T 等于停止移动的奶牛（由于到达两个牛棚之一）的重量之和至少等于所有奶牛的重量之和的一半的最早时刻。请求出在时刻 0…T（包括时刻T）之间发生的奶牛对相遇的总数。</p>
+<h5 id="A-possible-solution-1"><a href="#A-possible-solution-1" class="headerlink" title="A possible solution"></a>A possible solution</h5><p>这道题与 Ants 那题类似。如果不考虑重量，那么我们可以忽略每头牛的个性，从整体来看，如果两头牛相遇可以看作他们“穿过”对方并继续前进；如果每头牛有不同的重量，那么它们就有了个性，不能再等价于“穿过”对方。<br>这个时候我们可以从两个角度来考虑：</p>
+<ol>
+<li>首先如果有 x 头牛回窝，那么一定是靠近端点的 x 头牛。原因很简单，这是一个一维的空间，前面的牛不回窝后面的就会被堵住过不去。所以每个端点回窝的重量顺序就确定了。</li>
+<li>在 t 时刻内，一头牛只可能和与他迎面走来的 2 <em> t 距离内的牛相遇。这个时候我们不需要考虑重量，所以每个牛可以看作“穿过”相遇的对方继续前进，那么显然 t 时刻内这两头牛相向而行 2 </em> t 的距离。</li>
+</ol>
+<p>通过第一个推论我们可以求出 T （二分或者优先队列），通过第二个推论我们可以根据 T 来求出相遇的牛的总数。</p>
+<h5 id="Code-1"><a href="#Code-1" class="headerlink" title="Code"></a>Code</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="keyword">int</span> n,l;</span><br><span class="line">ll sum;</span><br><span class="line"><span class="keyword">int</span> w[N],px[N],d[N];</span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> t)</span></span>&#123;</span><br><span class="line">	<span class="comment">//t时刻到家的重量是否达到一半</span></span><br><span class="line">	<span class="keyword">int</span> tw = <span class="number">0</span>, c1 = <span class="number">0</span>, c2 = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(d[i] == <span class="number">1</span> &amp;&amp; l - px[i] &lt;= t) c1++;</span><br><span class="line">		<span class="keyword">if</span>(d[i] == <span class="number">-1</span> &amp;&amp; px[i] &lt;= t) c2++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= c2;i++) tw += w[i];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = n;i &gt; n-c1;i--) tw += w[i];</span><br><span class="line">	<span class="comment">//printf("%d %d %d %d %d\n",t,c1,c2,tw,sum);</span></span><br><span class="line">	<span class="keyword">return</span> tw*<span class="number">2</span> &lt; sum;</span><br><span class="line">&#125;</span><br><span class="line">ll a[N];</span><br><span class="line"><span class="keyword">int</span> tot = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">bsearch</span><span class="params">(ll x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> l = <span class="number">1</span>,r = tot;</span><br><span class="line">	<span class="keyword">while</span>(l &lt;= r)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid = l+r&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(a[mid] &gt;= x) r = mid<span class="number">-1</span>;</span><br><span class="line">		<span class="keyword">else</span> l = mid+<span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//cout &lt;&lt; x &lt;&lt; " " &lt;&lt; l &lt;&lt; endl;</span></span><br><span class="line">	<span class="keyword">return</span> l;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">calc</span><span class="params">(ll t)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;	<span class="comment">//相遇次数</span></span><br><span class="line">	tot = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">if</span>(d[i] == <span class="number">-1</span>) a[++tot] = px[i];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">if</span>(d[i] == <span class="number">1</span>) res += bsearch(px[i]+<span class="number">2</span>*t+<span class="number">1</span>) - bsearch(px[i]);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Node</span>&#123;</span></span><br><span class="line">	<span class="keyword">int</span> w,x,d;</span><br><span class="line">	<span class="keyword">bool</span> <span class="keyword">operator</span> &lt; (<span class="keyword">const</span> Node&amp; rhs) <span class="keyword">const</span>&#123;</span><br><span class="line">		<span class="keyword">return</span> x &lt; rhs.x;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;nodes[N];</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	freopen(<span class="string">"meetings.in"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	freopen(<span class="string">"meetings.out"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;l);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%d"</span>,&amp;nodes[i].w,&amp;nodes[i].x,&amp;nodes[i].d);</span><br><span class="line">	sort(nodes+<span class="number">1</span>,nodes+<span class="number">1</span>+n);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) w[i] = nodes[i].w,px[i] = nodes[i].x,d[i] = nodes[i].d;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) sum += w[i];</span><br><span class="line">	<span class="keyword">int</span> tl = <span class="number">0</span>,tr = l; </span><br><span class="line">	<span class="keyword">while</span>(tl &lt;= tr)&#123;</span><br><span class="line">		<span class="keyword">int</span> mid = tl+tr&gt;&gt;<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(check(mid)) tl = mid+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> tr = mid<span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//cout &lt;&lt; l &lt;&lt; endl;</span></span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,calc(tl));	<span class="comment">//计算 l 秒内碰头次数</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3-Milk-Visits"><a href="#3-Milk-Visits" class="headerlink" title="3.Milk Visits"></a>3.Milk Visits</h4><h5 id="Description-2"><a href="#Description-2" class="headerlink" title="Description"></a>Description</h5><p>Farmer John 计划建造 N（1≤N≤1e5）个农场，用 N−1 条道路连接，构成一棵树（也就是说，所有农场之间都互相可以到达，并且没有环）。每个农场有一头奶牛，品种为更赛牛或荷斯坦牛之一。<br>Farmer John 的 M 个朋友（1≤M≤1e5）经常前来拜访他。在朋友 i 拜访之时，Farmer John 会与他的朋友沿着从农场 Ai 到农场 Bi 之间的唯一路径行走（可能有 Ai=Bi）。除此之外，他们还可以品尝他们经过的路径上任意一头奶牛的牛奶。由于 Farmer John 的朋友们大多数也是农场主，他们对牛奶有着极强的偏好。他的有些朋友只喝更赛牛的牛奶，其余的只喝荷斯坦牛的牛奶。任何 Farmer John 的朋友只有在他们访问时能喝到他们偏好的牛奶才会高兴。</p>
+<p>请求出每个朋友在拜访过后是否会高兴。</p>
+<h5 id="A-possible-solution-2"><a href="#A-possible-solution-2" class="headerlink" title="A possible solution"></a>A possible solution</h5><p>一条道路只有 3 种情况，全是 H 牛，全是 G 牛或者两者兼有。那么如果节点 x 是 H 牛我们就令其w =  -1，如果是 G 牛就等于1。那么这一段路径上所有点的 w 相加，如果等于 d，就说明全是G牛；如果等于 -d，就说明全是 H 牛；否则就说明两者都有。<br>至于快速求两点间距离可以用倍增求LCA。</p>
+<h5 id="Code-2"><a href="#Code-2" class="headerlink" title="Code"></a>Code</h5><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2</span>*N;</span><br><span class="line"><span class="keyword">char</span> ty[N];</span><br><span class="line"><span class="keyword">int</span> n,m,w[N];</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],edge[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y,<span class="keyword">int</span> z)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; edge[tot] = z;</span><br><span class="line">	nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> dis[N],anc[N][<span class="number">25</span>],dep[N],sum[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">dfs</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">22</span>;i++) </span><br><span class="line">		anc[x][i] = anc[anc[x][i<span class="number">-1</span>]][i<span class="number">-1</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i], z = edge[i];</span><br><span class="line">		<span class="keyword">if</span>(dis[y] || y == <span class="number">1</span>) <span class="keyword">continue</span>;</span><br><span class="line">		dep[y] = dep[x] + <span class="number">1</span>;</span><br><span class="line">		dis[y] = dis[x] + z;</span><br><span class="line">		anc[y][<span class="number">0</span>] = x;</span><br><span class="line">		sum[y] = sum[x] + w[y];</span><br><span class="line">		dfs(y);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lca</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(dep[x] &lt; dep[y]) swap(x,y);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)</span><br><span class="line">		<span class="keyword">if</span>(dep[anc[x][i]] &gt;= dep[y]) x = anc[x][i];</span><br><span class="line">	<span class="keyword">if</span>(x == y) <span class="keyword">return</span> x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">22</span>;i &gt;= <span class="number">0</span>;i--)&#123;</span><br><span class="line">		<span class="keyword">if</span>(anc[x][i] != anc[y][i])&#123;</span><br><span class="line">			x = anc[x][i]; y = anc[y][i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> anc[x][<span class="number">0</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	freopen(<span class="string">"milkvisits.in"</span>,<span class="string">"r"</span>,<span class="built_in">stdin</span>);</span><br><span class="line">	freopen(<span class="string">"milkvisits.out"</span>,<span class="string">"w"</span>,<span class="built_in">stdout</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%s"</span>,ty+<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) </span><br><span class="line">		<span class="keyword">if</span>(ty[i] == <span class="string">'G'</span>) w[i] = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">else</span> w[i] = <span class="number">-1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt; n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y,<span class="number">1</span>); addEdge(y,x,<span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">char</span> s[<span class="number">10</span>];</span><br><span class="line">	dep[<span class="number">0</span>] = <span class="number">-1</span>; dfs(<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d%s"</span>,&amp;x,&amp;y,s);</span><br><span class="line">		<span class="keyword">int</span> fa = lca(x,y);</span><br><span class="line">		<span class="keyword">int</span> d = dis[x]+dis[y] - <span class="number">2</span>*dis[fa] + <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> sw = sum[x]+sum[y] - <span class="number">2</span>*sum[fa]+w[fa];</span><br><span class="line">		<span class="keyword">if</span>(s[<span class="number">0</span>] == <span class="string">'H'</span> &amp;&amp; sw != d) <span class="built_in">putchar</span>(<span class="string">'1'</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(s[<span class="number">0</span>] == <span class="string">'G'</span> &amp;&amp; sw != -d) <span class="built_in">putchar</span>(<span class="string">'1'</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">putchar</span>(<span class="string">'0'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/lca/" rel="tag"># lca</a>
+            
+              <a href="/tags/树上倍增/" rel="tag"># 树上倍增</a>
+            
+              <a href="/tags/二分搜索/" rel="tag"># 二分搜索</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2019/12/08/python-str/" rel="next" title="Python之字符串处理与格式输出">
+                  <i class="fa fa-chevron-left"></i> Python之字符串处理与格式输出
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">78</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-MooBuzz"><span class="nav-number">1.</span> <span class="nav-text">1.MooBuzz</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Description"><span class="nav-number">1.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#A-possible-solution"><span class="nav-number">1.2.</span> <span class="nav-text">A possible solution</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Code"><span class="nav-number">1.3.</span> <span class="nav-text">Code</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Meetings"><span class="nav-number">2.</span> <span class="nav-text">2.Meetings</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Description-1"><span class="nav-number">2.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#A-possible-solution-1"><span class="nav-number">2.2.</span> <span class="nav-text">A possible solution</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Code-1"><span class="nav-number">2.3.</span> <span class="nav-text">Code</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Milk-Visits"><span class="nav-number">3.</span> <span class="nav-text">3.Milk Visits</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Description-2"><span class="nav-number">3.1.</span> <span class="nav-text">Description</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#A-possible-solution-2"><span class="nav-number">3.2.</span> <span class="nav-text">A possible solution</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Code-2"><span class="nav-number">3.3.</span> <span class="nav-text">Code</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
