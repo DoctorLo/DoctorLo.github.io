@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://valenshi.top/2019/08/16/tarjan/</loc>
+    
+    <lastmod>2020-01-03T02:45:46.016Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://valenshi.top/2019/12/17/usaco2019de/</loc>
     
     <lastmod>2019-12-17T12:09:03.975Z</lastmod>
@@ -439,13 +446,6 @@
     <loc>http://valenshi.top/2019/08/16/bigpow/</loc>
     
     <lastmod>2019-08-20T12:42:54.271Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://valenshi.top/2019/08/16/tarjan/</loc>
-    
-    <lastmod>2019-08-20T12:42:42.224Z</lastmod>
     
   </url>
   
