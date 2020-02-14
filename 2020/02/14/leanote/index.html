@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="背景介绍Leanote 是一款类似于印象笔记的开源的笔记项目，具体介绍请访问 Github 该项目。 在 Github 上该项目有着详细的中文版的介绍以及安装步骤，但是由于 Linux 不熟练，我还是遇到了如下问题：  虽然根据说明可以成功部署并运行，但是一旦断开会话或关闭终端，mongodb 与 leanote 都会停止工作。 如何用 fork 命令使得 mongodb 在后台运行。 如何使用">
+<meta name="keywords" content="�㷨,ACM">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leanote与mongodb布置总结">
+<meta property="og:url" content="http://valenshi.top/2020/02/14/leanote/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="背景介绍Leanote 是一款类似于印象笔记的开源的笔记项目，具体介绍请访问 Github 该项目。 在 Github 上该项目有着详细的中文版的介绍以及安装步骤，但是由于 Linux 不熟练，我还是遇到了如下问题：  虽然根据说明可以成功部署并运行，但是一旦断开会话或关闭终端，mongodb 与 leanote 都会停止工作。 如何用 fork 命令使得 mongodb 在后台运行。 如何使用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-14T11:57:53.022Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Leanote与mongodb布置总结">
+<meta name="twitter:description" content="背景介绍Leanote 是一款类似于印象笔记的开源的笔记项目，具体介绍请访问 Github 该项目。 在 Github 上该项目有着详细的中文版的介绍以及安装步骤，但是由于 Linux 不熟练，我还是遇到了如下问题：  虽然根据说明可以成功部署并运行，但是一旦断开会话或关闭终端，mongodb 与 leanote 都会停止工作。 如何用 fork 命令使得 mongodb 在后台运行。 如何使用">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2020/02/14/leanote/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Leanote与mongodb布置总结 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2020/02/14/leanote/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Leanote与mongodb布置总结
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-14 19:57:25 / 修改时间：19:57:53" itemprop="dateCreated datePublished" datetime="2020-02-14T19:57:25+08:00">2020-02-14</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="背景介绍"><a href="#背景介绍" class="headerlink" title="背景介绍"></a>背景介绍</h4><p>Leanote 是一款类似于印象笔记的开源的笔记项目，具体介绍请访问 <a href="https://github.com/leanote/leanote" target="_blank" rel="noopener">Github</a> 该项目。</p>
+<p>在 Github 上该项目有着详细的中文版的介绍以及安装步骤，但是由于 Linux 不熟练，我还是遇到了如下问题：</p>
+<ol>
+<li>虽然根据说明可以成功部署并运行，但是一旦断开会话或关闭终端，mongodb 与 leanote 都会停止工作。</li>
+<li>如何用 fork 命令使得 mongodb 在后台运行。</li>
+<li>如何使用 nohup 命令使得 run.sh 脚本在后台运行。</li>
+<li>如何编写一个 shell 脚本来实现开机自启、一键启动、停止。</li>
+</ol>
+<p>本文主要目的是总结在 Linux 环境下工作的经验，详细记录刚掌握的知识点。</p>
+<h4 id="mongodb-与非关系型数据库"><a href="#mongodb-与非关系型数据库" class="headerlink" title="mongodb 与非关系型数据库"></a>mongodb 与非关系型数据库</h4><p>mongodb 是非关系型数据库的一种，与 MySql 等关系型数据库相比，它的特点有：</p>
+<ol>
+<li>高并发，读写能力强</li>
+<li>弱化数据结构一致性，使用更加灵活</li>
+<li>有良好的拓展性（mysql 等很难横向拓展）</li>
+<li>通用性差 , 没有 sql 语句那样通用的语句             </li>
+<li>操作灵活导致容易出错和混乱             </li>
+<li>没有外键关联等复杂的操作</li>
+</ol>
+<p>总的来说，关系型数据库（mysql）适合存储结构化数据，例如：用户账号、地址等信息；而非关系型数据库适合存储非结构化的数据，例如：文章、评论等。更加具体的区别与用法不做展开。</p>
+<p>总的来说，mongodb 上手轻松，使用简单，而本文用到的指令仅仅三四个。</p>
+<h5 id="mongodb-的安装与配置"><a href="#mongodb-的安装与配置" class="headerlink" title="mongodb 的安装与配置"></a>mongodb 的安装与配置</h5><p>首先去 <a href="http://www.mongodb.org/downloads" target="_blank" rel="noopener">mongodb官网</a> 下载压缩包，或者点击下载<a href="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-3.0.1.tgz" target="_blank" rel="noopener">mongodb-linux-x86_64-3.0.1.tgz</a>。</p>
+<p>下载完成后，只需做两步工作：解压与配置环境变量<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&gt; tar -xzvf mongodb-linux-x86_64-3.0.1.tgz/</span><br></pre></td></tr></table></figure></p>
+<p>为了快速使用 mongodb 命令, 可以配置环境变量。编辑 ~/.profile 或 /etc/profile 文件， 将 mongodb/bin 路径加入即可：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&gt; sudo vim /etc/profile</span><br></pre></td></tr></table></figure></p>
+<p>在 /etc/profile 中添加以下行，注意把用户名（user1）和相应的文件目录名（mongodb-linux-x86_64-3.0.1）替换成自己系统中的名称：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export PATH=$PATH:/home/user1/mongodb-linux-x86_64-3.0.1/bin</span><br></pre></td></tr></table></figure></p>
+<p>保存修改后，在终端运行以下命令使环境变量生效：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&gt; source /etc/profile</span><br></pre></td></tr></table></figure></p>
+<h5 id="测试-mongodb-安装"><a href="#测试-mongodb-安装" class="headerlink" title="测试 mongodb 安装"></a>测试 mongodb 安装</h5><p>先在 /home/user1 下新建一个目录 data 存放 mongodb 数据：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkdir /home/user1/data</span><br></pre></td></tr></table></figure></p>
+<p>用以下命令启动 mongodb：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mongod --dbpath /home/user1/data</span><br></pre></td></tr></table></figure></p>
+<p>这时 mongod 已经启动，<strong>重新打开</strong>一个终端, 键入 mongo 进入交互程序：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$&gt; mongo</span><br><span class="line">&gt; show dbs</span><br><span class="line">...数据库列表</span><br></pre></td></tr></table></figure></p>
+<p>至此 mongodb 就安装完成。</p>
+<h4 id="使-mongodb-和-leanote-在后台运行"><a href="#使-mongodb-和-leanote-在后台运行" class="headerlink" title="使 mongodb 和 leanote 在后台运行"></a>使 mongodb 和 leanote 在后台运行</h4><p>由于按照 github 上的 leanote 安装说明，mongodb 和 leanote 是会随着会话和终端的关闭而停止运行，现在的目的是使它们不受会话关闭的影响，在后台运行。</p>
+<p>我们可以时使用 <code>nohup command &gt;/dev/null 2&gt;&amp;1 &amp;</code> 命令来使得 mongodb 和 leanote 在后台运行。</p>
+<p>对于 mongodb ，我们还可以配置 config 文件，通过在启动 mongod 时指定配置文件来实现后台运行，配置文件 mongodb.conf 内容如下：（路径需要自己修改）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#数据库路径</span><br><span class="line">dbpath=/usr/local/mongodb/data</span><br><span class="line">#日志输出文件路径</span><br><span class="line">logpath=/usr/local/mongodb/logs/mongodb.log</span><br><span class="line">#错误日志采用追加模式</span><br><span class="line">logappend=true</span><br><span class="line">#启用日志文件，默认启用</span><br><span class="line">journal=true</span><br><span class="line">#这个选项可以过滤掉一些无用的日志信息，若需要调试使用请设置为false</span><br><span class="line">quiet=true</span><br><span class="line">#端口号 默认为27017</span><br><span class="line">port=27017</span><br><span class="line">#允许远程访问</span><br><span class="line">#bind_ip=0.0.0.0</span><br><span class="line">#开启子进程</span><br><span class="line">fork=true</span><br><span class="line">#开启认证，必选先添加用户</span><br><span class="line">auth=true</span><br></pre></td></tr></table></figure>
+<p>此时在 mongodb.conf 同一目录下执行 <code>mongod --conf mongodb.conf</code> 即可在后台启动数据库，此时可以通过 mongo 来访问数据库。<br>需要注意的是，mongod 命令不会帮你创建文件夹，所以 data 以及 logs 等目录是需要创建好再填写的，否则会报错 <code>ERROR: child process failed, exited with error number 1</code> 。</p>
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><p>至此已经可以较为简便的实现 mongod 与 leanote 的后台运行，并且每次服务器重启后我们都可以通过两条命令来启动。本次实践新接触了一个非关系型数据库 mongod 以及一些 linux 命令，下面目标是可以通过编写 Shell 脚本来使得工作更加简化，例如实现开机自启等。</p>
+<p>本文不是教程，是笔记，当然如果已经成功搭建了 leanote ，想要使其在后台运行，还是可以参考本文的。</p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/02/14/nohup/" rel="next" title="Liunx 使进程在后台运行的几种方法">
+                  <i class="fa fa-chevron-left"></i> Liunx 使进程在后台运行的几种方法
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">80</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">53</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#背景介绍"><span class="nav-number">1.</span> <span class="nav-text">背景介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mongodb-与非关系型数据库"><span class="nav-number">2.</span> <span class="nav-text">mongodb 与非关系型数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#mongodb-的安装与配置"><span class="nav-number">2.1.</span> <span class="nav-text">mongodb 的安装与配置</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#测试-mongodb-安装"><span class="nav-number">2.2.</span> <span class="nav-text">测试 mongodb 安装</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使-mongodb-和-leanote-在后台运行"><span class="nav-number">3.</span> <span class="nav-text">使 mongodb 和 leanote 在后台运行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#小结"><span class="nav-number">4.</span> <span class="nav-text">小结</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
