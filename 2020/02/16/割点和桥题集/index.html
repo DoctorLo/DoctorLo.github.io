@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="分离的路径(rpaths)题意描述为了从 F个草场中的一个走到另一个，贝茜和她的同伴们不得不路过一些她们讨厌的可怕的树。奶牛们已经厌倦了被迫走某一条路，所以她们想建一些新路，使每一对草场之间都会至少有两条相互分离的路径，这样她们就有多一些选择。每对草场之间已经有至少一条路径，给出所有 R条双向路的描述，每条路连接了两个不同的草场，请计算最少的新建道路的数量。路径由若干道路首尾相连而成，两条路径相互">
+<meta name="keywords" content="割点和桥">
+<meta property="og:type" content="article">
+<meta property="og:title" content="割点和桥题集">
+<meta property="og:url" content="http://valenshi.top/2020/02/16/割点和桥题集/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="分离的路径(rpaths)题意描述为了从 F个草场中的一个走到另一个，贝茜和她的同伴们不得不路过一些她们讨厌的可怕的树。奶牛们已经厌倦了被迫走某一条路，所以她们想建一些新路，使每一对草场之间都会至少有两条相互分离的路径，这样她们就有多一些选择。每对草场之间已经有至少一条路径，给出所有 R条双向路的描述，每条路连接了两个不同的草场，请计算最少的新建道路的数量。路径由若干道路首尾相连而成，两条路径相互">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-16T03:24:05.687Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="割点和桥题集">
+<meta name="twitter:description" content="分离的路径(rpaths)题意描述为了从 F个草场中的一个走到另一个，贝茜和她的同伴们不得不路过一些她们讨厌的可怕的树。奶牛们已经厌倦了被迫走某一条路，所以她们想建一些新路，使每一对草场之间都会至少有两条相互分离的路径，这样她们就有多一些选择。每对草场之间已经有至少一条路径，给出所有 R条双向路的描述，每条路连接了两个不同的草场，请计算最少的新建道路的数量。路径由若干道路首尾相连而成，两条路径相互">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2020/02/16/割点和桥题集/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>割点和桥题集 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2020/02/16/割点和桥题集/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">割点和桥题集
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-16 11:20:34 / 修改时间：11:24:05" itemprop="dateCreated datePublished" datetime="2020-02-16T11:20:34+08:00">2020-02-16</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM题解/" itemprop="url" rel="index"><span itemprop="name">ACM题解</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="分离的路径-rpaths"><a href="#分离的路径-rpaths" class="headerlink" title="分离的路径(rpaths)"></a>分离的路径(rpaths)</h4><p><strong>题意描述</strong><br>为了从 F个草场中的一个走到另一个，贝茜和她的同伴们不得不路过一些她们讨厌的可怕的树。<br>奶牛们已经厌倦了被迫走某一条路，所以她们想建一些新路，使每一对草场之间都会至少有两条相互分离的路径，这样她们就有多一些选择。<br>每对草场之间已经有至少一条路径，给出所有 R条双向路的描述，每条路连接了两个不同的草场，请计算最少的新建道路的数量。<br>路径由若干道路首尾相连而成，两条路径相互分离，是指两条路径没有一条重合的道路，但是两条分离的路径上可以有一些相同的草场。<br>对于同一对草场之间，可能已经有两条不同的道路，你也可以在它们之间再建一条道路，作为另一条不同的道路。</p>
+<p><strong>解题思路</strong><br>本题就是希望能添加最少的边，使得原图变为边双连通图。<br>易得，在边双连通图中添加边是不会改变桥的数量的。所以我们可以先把边双连通分量缩点。缩点后的图只有点和桥，假设叶子节点的个数为 leaf 个，那么我们只需要添加 (leaf + 1) / 2 条边即可使其变为点双连通分量。（当然只有一个节点的图无需添加）</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = N&lt;&lt;<span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> dfn[N],clk,low[N],co[N],col;</span><br><span class="line"><span class="keyword">int</span> Stack[N],top,deg[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> e)</span></span>&#123;</span><br><span class="line">	<span class="comment">/* 对双连通分量进行染色、缩点 */</span></span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	Stack[++top] = x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y])&#123;</span><br><span class="line">			Tarjan(y,i); </span><br><span class="line">			low[x] = min(low[x],low[y]);</span><br><span class="line">			<span class="comment">//if(low[y] &gt; dfn[x]) bridge[i] = bridge[i^1] = true;</span></span><br><span class="line">		&#125;<span class="keyword">else</span> <span class="keyword">if</span>((i^<span class="number">1</span>) != e) low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(dfn[x] == low[x]) </span><br><span class="line">		<span class="keyword">for</span>(++col;Stack[top+<span class="number">1</span>] != x;--top)</span><br><span class="line">			co[Stack[top]] = col;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">bool</span> vis[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	Tarjan(<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> x = <span class="number">1</span>;x &lt;= n;x++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">			<span class="keyword">int</span> y = ver[i]; vis[i] = <span class="literal">true</span>;</span><br><span class="line">			<span class="keyword">if</span>(!vis[i^<span class="number">1</span>] &amp;&amp; co[x] != co[y]) deg[co[x]]++,deg[co[y]]++;</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">int</span> leaf = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= col;i++) <span class="keyword">if</span>(deg[i] == <span class="number">1</span>) leaf++;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,leaf+<span class="number">1</span>&gt;&gt;<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y), addEdge(y,x);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="矿场搭建-mine"><a href="#矿场搭建-mine" class="headerlink" title="矿场搭建(mine)"></a>矿场搭建(mine)</h4><p><strong>题意描述</strong><br>煤矿工地可以看成是由隧道连接挖煤点组成的无向图。为安全起见，希望在工地发生事故时所有挖煤点的工人都能有一条出路逃到救援出口处。于是矿主决定在某些挖煤点设立救援出口，使得无论哪一个挖煤点坍塌之后，其他挖煤点的工人都有一条道路通向救援出口。<br>请写一个程序，用来计算至少需要设置几个救援出口，以及不同最少救援出口的设置方案总数。</p>
+<p><strong>解题思路</strong><br>我们首先要画图来讨论不同情况下需要的出口个数，显而易见，出口个数是和割点相关的。</p>
+<ul>
+<li>如果原图是一个双连通分量，那么只需要添加 2 个出口，方案数按照组合原理共 sz * (sz-1) /2 种。</li>
+<li>如果原图被 1 个割点分割成 2 个点双连通分量，那么每个双连通分量都需要一个出口，且这个出口不能放在割点上。</li>
+<li>如果原图被 2 个割点分割成 3 个点双连通分量，那么中间的双连通分量（有两个割点的）不需要出口，其它两个点双连通分量只需要 1 个出口。出口不能放在割点上。</li>
+<li>如果原图被多个割点分割成多个点双连通分量，与第三种情况类似。</li>
+</ul>
+<p>因此我们只需要统计出每个点双连通分量的节点数目（包括割点），以及每个点双连通分量中割点个数，即可统计出口数量以及方案数。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">unsigned</span> <span class="keyword">long</span> <span class="keyword">long</span> ull;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">550</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],vdcc,clk;</span><br><span class="line"><span class="keyword">int</span> Stack[N],top;</span><br><span class="line"><span class="keyword">bool</span> ct[N];</span><br><span class="line"><span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; cuts[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> rt)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	Stack[++top] = x;</span><br><span class="line">	<span class="keyword">int</span> tot = <span class="number">0</span>;	<span class="comment">//用于统计子树个数</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y])&#123;</span><br><span class="line">			Tarjan(y,rt);</span><br><span class="line">			low[x] = min(low[x],low[y]);</span><br><span class="line">			<span class="keyword">if</span>(low[y] &gt;= dfn[x])&#123;</span><br><span class="line">				<span class="keyword">if</span>(++tot &gt; <span class="number">1</span> || x != rt) ct[x] = <span class="literal">true</span>;</span><br><span class="line">				<span class="keyword">for</span>(++vdcc;Stack[top+<span class="number">1</span>] != y;top--)	<span class="comment">//将 x 留在栈内</span></span><br><span class="line">					cuts[vdcc].push_back(Stack[top]);</span><br><span class="line">				cuts[vdcc].push_back(x);	<span class="comment">//手动将 x 添加到连通分量中</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="keyword">else</span> low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m,st,ca = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = st;i &lt;= n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i,i);</span><br><span class="line">	ull ans1 = <span class="number">0</span>,ans2 = <span class="number">1</span>, sz, tot;</span><br><span class="line">	<span class="keyword">if</span>(vdcc == <span class="number">1</span>)&#123;	<span class="comment">//仅有一个连通分量，需要设置两个出口，方案数按组合原理计算</span></span><br><span class="line">		sz = cuts[<span class="number">1</span>].size();</span><br><span class="line">		ans1 = <span class="number">2</span>, ans2 = sz*(sz<span class="number">-1</span>)&gt;&gt;<span class="number">1</span>;</span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= vdcc;i++)&#123;</span><br><span class="line">		tot = <span class="number">0</span>; sz = cuts[i].size();</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; sz;j++) tot += ct[cuts[i][j]];<span class="comment">//统计割点个数</span></span><br><span class="line">		<span class="keyword">if</span>(tot == <span class="number">1</span>) ++ ans1, ans2 *= sz<span class="number">-1</span>;	<span class="comment">//只有一个割点时</span></span><br><span class="line">		<span class="comment">//若有多个割点，那么该连通分量不需要设置出口，因为它可以去别的连通分量的出口</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"Case %d: %llu %llu\n"</span>,ca,ans1,ans2);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;m) &amp;&amp; m != <span class="number">0</span>)&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt; N;i++)</span><br><span class="line">			head[i] = low[i] = dfn[i] = ct[i] = Stack[i] = <span class="number">0</span>,cuts[i].clear();</span><br><span class="line">		tot = <span class="number">1</span>, top = vdcc = clk = <span class="number">0</span>; </span><br><span class="line">		ca++; n = <span class="number">0</span>, st = N;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">			addEdge(x,y); addEdge(y,x);</span><br><span class="line">			n = max(n,max(x,y));</span><br><span class="line">			st = min(st,min(x,y));</span><br><span class="line">		&#125;</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="嗅探器-sniffer"><a href="#嗅探器-sniffer" class="headerlink" title="嗅探器(sniffer)"></a>嗅探器(sniffer)</h4><p><strong>题意描述</strong><br>某军搞信息对抗实战演习，红军成功地侵入了蓝军的内部网络，蓝军共有两个信息中心，红军计划在某台中间服务器上安装一个嗅探器，从而能够侦听到两个信息中心互相交换的所有信息，但是蓝军的网络相当的庞大，数据包从一个信息中心传到另一个信息中心可以不止有一条通路。<br>现在需要你尽快地解决这个问题，应该把嗅探器安装在哪个中间服务器上才能保证所有的数据包都能被捕获？</p>
+<p><strong>解题思路</strong><br>在一个连通图中找到一个编号最小的节点，去掉该节点可以分隔 a 和 b 。那么这个节点肯定是割点，但是无向图中可能有多个割点，而且也不是每个割点都能分隔 a 和 b。所以这个割点必须在 a 和 b 之间，且能分隔 a 和 b。<br>利用 Tarjan 性质，如果我们以 a 为根开始执行，那么割点 y 必须满足dfn[y] &lt; dfn[b]（保证 y 在 b 前面，在 a 和 b 之间） 且 low[b] &gt;= dfn[a] （保证 a 和 b 中仅有一个割点）<br>由于题意要求是在某台中间服务器，所以还需要判断割点不能等于 a 或 b 。<br><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">110</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e4</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> INF = <span class="number">0x3f3f3f3f</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x];head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],clk;</span><br><span class="line"><span class="keyword">int</span> ans = INF;</span><br><span class="line"><span class="keyword">int</span> n,a,b;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> rt)</span></span>&#123;</span><br><span class="line">	<span class="comment">// 标记出所有割点</span></span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	<span class="keyword">int</span> tot = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y])&#123;</span><br><span class="line">			Tarjan(y,rt);</span><br><span class="line">			low[x] = min(low[x],low[y]);</span><br><span class="line">			<span class="keyword">if</span>(low[y] &gt;= dfn[x])</span><br><span class="line">				<span class="keyword">if</span>(dfn[y] &lt;= dfn[b] &amp;&amp; low[b] &gt;= dfn[a] &amp;&amp; x != a &amp;&amp; x != b)</span><br><span class="line">					ans = min(ans,x);</span><br><span class="line">		&#125;<span class="keyword">else</span> low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">int</span> x,y;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y) &amp;&amp; (x || y))</span><br><span class="line">		addEdge(x,y), addEdge(y,x);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;a,&amp;b);</span><br><span class="line">	Tarjan(a,a);</span><br><span class="line">	<span class="keyword">if</span>(ans != INF) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans);</span><br><span class="line">	<span class="keyword">else</span> <span class="built_in">puts</span>(<span class="string">"No solution"</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="旅游航道-route"><a href="#旅游航道-route" class="headerlink" title="旅游航道(route)"></a>旅游航道(route)</h4><p><strong>题意描述</strong><br>SGOI 旅游局在 SG-III 星团开设了旅游业务，每天有数以万计的地球人来这里观光，包括联合国秘书长，各国总统和 SGOI 总局局长等。<br>旅游线路四通八达，每天都有众多的载客太空飞船在星团的星球之间来往穿梭，他们保证了任意两个星球之间总是可以通过航道到达。但是，最近由于财政出现了困难，一些太空飞船也过于古老，又没有足够的资金购买新产品，所有只好取消一些航道。<br>如果某一条航道的删除使得一些星球不能到达，那么这条航道是不能删除的，称之为「主要航道」。<br>SGOI 旅游局局长希望知道主要航道的数目，但是航道较多，他不能手工计算，于是，他委托你写一个程序，计算主要航道数目。<br><strong>解题思路</strong><br>题意就是要求统计出桥的数量。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">3e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = N&lt;&lt;<span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],clk;</span><br><span class="line"><span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> e)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y])&#123;</span><br><span class="line">			Tarjan(y,i);</span><br><span class="line">			low[x] = min(low[x],low[y]);</span><br><span class="line">			<span class="keyword">if</span>(low[y] &gt; dfn[x]) ans++;</span><br><span class="line">		&#125;<span class="keyword">else</span> <span class="keyword">if</span>((i^<span class="number">1</span>) != e) low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	Tarjan(<span class="number">1</span>,<span class="number">0</span>);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; ans &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m) &amp;&amp; (n||m))&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) head[i] = dfn[i] = low[i] = <span class="number">0</span>;</span><br><span class="line">		tot = <span class="number">1</span>; ans = clk = <span class="number">0</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">			addEdge(x,y); addEdge(y,x);</span><br><span class="line">		&#125;</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="电力-power"><a href="#电力-power" class="headerlink" title="电力(power)"></a>电力(power)</h4><p><strong>题意描述</strong><br>求一个图删除一个点之后，联通块最多有多少。</p>
+<p><strong>解题思路</strong><br>因为图不一定是连通的，所以我们要知道连通块的数量。如果图中存在割点，那么选择子树最多的那个割点删除，如果不存在割点，就优先删除某一个连通块中的一个节点，注意如果所有连通块都只有一个点，那么只能删掉一个连通块了。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = N&lt;&lt;<span class="number">1</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],clk,vdcc;</span><br><span class="line"><span class="keyword">int</span> ct[N],Stack[N],top,num[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> rt)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	Stack[++top] = x;</span><br><span class="line">	<span class="keyword">int</span> tot = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y])&#123;</span><br><span class="line">			Tarjan(y,rt);</span><br><span class="line">			low[x] = min(low[x],low[y]);</span><br><span class="line">			<span class="keyword">if</span>(low[y] &gt;= dfn[x])&#123;</span><br><span class="line">				<span class="keyword">if</span>(++tot &gt; <span class="number">1</span> || x != rt) ct[x]++;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;<span class="keyword">else</span> low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(dfn[x] == low[x])</span><br><span class="line">		<span class="keyword">for</span>(++vdcc;Stack[top+<span class="number">1</span>] != x;top--)</span><br><span class="line">			num[vdcc]++;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> ans = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i,i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) ans = max(ct[i],ans);</span><br><span class="line">	<span class="keyword">if</span>(ans)&#123; <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,ans+vdcc); <span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= vdcc;i++) </span><br><span class="line">		<span class="keyword">if</span>(num[i] &gt; <span class="number">1</span>)&#123;<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,vdcc); <span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d\n"</span>,vdcc<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m) &amp;&amp; (n||m))&#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) </span><br><span class="line">			num[i] = ct[i] = head[i] = dfn[i] = low[i] = <span class="number">0</span>;</span><br><span class="line">		vdcc = clk = <span class="number">0</span>; tot = <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">			<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y); x++,y++;</span><br><span class="line">			addEdge(x,y); addEdge(y,x);</span><br><span class="line">		&#125;</span><br><span class="line">		solve();</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="Blockade"><a href="#Blockade" class="headerlink" title="Blockade"></a>Blockade</h4><p><strong>题意描述</strong><br>Byteotia 城市有 n个城镇，m条双向道路。每条道路连接两个不同的城镇，没有重复的道路，所有城镇连通。输出 n个数，代表如果把第 i个点去掉，将有多少对点不能互通。</p>
+<p><strong>解题思路</strong><br>首先要用long long，中间变量也要用。<br>对于一个节点 x，如果删除它，那么：</p>
+<ul>
+<li>u 和其它所有节点不连通，且其它所有节点到 u 也不连通；</li>
+<li>它的子树上的节点（不包括 u ）和其它所有节点不连通；</li>
+<li>所有非 u 子树上的节点和 u 子树上的点不连通。</li>
+</ul>
+<p>只需要把上述分类情况累加起来即可得到答案，本题难点在于分类，要做到不遗漏、不重叠。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e6</span>+<span class="number">10</span>;	</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">long</span> ll;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line">ll ans[N];</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],clk;</span><br><span class="line"><span class="keyword">int</span> tmp[N],sz[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> rt)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	<span class="keyword">int</span> cnt = <span class="number">0</span>; sz[x] = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y])&#123;</span><br><span class="line">			Tarjan(y,rt);</span><br><span class="line">			sz[x] += sz[y];</span><br><span class="line">			low[x] = min(low[x],low[y]);</span><br><span class="line">			<span class="keyword">if</span>(low[y] &gt;= dfn[x])</span><br><span class="line">				<span class="keyword">if</span>(++cnt &gt; <span class="number">1</span> || x != rt)&#123;</span><br><span class="line">					ans[x] += (ll)(n-sz[y]<span class="number">-1</span>)*sz[y];</span><br><span class="line">					tmp[x] += sz[y];</span><br><span class="line">				&#125;	</span><br><span class="line">		&#125;<span class="keyword">else</span> low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">	ans[x] += (ll)tmp[x]*(n-tmp[x]<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i,i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="built_in">printf</span>(<span class="string">"%lld\n"</span>,ans[i] + (n<span class="number">-1</span>)*<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		addEdge(x,y); addEdge(y,x);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/割点和桥/" rel="tag"># 割点和桥</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/02/16/无向图的割点和桥/" rel="next" title="无向图的割点和桥">
+                  <i class="fa fa-chevron-left"></i> 无向图的割点和桥
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/02/16/四边形不等式应用/" rel="prev" title="四边形不等式应用">
+                  四边形不等式应用 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">88</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">56</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#分离的路径-rpaths"><span class="nav-number">1.</span> <span class="nav-text">分离的路径(rpaths)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#矿场搭建-mine"><span class="nav-number">2.</span> <span class="nav-text">矿场搭建(mine)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#嗅探器-sniffer"><span class="nav-number">3.</span> <span class="nav-text">嗅探器(sniffer)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#旅游航道-route"><span class="nav-number">4.</span> <span class="nav-text">旅游航道(route)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#电力-power"><span class="nav-number">5.</span> <span class="nav-text">电力(power)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Blockade"><span class="nav-number">6.</span> <span class="nav-text">Blockade</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
