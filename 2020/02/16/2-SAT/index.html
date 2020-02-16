@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=7.3.0">
+  <link rel="mask-icon" href="/images/logo.svg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: './public/search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="2-SAT问题问题的提出有 N 个变量，每个变量只能有两种可能的取值。再给定 M 个条件，每个条件都是对这两个变量的取值限制。求是否存在对 N 个变量的合法赋值，使 M 个条件均得到满足。这个问题被称为 2-SAT （satisfiability）问题。 一般形式设一个变量 Ai（1 &amp;lt;= i &amp;lt;= N）的取值可能是 0 或者 1，或者称 p 或 q。那么 2-SAT 问题中 M 个条">
+<meta name="keywords" content="2-SAT">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2-SAT问题">
+<meta property="og:url" content="http://valenshi.top/2020/02/16/2-SAT/index.html">
+<meta property="og:site_name" content="ValenShi&#39;s Blog">
+<meta property="og:description" content="2-SAT问题问题的提出有 N 个变量，每个变量只能有两种可能的取值。再给定 M 个条件，每个条件都是对这两个变量的取值限制。求是否存在对 N 个变量的合法赋值，使 M 个条件均得到满足。这个问题被称为 2-SAT （satisfiability）问题。 一般形式设一个变量 Ai（1 &amp;lt;= i &amp;lt;= N）的取值可能是 0 或者 1，或者称 p 或 q。那么 2-SAT 问题中 M 个条">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-16T03:36:14.999Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2-SAT问题">
+<meta name="twitter:description" content="2-SAT问题问题的提出有 N 个变量，每个变量只能有两种可能的取值。再给定 M 个条件，每个条件都是对这两个变量的取值限制。求是否存在对 N 个变量的合法赋值，使 M 个条件均得到满足。这个问题被称为 2-SAT （satisfiability）问题。 一般形式设一个变量 Ai（1 &amp;lt;= i &amp;lt;= N）的取值可能是 0 或者 1，或者称 p 或 q。那么 2-SAT 问题中 M 个条">
+  <link rel="alternate" href="/atom.xml" title="ValenShi's Blog" type="application/atom+xml">
+  <link rel="canonical" href="http://valenshi.top/2020/02/16/2-SAT/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>2-SAT问题 | ValenShi's Blog</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">ValenShi's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    
+
+</nav>
+  <div class="site-search">
+    
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+  </div>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://valenshi.top/2020/02/16/2-SAT/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="�㷨ѧϰ����">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ValenShi's Blog">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">2-SAT问题
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-16 11:35:35 / 修改时间：11:36:14" itemprop="dateCreated datePublished" datetime="2020-02-16T11:35:35+08:00">2020-02-16</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/ACM学习笔记/" itemprop="url" rel="index"><span itemprop="name">ACM学习笔记</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h4 id="2-SAT问题"><a href="#2-SAT问题" class="headerlink" title="2-SAT问题"></a>2-SAT问题</h4><h5 id="问题的提出"><a href="#问题的提出" class="headerlink" title="问题的提出"></a>问题的提出</h5><p>有 N 个变量，每个变量只能有两种可能的取值。再给定 M 个条件，每个条件都是对这两个变量的取值限制。求是否存在对 N 个变量的合法赋值，使 M 个条件均得到满足。这个问题被称为 2-SAT （satisfiability）问题。</p>
+<h5 id="一般形式"><a href="#一般形式" class="headerlink" title="一般形式"></a>一般形式</h5><p>设一个变量 Ai（1 &lt;= i &lt;= N）的取值可能是 0 或者 1，或者称 p 或 q。那么 2-SAT 问题中 M 个条件都可以转化为统一的形式 —— “若变量 Ai 被复制为 p，那么变量 Aj 必须被复制为 q”，其中 p , q $\in$ {0, 1}。</p>
+<h5 id="判定方法"><a href="#判定方法" class="headerlink" title="判定方法"></a>判定方法</h5><ol>
+<li>建立 2N 个节点的有向图，每个变量 Ai 对应 2 个节点，一般设为 i 和 i + N。</li>
+<li>考虑每个条件，形如“若变量 Ai 赋值为 p，则变量 Aj 必须赋值为 q”， p , q $\in$ {0, 1}。从 i + p <em> N 到 j + q </em> N 连一条有向边。</li>
+</ol>
+<p>注意，上述条件蕴含着它的逆否命题“若变量 Aj 必须赋值为 1-q， 那么变量 Ai 必须赋值为 1-p”。如果在给出的 M 个限制条件中，原命题和逆否命题并不一定成对给出，那么应该从 j + (1 - q) <em> N 到 i + (1 - p ) </em> N 也连一条有向边。<br>总而言之，根据原命题和逆否命题的对称性，2-SAT 建出的有向图一定能画成“一侧节点 1~N，另一侧是节点 N+1 ~ 2N”。当把图中的边看作无向边时，这两侧的连边情况是对应的。</p>
+<ol>
+<li>用 Tarjan 算法求出有向图中所有的强连通分量。</li>
+<li>若存在 $i \in [i , N]$ ，满足 i 和 i + N 属于同一个强连通分量，则表明：若变量 Ai 赋值为 p，则变量 Ai 必须赋值为 1-p。这显然是矛盾的，说明无解。若不存在这样的 i，则问题一定有解。</li>
+</ol>
+<p>时间复杂度为 O(N+M)。</p>
+<h4 id="2-SAT问题例题"><a href="#2-SAT问题例题" class="headerlink" title="2-SAT问题例题"></a>2-SAT问题例题</h4><h5 id="例1：和平委员会-peace"><a href="#例1：和平委员会-peace" class="headerlink" title="例1：和平委员会(peace)"></a>例1：和平委员会(peace)</h5><p><strong>题意描述</strong><br>原题来自：POI 2001</p>
+<p>根据宪法，Byteland 民主共和国的公众和平委员会应该在国会中通过立法程序来创立。 不幸的是，由于某些党派代表之间的不和睦而使得这件事存在障碍。此委员会必须满足下列条件：</p>
+<ul>
+<li>每个党派都在委员会中恰有1个代表，如果2个代表彼此厌恶，则他们不能都属于委员会。</li>
+<li>每个党在议会中有2个代表。代表从1编号到2n。 编号为 2i-1和 2i的代表属于第 i个党派。</li>
+</ul>
+<p>任务：写一程序读入党派的数量和关系不友好的代表对，计算决定建立和平委员会是否可能，若行，则列出委员会的成员表。</p>
+<p><strong>解题思路</strong><br>这道题属于 2-SAT 问题，按照 2-SAT 问题的一般策略，对于两对党派(a, b) 、(x , y)，若 a 与 x 有矛盾，那么可以确定的是若 a 出席，则必定 y 出席，若 x 出席，则必定 b 出席。这对应着原命题与逆否命题，而其它命题虽然可能成立但并不能用“必须”修饰。<br>因此我们再利用 Tarjan 求强连通分量，即可解决2-SAT问题。</p>
+<p>需要注意的是，边是有向的，也就是说添加的方向很重要，不可以随意添加。同时不能添加反向边，因为逆命题不一定成立。</p>
+<p>由于 Tarjan 算法中不同连通块的颜色是按照拓扑排序来赋值的，也就是说颜色值越大的点越靠前（在拓扑排序中）；那么在本题中自然是优先选择同一个强连通分量的点，因此我们可以考虑优先输出颜色值大的点，这样我们就会按照拓扑排序的顺序挑选节点。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2</span>*<span class="number">8100</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">1e5</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> dfn[N],clk,co[N],col,low[N];</span><br><span class="line"><span class="keyword">int</span> Stack[N],top;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	Stack[++top] = x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y]) Tarjan(y),low[x] = min(low[x],low[y]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(!co[y]) low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(dfn[x] == low[x])</span><br><span class="line">		<span class="keyword">for</span>(++col;Stack[top+<span class="number">1</span>] != x;top--)</span><br><span class="line">			co[Stack[top]] = col;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i += <span class="number">2</span>) </span><br><span class="line">		<span class="keyword">if</span>(co[i] == co[i+<span class="number">1</span>])&#123;<span class="built_in">puts</span>(<span class="string">"NIE"</span>); <span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i += <span class="number">2</span>)</span><br><span class="line">		<span class="keyword">if</span>(co[i] &lt; co[i+<span class="number">1</span>]) <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,i+<span class="number">1</span>);<span class="comment">//star</span></span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"%d\n"</span>,i);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;n,&amp;m), n &lt;&lt;= <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%d%d"</span>,&amp;x,&amp;y);</span><br><span class="line">		<span class="keyword">int</span> u = x%<span class="number">2</span> == <span class="number">0</span>?x<span class="number">-1</span>:x+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">int</span> v = y%<span class="number">2</span> == <span class="number">0</span>?y<span class="number">-1</span>:y+<span class="number">1</span>;</span><br><span class="line">		addEdge(u,y); addEdge(v,x); <span class="comment">//star</span></span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="例2：P4782-【模板】2-SAT-问题"><a href="#例2：P4782-【模板】2-SAT-问题" class="headerlink" title="例2：P4782 【模板】2-SAT 问题"></a>例2：P4782 【模板】2-SAT 问题</h5><p><strong>题意描述</strong><br><a href="https://www.luogu.com.cn/problem/P4782" target="_blank" rel="noopener">地址</a><br>共 n 个元素，满足 m 个要求，每个要求形如“x 为 1 或 y 为 0”.<br><strong>解题思路</strong><br>假设有一条约束为“x 为 1 或者 y 为 0”，那么可以得知，若令 x = 0，那么 y = 0；若 y = 1 则必有 x = 1。因此我们建立有向图，然后通过强连通分量来解决2-SAT问题即可，总体来说这题就是按照解决 2-SAT 问题的一般步骤来解决的。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">2e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2</span>*N;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M],tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">getInt</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">bool</span> neg = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">char</span> c = getchar();</span><br><span class="line">	<span class="keyword">while</span>(c != <span class="string">'-'</span> &amp;&amp; (c &lt; <span class="string">'0'</span> || c &gt; <span class="string">'9'</span>)) c = getchar();</span><br><span class="line">	<span class="keyword">if</span>(c == <span class="string">'-'</span>) neg = <span class="literal">true</span>, c = getchar();</span><br><span class="line">	<span class="keyword">while</span>(c &gt;= <span class="string">'0'</span> &amp;&amp; c &lt;= <span class="string">'9'</span>) res = res*<span class="number">10</span> + c-<span class="string">'0'</span>,c = getchar();</span><br><span class="line">	<span class="keyword">return</span> neg?-res:res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n,m;</span><br><span class="line"><span class="keyword">int</span> dfn[N],clk,co[N],col,low[N];</span><br><span class="line"><span class="keyword">int</span> Stack[N],top;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	Stack[++top] = x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x]; i;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y]) Tarjan(y),low[x] = min(low[x],low[y]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(!co[y]) low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(dfn[x] == low[x])</span><br><span class="line">		<span class="keyword">for</span>(++col;Stack[top+<span class="number">1</span>] != x;top--)</span><br><span class="line">			co[Stack[top]] = col;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">2</span>*n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++) </span><br><span class="line">		<span class="keyword">if</span>(co[i] == co[i+n])&#123;<span class="built_in">puts</span>(<span class="string">"IMPOSSIBLE"</span>); <span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">"POSSIBLE"</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">if</span>(co[i] &lt; co[i+n]) <span class="built_in">printf</span>(<span class="string">"0 "</span>);</span><br><span class="line">		<span class="keyword">else</span> <span class="built_in">printf</span>(<span class="string">"1 "</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	n = getInt(); m = getInt();</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>,a,b,x,y;i &lt;= m;i++)&#123;</span><br><span class="line">		x = getInt(); a = getInt();</span><br><span class="line">		y = getInt(); b = getInt();</span><br><span class="line">		addEdge(x+(<span class="number">1</span>-a)*n,y+b*n);</span><br><span class="line">		addEdge(y+(<span class="number">1</span>-b)*n,x+a*n);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h5 id="例3：POJ3683-Priest-John’s-Busiest-Day"><a href="#例3：POJ3683-Priest-John’s-Busiest-Day" class="headerlink" title="例3：POJ3683 Priest John’s Busiest Day"></a>例3：POJ3683 Priest John’s Busiest Day</h5><p><strong>题意简述</strong><br>在一天内一共有 n 个人结婚，结婚要牧师发言，每一个婚礼有开始时间、结束时间、牧师发言时长。牧师可以选择在婚礼一开始就发言，或者发完言婚礼结束。牧师是否能安排成功？若成功还需要找到一组解。</p>
+<p><strong>解题思路</strong><br>假设对于一个婚礼，选择在开始时发言为 1，结束时发言为 0，那么这就成了2-SAT问题，每个婚礼有 2 种选择，共 m 种约束，约束形如“若 i 选择在开头发言，则 j 必须在结束发言”。化为 2-SAT 问题的一般形式，即可求解。<br>因为读入输出是时钟形式，所以最好将读入和输出封装成单独的函数转化，增强可读性。同时为了使得解题步骤清晰一点，最好将判断是否时间冲突的函数也封装出去。</p>
+<p><strong>代码示例</strong><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdio&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> N = <span class="number">4100</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> M = <span class="number">2e6</span>+<span class="number">10</span>;</span><br><span class="line"><span class="keyword">int</span> head[N],ver[M],nex[M], tot = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(<span class="keyword">int</span> x,<span class="keyword">int</span> y)</span></span>&#123;</span><br><span class="line">	ver[++tot] = y; nex[tot] = head[x]; head[x] = tot;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> dfn[N],low[N],clk,col,co[N];</span><br><span class="line"><span class="keyword">int</span> Stack[N],top;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Tarjan</span><span class="params">(<span class="keyword">int</span> x)</span></span>&#123;</span><br><span class="line">	dfn[x] = low[x] = ++clk;</span><br><span class="line">	Stack[++top] = x;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = head[x];i ;i = nex[i])&#123;</span><br><span class="line">		<span class="keyword">int</span> y = ver[i];</span><br><span class="line">		<span class="keyword">if</span>(!dfn[y]) Tarjan(y), low[x] = min(low[x],low[y]);</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(!co[y]) low[x] = min(low[x],dfn[y]);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(dfn[x] == low[x])</span><br><span class="line">		<span class="keyword">for</span>(++col;Stack[top+<span class="number">1</span>] != x;top--)</span><br><span class="line">			co[Stack[top]] = col;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> n;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">bool</span> <span class="title">check</span><span class="params">(<span class="keyword">int</span> l1,<span class="keyword">int</span> r1,<span class="keyword">int</span> l2,<span class="keyword">int</span> r2)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(r1 &lt;= l2 || r2 &lt;= l1) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">void</span> <span class="title">printClock</span><span class="params">(<span class="keyword">int</span> t)</span></span>&#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>,t/<span class="number">600</span>); t%= <span class="number">600</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d:"</span>,t/<span class="number">60</span>); t%= <span class="number">60</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>,t/<span class="number">10</span>); t%= <span class="number">10</span>;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">"%d"</span>,t);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">int</span> be[N],ed[N],last[N];</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">solve</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)</span><br><span class="line">		<span class="keyword">for</span>(<span class="keyword">int</span> j = i+<span class="number">1</span>;j &lt;= n;j++)&#123;</span><br><span class="line">			<span class="keyword">if</span>(check(be[i],be[i]+last[i],be[j],be[j]+last[j]))</span><br><span class="line">				addEdge(i+n,j), addEdge(j+n,i);</span><br><span class="line">			<span class="keyword">if</span>(check(be[i],be[i]+last[i],ed[j]-last[j],ed[j]))</span><br><span class="line">				addEdge(i+n,n+j), addEdge(j,i);</span><br><span class="line">			<span class="keyword">if</span>(check(ed[i]-last[i],ed[i],ed[j]-last[j],ed[j]))</span><br><span class="line">				addEdge(i,j+n), addEdge(j,i+n);</span><br><span class="line">			<span class="keyword">if</span>(check(ed[i]-last[i],ed[i],be[j],be[j]+last[j]))</span><br><span class="line">				addEdge(i,j),addEdge(j+n,i+n);</span><br><span class="line">		&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">2</span>*n;i++) <span class="keyword">if</span>(!dfn[i]) Tarjan(i);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= <span class="number">2</span>*n;i++) </span><br><span class="line">		<span class="keyword">if</span>(co[i] == co[i+n]) &#123;<span class="built_in">puts</span>(<span class="string">"NO"</span>); <span class="keyword">return</span>;&#125;</span><br><span class="line">	<span class="built_in">puts</span>(<span class="string">"YES"</span>);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="keyword">if</span>(co[i] &gt; co[i+n]) printClock(be[i]),<span class="built_in">putchar</span>(<span class="string">' '</span>),printClock(be[i]+last[i]);</span><br><span class="line">		<span class="keyword">else</span> printClock(ed[i]-last[i]),<span class="built_in">putchar</span>(<span class="string">' '</span>),printClock(ed[i]);</span><br><span class="line">		<span class="built_in">puts</span>(<span class="string">""</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">int</span> <span class="title">getMinute</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* s)</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> res = <span class="number">0</span>;</span><br><span class="line">	res = (s[<span class="number">0</span>] -<span class="string">'0'</span>)*<span class="number">600</span> + (s[<span class="number">1</span>]-<span class="string">'0'</span>)*<span class="number">60</span> + (s[<span class="number">3</span>]-<span class="string">'0'</span>)*<span class="number">10</span> + s[<span class="number">4</span>]-<span class="string">'0'</span>;</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">"%d"</span>,&amp;n);</span><br><span class="line">	<span class="keyword">char</span> a[<span class="number">30</span>],b[<span class="number">30</span>];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>;i &lt;= n;i++)&#123;</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">"%s%s%d"</span>,a,b,&amp;last[i]);</span><br><span class="line">		be[i] = getMinute(a);</span><br><span class="line">		ed[i] = getMinute(b);</span><br><span class="line">	&#125;</span><br><span class="line">	solve();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ul>
+<li>李煜东，算法竞赛进阶指南，郑州：河南电子音像出版社，2013.6，389-393</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/2-SAT/" rel="tag"># 2-SAT</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/02/16/Edu-Cf81/" rel="next" title="Educational Codeforces Round 81 (Rated for Div. 2)">
+                  <i class="fa fa-chevron-left"></i> Educational Codeforces Round 81 (Rated for Div. 2)
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name"></p>
+  <div class="site-description motion-element" itemprop="description">�㷨ѧϰ����</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">89</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+
+
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-SAT问题"><span class="nav-number">1.</span> <span class="nav-text">2-SAT问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#问题的提出"><span class="nav-number">1.1.</span> <span class="nav-text">问题的提出</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#一般形式"><span class="nav-number">1.2.</span> <span class="nav-text">一般形式</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#判定方法"><span class="nav-number">1.3.</span> <span class="nav-text">判定方法</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-SAT问题例题"><span class="nav-number">2.</span> <span class="nav-text">2-SAT问题例题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#例1：和平委员会-peace"><span class="nav-number">2.1.</span> <span class="nav-text">例1：和平委员会(peace)</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#例2：P4782-【模板】2-SAT-问题"><span class="nav-number">2.2.</span> <span class="nav-text">例2：P4782 【模板】2-SAT 问题</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#例3：POJ3683-Priest-John’s-Busiest-Day"><span class="nav-number">2.3.</span> <span class="nav-text">例3：POJ3683 Priest John’s Busiest Day</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#参考资料"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+</div>
+
+<!--
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 维护</div>
+
+
+
+
+
+-->
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/schemes/muse.js?v=7.3.0"></script>
+
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+
+
+  
+  <script>
+    (function(){
+      var bp = document.createElement('script');
+      var curProtocol = window.location.protocol.split(':')[0];
+      bp.src = (curProtocol === 'https') ? 'https://zz.bdstatic.com/linksubmit/push.js' : 'http://push.zhanzhang.baidu.com/push.js';
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(bp, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', function() {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+</body>
+</html>
